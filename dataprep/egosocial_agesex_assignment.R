@@ -3,8 +3,8 @@
 #
 # ~wrc 20171201
 
-dat  <- read.table("3-Khan-data-calf-errors-fixed.csv"       , header = TRUE, sep = ',')
-cdat <- read.table("2017-11-06-Khan-data-request-calving.csv", header = TRUE, sep = ',')
+dat  <- read.table("../data/3-Khan-data-calf-errors-fixed.csv"       , header = TRUE, sep = ',')
+cdat <- read.table("../data/2017-11-06-Khan-data-request-calving.csv", header = TRUE, sep = ',')
 ###
 # rules
 
