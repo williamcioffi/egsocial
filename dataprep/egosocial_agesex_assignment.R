@@ -58,7 +58,7 @@ years_since_1calf <- dat$Year - dat$FirstCalvingYear
 # apply adult rules
 ageclass_tmp[which(years_since_birth >=  9)] <- "A"
 ageclass_tmp[which(years_since_sight >  8)]  <- "A"
-ageclass_tmp[which(years_since_1calf == -1)] <- "A"
+ageclass_tmp[which(years_since_1calf >= -1)] <- "A"
 
 # calf behaviors
 calfbehs <- c("CALFW/MOM", "CALFOFUNPHMOM", "CALF", "CALFW/OTHERS(S)", "CALFW/UNPH")
