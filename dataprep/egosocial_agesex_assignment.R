@@ -55,25 +55,26 @@ years_since_birth <- dat$Year - dat$BirthYear
 years_since_sight <- dat$Year - dat$FirstYearSighted
 years_since_1calf <- dat$Year - dat$FirstCalvingYear
 
+# make unknowns
+ageclass_tmp[which(years_since_sight <= 8 & is.na(dat$BirthYear))] <- "U"
+
 # apply adult rules
 ageclass_tmp[which(years_since_birth >=  9)] <- "A"
-ageclass_tmp[which(years_since_sight >  8)]  <- "A"
+ageclass_tmp[which(years_since_sight >  8 & is.na(years_since_birth))]  <- "A"
 ageclass_tmp[which(years_since_1calf >= -1)] <- "A"
 
 # calf behaviors
 calfbehs <- c("CALFW/MOM", "CALFOFUNPHMOM", "CALF", "CALFW/OTHERS(S)", "CALFW/UNPH")
 mombehs  <- c("W/CALF", "W/CALFUNPH")
 
-allbehs  <- strsplit(as.character(dat$Behaviors), "\\.")
-calfs    <- sapply(allbehs, function(l) any(l %in% calfbehs))
-moms	 <- sapply(allbehs, function(l) any(l %in% mombehs))
+allbehs  			<- strsplit(as.character(dat$Behaviors), "\\.")
+calfs_bybehavior    <- sapply(allbehs, function(l) any(l %in% calfbehs))
+calfs 				<- calfs_bybehavior | (dat$BirthYear >= dat$Year)
+moms	 			<- sapply(allbehs, function(l) any(l %in% mombehs))
 
 # make moms and calves
 ageclass_tmp[calfs] <- "calf"
 # lactatin_tmp[moms]  <- "moms"
-
-# make unknowns
-ageclass_tmp[which(years_since_sight <= 8 & is.na(dat$BirthYear))] <- "U"
 
 # make calves older than december 1st of their "birthyear" juvs
 calfjuvcutoff <- paste0(dat$BirthYear, "-12-01 00:00:00 UTC")
