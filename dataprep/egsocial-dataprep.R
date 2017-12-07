@@ -75,7 +75,7 @@ require(xlsx)
 
 #load your .txt file into R (which specifies that data has a column header but not row names):
 
-data <- read.table("3-Khan-data-calf-errors-fixed.csv", header = TRUE, sep = ',')
+data <- read.table("../data/3-Khan-data-calf-errors-fixed.csv", header = TRUE, sep = ',')
 
 ####################################
 
