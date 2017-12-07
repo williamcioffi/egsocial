@@ -1,0 +1,8 @@
+model {
+	for (i in 1:N) {
+		p[i] ~ dbeta(mu*((1-mu)/(mu*(sd/mu)^2) - 1),(1-mu)*((1-mu)/(mu*(sd/mu)^2) -1))
+		x[i] ~ dbin(p[i],n[i])
+	}
+	mu ~ dnorm(cenmu, 0.001) T(0, )
+	sd ~ dnorm(cenSD, 0.001) T(0, )
+}
