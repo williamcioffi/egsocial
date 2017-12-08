@@ -60,7 +60,7 @@ ageclass_tmp[which(years_since_sight <= 8 & is.na(dat$BirthYear))] <- "U"
 
 # apply adult rules
 ageclass_tmp[which(years_since_birth >=  9)] <- "A"
-ageclass_tmp[which(years_since_sight >  8 & is.na(years_since_birth))]  <- "A"
+ageclass_tmp[which(years_since_sight >=  8 & is.na(years_since_birth))]  <- "A"
 ageclass_tmp[which(years_since_1calf >= -1)] <- "A"
 
 # calf behaviors
