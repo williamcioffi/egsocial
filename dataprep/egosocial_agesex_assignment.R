@@ -74,7 +74,7 @@ moms	 			<- sapply(allbehs, function(l) any(l %in% mombehs))
 
 # make moms and calves
 ageclass_tmp[calfs] <- "calf"
-# lactatin_tmp[moms]  <- "moms"
+lactatin_tmp[moms]  <- "moms"
 
 # make calves older than december 1st of their "birthyear" juvs
 calfjuvcutoff <- paste0(dat$BirthYear, "-12-01 00:00:00 UTC")
@@ -110,7 +110,7 @@ for(m in 1:nrow(cdat)) {
 			
 			lostcalf <- grep("LOST", allbehs[dese])
 			if(length(lostcalf) != 0) {
-				lactating_en <- min(lostcalf) - 1
+				lactating_en <- min(lostcalf)
 			}
 			lactatin_tmp[dese][lactating_st:lactating_en] <- "L"
 		}
