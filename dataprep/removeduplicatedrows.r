@@ -18,4 +18,5 @@ dups_match <- match(dups_paste, ndup_paste)
 dups_table <- dat.backup[duplicated(dat.backup[, -1]), ]
 dups_table[, 'matches'] <- dat$RowName[dups_match]
 
+write.table(dat, file = "../data/4-Khan-data-calf-errors-fixed-nodups.csv", row.names = FALSE, sep = ',')
 write.table(dups_table, file = "../data/duplicated_rows_20171212.csv", row.names = FALSE, sep = ',')
