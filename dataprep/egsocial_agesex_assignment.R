@@ -102,9 +102,14 @@ date_posix <- date_posix[oo]
 ageclass_tmp <- 1:nrow(dat) * NA
 lactating_tmp <- 1:nrow(dat) * NA
 
+# create new columns to help double check agesex classes
 years_since_birth <- dat$Year - dat$BirthYear
 years_since_sight <- dat$Year - dat$FirstYearSighted
 years_since_1calf <- dat$Year - dat$FirstCalvingYear
+
+dat[, 'yearminusbirthyear']  	<- years_since_birth
+dat[, 'yearminusfirstsight'] 	<- years_since_sight
+dat[, 'yearminusfirstcalving'] 	<- years_since_1calf
 
 # make unknowns
 ageclass_tmp[which(years_since_sight <= 8 & is.na(dat$BirthYear))] <- "U"
@@ -130,10 +135,10 @@ ageclass_tmp[calfs] <- "calf"
 lactating_tmp[moms]  <- "moms"
 
 # make calves older than december 1st of their "birthyear" juvs
-calfjuvcutoff <- paste0(dat$BirthYear, "-12-01 00:00:00 UTC")
+calfjuvcutoff <- paste0(dat$BirthYear, "-12-01")
 calfjuvcutoff[is.na(dat$BirthYear)] <- NA
-calfjuvcutoff <- as.POSIXct(calfjuvcutoff, tz = "UTC")
-ageclass_tmp[which(calfs & date_posix >= calfjuvcutoff)] <- "J"
+calfjuvcutoff <- as.Date(calfjuvcutoff)
+ageclass_tmp[which(calfs & date >= calfjuvcutoff)] <- "J"
 
 # make the rest of the juveniles (at this point this is everything that is unassigned)
 ageclass_tmp[is.na(ageclass_tmp)] <- "J"
@@ -173,12 +178,6 @@ for(m in 1:nrow(cdat)) {
 
 dat[, 'lactating'] <- lactating_tmp
 dat[, 'ageclass'] <- ageclass_tmp
-
-
-### create new columns to help double check agesex classes
-dat[, 'yearminusbirthyear']  	<- dat$Year - dat$BirthYear
-dat[, 'yearminusfirstsight'] 	<- dat$Year - dat$FirstYearSighted 
-dat[, 'yearminusfirstcalving'] 	<- dat$Year - dat$FirstCalvingYear
 
 
 ### make id based on agesex
