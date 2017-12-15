@@ -123,7 +123,7 @@ ageclass_tmp[which(years_since_1calf >= -1)] <- "A"
 calfbehs <- c("CALFW/MOM", "CALFOFUNPHMOM", "CALF", "CALFW/OTHERS(S)", "CALFW/UNPH")
 mombehs  <- c("W/CALF", "W/CALFUNPH")
 
-# set up provisional mom and calf categories based on the behavior column
+# set up provisional lactating (moms) and calf categories based on the behavior column
 # these will be adjusted and filled in later
 allbehs  			<- strsplit(as.character(dat$Behaviors), "\\.")
 calfs_bybehavior    <- sapply(allbehs, function(l) any(l %in% calfbehs))
@@ -132,7 +132,7 @@ moms	 			<- sapply(allbehs, function(l) any(l %in% mombehs))
 
 # make moms and calves
 ageclass_tmp[calfs] <- "calf"
-lactating_tmp[moms]  <- "moms"
+lactating_tmp[moms]  <- "potentiallact"
 
 # make calves older than december 1st of their "birthyear" juvs
 calfjuvcutoff <- paste0(dat$BirthYear, "-12-01")
@@ -159,7 +159,7 @@ for(m in 1:nrow(cdat)) {
 	# Ok if no time, because we only need day resolution
 	dese <- dese & !is.na(date)
 	
-	lactating_st <- min(which(lactating_tmp[dese] == "moms"))
+	lactating_st <- min(which(lactating_tmp[dese] == "potentiallact"))
 	if(lactating_st != Inf) {
 		calfjuvcutofflate <- paste0(calfyear, "-12-01")
 		calfjuvcutofflate <- as.Date(calfjuvcutofflate)
@@ -175,6 +175,9 @@ for(m in 1:nrow(cdat)) {
 		lactating_tmp[dese][lactating_st:lactating_en] <- "L"
 	}
 }
+
+# remove "potentiallact" temporary designation
+lactating_tmp[lactating_tmp == "potentiallact"] <- NA
 
 dat[, 'lactating'] <- lactating_tmp
 dat[, 'ageclass'] <- ageclass_tmp
