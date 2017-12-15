@@ -7,7 +7,7 @@
 # calculate for each sampling day instead of by year (birthdeath.r)
 # ~wrc 20171211
 
-source("../dataprep/egosocial_agesex_assignment.R")
+source("../dataprep/egsocial_agesex_assignment.R")
 
 ### plotting function
 naxlook <- function(nax, nx = nids, ny = nyears, ux = uids, uy = uyears, xlabs = FALSE, ...) {
@@ -103,7 +103,10 @@ setTxtProgressBar(pb, i/nids)
 
 ### LACTATING FEMALE
 	if(agesex[i] == "LF") {
-		# this should already be correctly coded
+		# this should already be correctly coded but need to fill in the gaps
+		# between first sighting and last sighting
+		# and december 1st if the calf didn't die first...
+		
 		
 
 ### NON-LACTATING FEMALE

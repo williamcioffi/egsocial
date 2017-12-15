@@ -147,6 +147,13 @@ ageclass_tmp[is.na(ageclass_tmp)] <- "J"
 # look for first sighting
 # make lactating from first sighting until dec 1st or calf dies
 
+# while I'm doing this make an improved cdat which has each mom-calf pair and the first day seen and last day of lactation
+# should either be December 1st or the day of last calf sighting before inferred death of calf.
+# i'll need this for later when i'm making the day by day availability matrix
+
+first_lactday_tmp <- vector(mode = "character", length = nrow(cdat))
+last_lactday_tmp  <- vector(mode = "character", length = nrow(cdat))
+
 for(m in 1:nrow(cdat)) {
 	calfyear <- cdat$CalvingYear[m]
 	calfyear_early <- calfyear - 1
@@ -160,21 +167,34 @@ for(m in 1:nrow(cdat)) {
 	dese <- dese & !is.na(date)
 	
 	lactating_st <- min(which(lactating_tmp[dese] == "potentiallact"))
+	
 	if(lactating_st != Inf) {
 		calfjuvcutofflate <- paste0(calfyear, "-12-01")
 		calfjuvcutofflate <- as.Date(calfjuvcutofflate)
 		
 		lactating_en <- max(which(date[dese] < calfjuvcutofflate))
 		
+		# save these for later to incorporate into cdat
+		# start off with december 1 as last lactday, but if calf dies update to earlier
+		first_lactday_tmp[m] <- as.character(date[dese][lactating_st])
+		last_lactday_tmp[m]  <- as.character(max(date[dese]))
+		
 		lostcalf <- grep("LOST", allbehs[dese])
 		if(length(lostcalf) != 0) {
 			lostcalf_index <- max(lostcalf)
 			lostcalf_date <- as.Date(date[dese][lostcalf_index]) + 1
 			lactating_en <- max(which(date[dese] < lostcalf_date))
+			
+			# update last_lactday
+			last_lactday_tmp[m] <- as.character(date[dese][lostcalf_index])
 		}
 		lactating_tmp[dese][lactating_st:lactating_en] <- "L"
 	}
 }
+
+# add in additional information to cdat
+cdat[, 'first_lactday'] <- first_lactday_tmp
+cdat[, 'last_lactday'] <- last_lactday_tmp
 
 # remove "potentiallact" temporary designation
 lactating_tmp[lactating_tmp == "potentiallact"] <- NA
