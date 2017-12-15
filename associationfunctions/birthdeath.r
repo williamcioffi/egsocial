@@ -67,7 +67,7 @@ ww$year  <- dates.lt$year + 1900
 
 birthdeath <- read.table("birthdeath.csv", header = TRUE, sep = ',')
 kill <- -which(birthdeath$DeathYear > 2009 | birthdeath$BirthYear > 2009 | birthdeath$FirstYearSighted > 2009) 
-birthdeath <- birthdeath[kill,]
+birthdeath <- birthdeath[kill, ]
 
 birth <- birthdeath[!is.na(birthdeath$BirthYear), ]
 death <- birthdeath[!is.na(birthdeath$DeathYear), ]
