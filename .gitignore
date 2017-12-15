@@ -9,6 +9,10 @@
 data/*.*
 originaldatafiles/*.*
 
+# old scripts for reference
+dataprep/old/*.*
+dataprep/errorchecking/*.*
+
 # RStudio files
 .Rproj.user/
 
