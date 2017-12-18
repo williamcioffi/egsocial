@@ -29,9 +29,44 @@ naxlook <- function(nax, nx = nids, ny = nyears, ux = uids, uy = uyears, xlabs =
 	}
 }
 
+### rules
+
+# this is the raw nax which will be modified throughout to apply birth death rules as follows:
+
+# AM = alive each year between first year seen and either date of known death or 'presumed 
+# dead' date(details below)
+
+# NF = alive each year between first year and either date of known death or 'presumed dead' date 
+# (details below) minus years they were LF
+
+# LF = alive only in the years they were lactating and seen
+
+# JF = alive each year between first year and last year seen. If the JF was seen as a LF or NF later 
+# then each year between last year seen as JF and first year seen as LF or NF are also marked as 
+# alive for JF up to age 9.
+
+# JM = alive each year between first year and last year seen. If the JM was seen as an AM later on 
+# then each year between last year seen as JM and first year seen as AM are also marked as alive 
+# for JM up to age 9.
+
+# A whale becomes presumed dead in its sixth year without sightings, on January 1st (a whale last 
+# seen any time during the year 1992, is presumed dead on January 1, 1998 and any date after 
+# that).
+
+# note: I don't do anything with the JU UM UF or UU.
+# note: I don't add ids to the dataset that were never observed. e.g., if a female was only observed as a LF and never as an NF.
+
+birthdeath <- function() {
 ### constants
+ADULT_THRESHOLD <- 8 # years (Hamilton et al. 1998) this is based on 1st calving ages for females
+MAX_YEARS_TILL_DEATH <- 5 # i.e., declared dead in their 6th year
 KILLVALUE <- 2 # anything set to this will be killed from the matrix at the end of the loop (set to 0)
 ADDVALUE <- 3 # anything set to this will be added as a 1  in the matrix at the end of the loop
+
+# birthdeath <- read.table("birthdeath.csv", header = TRUE, sep = ',')
+
+birth <- birthdeath[!is.na(birthdeath$birthyear), ]
+death <- birthdeath[!is.na(birthdeath$deathdates), ]
 
 stdate <- as.POSIXct(paste(min(date, na.rm = TRUE), "00:00:00"), tz = "UTC")
 endate <- as.POSIXct(paste(max(date, na.rm = TRUE), "00:00:00"), tz = "UTC")
@@ -39,85 +74,36 @@ endate <- as.POSIXct(paste(max(date, na.rm = TRUE), "00:00:00"), tz = "UTC")
 udates <- as.Date(seq.POSIXt(stdate, endate, by = "day"))
 ndates <- length(udates)
 
-ids 		<- dat$agesexid
+ids 	<- dat$agesexid
 uids 	<- sort(unique(ids))
 nids 	<- length(uids)
 
+nax 			<- matrix(0, nids, ndates)
+rownames(nax) 	<- uids
+colnames(nax) 	<- as.character(udates)
+
+shortid <- substring(uids, 1, 4)
 agesex  <- substring(uids, 5, 6)
 age 	<- substring(agesex, 1, 1)
 sex 	<- substring(agesex, 2, 2)
 
-nax 				<- matrix(0, nids, ndates)
-rownames(nax) 	<- uids
-colnames(nax) 	<- as.character(udates)
+dat_byid_list <- split(dat, dat$agesexid) # split sorts so these are now in uid order
+dates_byid <- lapply(dat_byid_list, function(l) unique(l$date))
+dates_byid_index <- lapply(dates_byid, function(l) match(l, udates))
 
-shortid  <- substring(uids, 1, 4)
-ushortid <- unique(shortid)
-nshortid <- length(ushortid)
-
-# dat_byid_list <- split(dat, dat$agesexid) # split sorts so these are now in uid order
-# dates_byid <- lapply(dat_byid_list, function(l) unique(l$date))
-# dates_byid_index <- lapply(dates_byid, function(l) match(l, udates))
-
-for(s in 1:nshortid) {
-	deserows	 <- (dat$EGNo == ushortid[s])
-	deseshortids <- (shortid == ushortid[s])
-	deseages     <- age[deseshortids]
-	
-	birthyear <- birthdeath[match(ushortid[s], birthdeath$EGNo), 'birthyear']
-	firstyear <- birthdeath[match(ushortid[s], birthdeath$EGNo), 'firstyearsighted']
-	deathdate <- birthdeath[match(ushortid[s], birthdeath$EGNo), 'deathdates']
-	
-	if(sex[deseshortids][1] == "F") {
-	### females
-		jalive <- assign_jf(birthyear, firstyear, deathdate)
-		nalive <- assign_nf(s)
-		lalive <- assign_lf(s)
-		
-		if("J" %in% deseages) {
-			jfid <- paste0(ushortid[s], "JF")
-			nax[uids == jfid, jalive] <- ADDVALUE
-		}
-		if("L" %in% deseages) {
-			lfid <- paste0(ushortid[s], "LF")
-			nax[uids == lfid, lalive] <- ADDVALUE
-		}
-		if("N" %in% deseages) {
-			nfid <- paste0(ushortid[s], "NF")
-			nax[uids == nfid, nalive] <- ADDVALUE
-			nalivetodeath <- max(nalive):(which(udates == deathdate) - 1)
-			nax[uids == nfid, nalivetodeath] <- ADDVALUE
-			
-			if("L" %in% deseages & !("J" %in% deseages)) {
-				nax[uids = nfid, min(lalive):max(lalive)] <- ADDVALUE
-				nax[uids == nfid, lalive ] <- KILLVALUE
-			}
-			if("L" %in% deseages & "J" %in% deseages) {
-				nax[uids == nfid, min(lalive):max(lalive)] <- ADDVALUE
-				minnf <- min(which(nax[uids == nfid, ] != 0))
-				nax[uids == nfid, (max(jalive) + 1):(minnf - 1)] <- ADDVALUE
-				nax[uids == nfid, lalive] <- KILLVALUE
-			}
-			if("J" %in% deseages & !("L" %in% deseages)) {
-				minnf <- min(which(nax[uids == nfid, ] != 0))
-				nax[uids == nfid, (max(jalive) + 1):(minnf - 1)] <- ADDVALUE
-			}
-		}
-		
-	} else {
-	### males
-	}
-}
-
-
+# initially simple set everytime an animal was sighted as 1
+# WHY DID I MAKE THE INDEX IF I DON'T USE IT I COULD USE THE INDEX HERE?
+# for(i in 1:length(dat_byid_list)) {
+	# curdates <- dates_byid[[i]]
+	# nax[i, match(curdates, udates)] <- 1
+# }
 
 # functions for assigning st and en values
-assign_lf <- function(curs) {
+assign_lf <- function(i) {
 	# go one by one by each calf and set lactation time periods
-	desemom <- cdat$EGNo == ushortid[curs]
+	desemom <- cdat$EGNo == shortid[i]
 	dismom <- cdat[desemom, ]
 	
-	alive <- vector()
 	for(d in 1:nrow(dismom)) {
 		st <- which(udates == dismom[d, 'first_lactday'])
 		
@@ -128,39 +114,33 @@ assign_lf <- function(curs) {
 			en <- which(udates == dismom[d, 'last_lactday'])
 		}
 		
-		alive <- c(alive, st:en)
-	}
-	
-	alive
+	list(st, en)
 }
 
-assign_nf <- function(curs) {
-		curdates <- match(dat[dat$agesexid == paste0(ushortid[curs], "NF"), 'date'], udates)
-		st <- min(curdates, na.rm = TRUE)
-		en <- max(curdates, na.rm = TRUE)
+assign_nf <- function(i) {
+			# nax[i, min(curdates, na.rm = TRUE):max(curdates, na.rm = TRUE)] <- ADDVALUE
+		lfmatch <- match(paste0(shortid[i], "LF"), uids) 
 		
-		st:en
-}
-
-assign_jf <- function(birthdate, firstdate, deathdate) {
-	if(is.na(birthyear)) {
-		stdate <- as.Date(paste0(firstyear, "-01-01"))
-		endate <- as.Date(paste0(firstyear + 7, "-12-31"))
-	} else {
-		stdate <- as.Date(paste0(birthyear, "-12-01"))
-		endate <- as.Date(paste0(birthyear + 8, "-12-31"))
-	}
-
-	st <- min(which(udates >= stdate), na.rm = TRUE)
-	en <- max(which(udates <= endate), na.rm = TRUE)
-	
-	deathdate <- which(udates == deathdate)
-	
-	if(en > deathdate) {
-		en <- deathdate - 1
-	}
-	
-	jalive <- st:en
+		# is there a corresponding LF?		
+		if(!is.na(lfmatch)) {
+			lfdates <- nax[lfmatch, ]
+			
+			#for death
+			curdates <- c(curdates, lfdates)
+		}
+		
+		#deal with death
+		deathdate <- birthdeath[match(shortid[i], birthdeath$EGNo), 'deathdates']
+		
+		st <- min(curdates, na.rm = TRUE)
+		en <- max(which(udates < deathdate), na.rm = TRUE)
+		
+		nax[i, st:en] <- ADDVALUE
+		
+		# go back and get rid of lfyears
+		if(!is.na(lfmatch)) {
+			nax[i, lfdates != 0] <- KILLVALUE
+		}
 }
 
 pb <- txtProgressBar(style = 3)
