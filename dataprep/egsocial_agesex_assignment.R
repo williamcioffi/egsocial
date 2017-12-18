@@ -153,6 +153,7 @@ ageclass_tmp[is.na(ageclass_tmp)] <- "J"
 
 first_lactday_tmp <- vector(mode = "character", length = nrow(cdat))
 last_lactday_tmp  <- vector(mode = "character", length = nrow(cdat))
+lost_lactday_tmp <- vector(length = nrow(cdat))
 
 for(m in 1:nrow(cdat)) {
 	calfyear <- cdat$CalvingYear[m]
@@ -187,6 +188,7 @@ for(m in 1:nrow(cdat)) {
 			
 			# update last_lactday
 			last_lactday_tmp[m] <- as.character(date[dese][lostcalf_index])
+			lost_lactday_tmp[m] <- TRUE
 		}
 		lactating_tmp[dese][lactating_st:lactating_en] <- "L"
 	}
@@ -195,6 +197,7 @@ for(m in 1:nrow(cdat)) {
 # add in additional information to cdat
 cdat[, 'first_lactday'] <- first_lactday_tmp
 cdat[, 'last_lactday'] <- last_lactday_tmp
+cdat[, 'lost_lactday'] <- lost_lactday_tmp
 
 # remove "potentiallact" temporary designation
 lactating_tmp[lactating_tmp == "potentiallact"] <- NA
