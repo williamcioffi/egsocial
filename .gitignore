@@ -12,6 +12,7 @@ originaldatafiles/*.*
 # old scripts for reference
 dataprep/old/*.*
 dataprep/errorchecking/*.*
+associationfunctions/old/*.*
 
 # RStudio files
 .Rproj.user/
