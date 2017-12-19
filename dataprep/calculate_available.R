@@ -4,11 +4,25 @@
 ###
 # birthdeath_byday.r
 # create an availability matrix for egs sensitive to agesex class
-# calculate for each sampling day instead of by year (birthdeath.r)
-# this code ignores unknown age animals UM, UF. UUs, JUs, and AUs have been removed already.
-# ~wrc 20171211
+# ~wrc 20171911
 
-### plotting function
+# calculate for each day instead of by year (birthdeath.r)
+# I start at 1980-01-01 to make plotting easier, but this could be truncated to the first sighting in 1980 which was 1980-03-28 if desired.
+# I end on 2016-12-20, the latest observation in this dataset.
+
+# this code ignores unknown age animals UM, UF.
+# UUs, JUs, and AUs have been removed already at this stage
+
+# rules for assigning agesex class is the same as in egoscial_agesex_assignment with the following addition made neccessary by going day by day:
+# lactating females are lactating from the first day they are seen with a calf until 11-30 of the calfcohort year or until the last sighting of the mom and calf before a LOST code in the behavior.
+# this could be modified if for instance a standard start day is preferable.
+
+# take a look at the distribution of start days for calving:
+# monthstarts <- as.POSIXlt(seq.POSIXt(as.POSIXct("1980-01-1", tz = "UTC"), as.POSIXct("1980-12-30", tz = "UTC"), by = "month"))$yday
+# hist(as.POSIXlt(cdat$first_lactday, tz = "UTC")$yday, breaks = c(monthstarts, 365), xaxt = 'n')
+# axis(1, at = monthstarts + 15, lab = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
+
+### plotting function for debugging
 naxlook <- function(nax, nids = nids, ny = nyears, uids = uids, uy = uyears, ylabs = TRUE, xgrid = TRUE, ygrid = TRUE, ...) {
 	require(colorspace)
 	par(mar = rep(0, 4), oma = c(4.1, 4.1, 0, 0))
