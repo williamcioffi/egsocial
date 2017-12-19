@@ -9,7 +9,7 @@
 # ~wrc 20171211
 
 ### plotting function
-naxlook <- function(nax, nids = nids, ny = nyears, uids = uids, uy = uyears, ylabs = FALSE, ...) {
+naxlook <- function(nax, nids = nids, ny = nyears, uids = uids, uy = uyears, ylabs = TRUE, xgrid = TRUE, ygrid = TRUE, ...) {
 	require(colorspace)
 	par(mar = rep(0, 4), oma = c(4.1, 4.1, 0, 0))
 	image(t(nax), axes = FALSE, col = c("white", rainbow_hcl(max(nax))), ...)
@@ -19,16 +19,19 @@ naxlook <- function(nax, nids = nids, ny = nyears, uids = uids, uy = uyears, yla
 	xinc <- xseq[2] - xseq[1]
 	xats <- xseq[1: ny] + xinc/2
 	
-	abline(v = xseq, col = "lightgrey")
+	yseq <- seq(plotdims[3], plotdims[4], len = nrow(nax) + 1)
+	yinc <- yseq[2] - yseq[1]
+	yats <- yseq[1:nrow(nax)] + yinc/2
+
 	axis(1, at = xats, labels = uy, las = 2, tick = FALSE, cex.axis = 0.75)
 	
-	if(ylabs) {
-		yseq <- seq(plotdims[3], plotdims[4], len = nrow(nax) + 1)
-		yinc <- yseq[2] - yseq[1]
-		yats <- yseq[1:nrow(nax)] + yinc/2
+	if(xgrid)
+		abline(v = xseq, col = "lightgrey")
+	if(ygrid)
 		abline(h = yseq, col = "lightgrey")
+	
+	if(ylabs)
 		axis(2, at = yats, labels = rownames(nax), las = 2, tick = FALSE, cex.axis = 0.75)	
-	}
 }
 
 ### assign each id an agesex for each sampling (survey) day
