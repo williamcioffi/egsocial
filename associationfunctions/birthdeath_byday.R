@@ -1,5 +1,5 @@
-### NON FUNCTIONAL CODE STUBS
 ### WORK IN PROGRESS
+### REQUIRES TESTING
 
 ###
 # birthdeath_byday.r
