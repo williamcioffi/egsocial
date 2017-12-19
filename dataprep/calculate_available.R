@@ -210,11 +210,17 @@ for(i in 1:ln) {
 
 
 nax_nou <- nax[-which(age == "U"), ]
+
+# do some checks
+# warning: this is slow to render
+naxlook(nax_nou[1:50, ])
+
+
+# switch back into a binary matrix
 nax_nou[which(nax_nou == KILLVALUE)] <- 0
 nax_nou[which(nax_nou > 0)] <- 1
+
+# calculate overlap and kill diagonal
 overlap <- tcrossprod(nax_nou)
 diag(overlap) <- NA
-
-length(which(overlap == 0)) / length(overlap)
-
 
