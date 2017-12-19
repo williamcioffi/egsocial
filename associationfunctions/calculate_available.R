@@ -10,15 +10,16 @@
 
 ### plotting function
 naxlook <- function(nax, nids = nids, ny = nyears, uids = uids, uy = uyears, ylabs = FALSE, ...) {
+	require(colorspace)
 	par(mar = rep(0, 4), oma = c(4.1, 4.1, 0, 0))
-	image(t(nax), axes = FALSE, col = c("white", "black", "orange", "green", "red")[1:(max(nax) + 1)], ...)
+	image(t(nax), axes = FALSE, col = c("white", rainbow_hcl(max(nax))), ...)
 	plotdims <- par()$usr
 	
 	xseq <- seq(plotdims[1], plotdims[2], len = ndates)[seq(1, ndates, by = 365)]
 	xinc <- xseq[2] - xseq[1]
 	xats <- xseq[1: ny] + xinc/2
 	
-	abline(v = xseq, col = "purple")
+	abline(v = xseq, col = "lightgrey")
 	axis(1, at = xats, labels = uy, las = 2, tick = FALSE, cex.axis = 0.75)
 	
 	if(ylabs) {
@@ -122,7 +123,7 @@ for(i in 1:nm) {
 	en <- max(which(udates < deathdate), na.rm = TRUE)
 	
 	if(en > st) {
-		nax[ms[i], st:en] <- ADDVALUE
+		nax[ms[i], st:en] <- ADDVALUE + 1
 	}
 }
 
@@ -162,7 +163,7 @@ for(i in 1:nn) {
 	en <- max(which(udates < deathdate), na.rm = TRUE)
 	
 	if(en > st) {
-		nax[ns[i], st:en] <- ADDVALUE
+		nax[ns[i], st:en] <- ADDVALUE + 2
 	}
 }
 
@@ -189,7 +190,7 @@ for(i in 1:ln) {
 		lactating <- c(lactating, st:en)
 	}
 	
-	nax[lf[i], lactating] <- ADDVALUE
+	nax[lf[i], lactating] <- ADDVALUE + 3
 	
 	# kill these days for the nf if it exists
 	nfmatch <- match(paste0(sid, "NF"), uids)
