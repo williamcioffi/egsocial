@@ -100,7 +100,9 @@ for(i in 1:nj) {
 		en <- deathdate - 1
 	}
 	
-	nax[js[i], st:en] <- ADDVALUE
+	if(en > st) {
+		nax[js[i], st:en] <- ADDVALUE
+	}
 }
 
 ### adult males
@@ -187,14 +189,29 @@ for(i in 1:ln) {
 			en <- which(udates == dismom[d, 'last_lactday'])
 		}
 		
-		lactating <- c(lactating, st:en)
+		if(en > st) {
+			lactating <- c(lactating, st:en)
+		}
 	}
 	
-	nax[lf[i], lactating] <- ADDVALUE + 3
-	
-	# kill these days for the nf if it exists
-	nfmatch <- match(paste0(sid, "NF"), uids)
-	if(!is.na(nfmatch)) {
-		nax[nfmatch, lactating] <- KILLVALUE
+	if(length(lactating > 0)) {
+		nax[lf[i], lactating] <- ADDVALUE + 3
+		
+		# kill these days for the nf if it exists
+		nfmatch <- match(paste0(sid, "NF"), uids)
+		if(!is.na(nfmatch)) {
+			nax[nfmatch, lactating] <- KILLVALUE
+		}
 	}
 }
+
+
+nax_nou <- nax[-which(age == "U"), ]
+nax_nou[which(nax_nou == KILLVALUE)] <- 0
+nax_nou[which(nax_nou > 0)] <- 1
+overlap <- tcrossprod(nax_nou)
+diag(overlap) <- NA
+
+length(which(overlap == 0)) / length(overlap)
+
+
