@@ -1,10 +1,27 @@
+#######################################
+##                                   ##
+##   Right Whale Social Analysis     ##
+##                                   ##
+##    -calculate available-          ##
+##                                   ##
+##   Determine who is alive and      ## 
+##   therefore available to          ##
+##   associate with other whales     ##
+##                                   ##
+##                                   ##
+##  Will Cioffi + Christin Khan      ##
+##                                   ##
+##        December 29, 2017          ##
+#######################################
+
+
 ### WORK IN PROGRESS
 ### REQUIRES TESTING
 
 ###
 # birthdeath_byday.r
 # create an availability matrix for egs sensitive to agesex class
-# ~wrc 20171911
+# ~wrc 20180101
 
 # calculate for each day instead of by year (birthdeath.r)
 # I start at 1980-01-01 to make plotting easier, but this could be truncated to the first sighting in 1980 which was 1980-03-28 if desired.
@@ -50,6 +67,12 @@ naxlook <- function(nax, nids = nids, ny = nyears, uids = uids, uy = uyears, yla
 
 ### assign each id an agesex for each sampling (survey) day
 source("../dataprep/egsocial_agesex_assignment.R")
+
+
+### load files from Christin's computer
+# setwd("C:/Users/christin.khan/Documents/Projects/Social-Behavior/data")
+# source ("egsocial_agesex_assignment.R")
+
 
 ### constants
 KILLVALUE <- 2 # anything set to this will be killed from the matrix at the end of the loop (set to 0)
@@ -117,7 +140,7 @@ for(i in 1:nj) {
 		en <- deathdate - 1
 	}
 	
-	if(en > st) {
+	if(en >= st) {
 		nax[js[i], st:en] <- ADDVALUE
 	}
 }
@@ -141,7 +164,7 @@ for(i in 1:nm) {
 	st <- min(which(udates >= stdate), na.rm = TRUE)
 	en <- max(which(udates < deathdate), na.rm = TRUE)
 	
-	if(en > st) {
+	if(en >= st) {
 		nax[ms[i], st:en] <- ADDVALUE + 1
 	}
 }
@@ -181,7 +204,7 @@ for(i in 1:nn) {
 	
 	en <- max(which(udates < deathdate), na.rm = TRUE)
 	
-	if(en > st) {
+	if(en >= st) {
 		nax[ns[i], st:en] <- ADDVALUE + 2
 	}
 }
@@ -206,7 +229,7 @@ for(i in 1:ln) {
 			en <- which(udates == dismom[d, 'last_lactday'])
 		}
 		
-		if(en > st) {
+		if(en >= st) {
 			lactating <- c(lactating, st:en)
 		}
 	}
@@ -226,6 +249,7 @@ for(i in 1:ln) {
 nax_nou <- nax[-which(age == "U"), ]
 
 # do some checks
+# numbers to look at different IDs (up to 1013)
 # warning: this is slow to render
 naxlook(nax_nou[1:50, ])
 
