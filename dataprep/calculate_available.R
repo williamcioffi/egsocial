@@ -251,7 +251,7 @@ nax_nou <- nax[-which(age == "U"), ]
 # do some checks
 # numbers to look at different IDs (up to 1013)
 # warning: this is slow to render
-naxlook(nax_nou[1:50, ])
+naxlook(nax_nou[25:1, ])
 
 # switch back into a binary matrix
 nax_nou[which(nax_nou == KILLVALUE)] <- 0
