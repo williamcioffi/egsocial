@@ -14,8 +14,9 @@ dataprep/old/*.*
 dataprep/errorchecking/*.*
 associationfunctions/old/*.*
 
-# local plots
+# local plots and scratch
 plots/*.*
+scratch/*.*
 
 # RStudio files
 .Rproj.user/
