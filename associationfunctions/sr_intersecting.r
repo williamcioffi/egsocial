@@ -2,11 +2,9 @@
 # calculate sr index
 # using a max association distance for right whales
 # only using denominator values for whales that were "alive" in same year
-# ~wrc 20171005
+# ~wrc 20170102
 
-source("birthdeath.r")
-source("distance.R")
-
+source("../associationfunctions/distance.R")
 
 ### these functions for outer
 
@@ -30,15 +28,13 @@ source("distance.R")
 
 max_assoc_distance <- 10 #km
 numsampcutoff <- 35
+overlapdaycutoff <- 365
 relative_speed_km_per_hour <- 3.1 * 2
 
-ww <- read.table("Master_DATA_primary.csv", header = TRUE, sep = ',')
-ww[, 'xx'] <- ww[, 'xx']*-1 # correct the lons
-
-dates <- as.Date(ww$Date, format = "%m/%d/%y %H:%M", tz = "UTC")
-dateswithtimes <- as.POSIXct(ww$Date, format = "%m/%d/%y %H:%M", tz = "UTC")
+dates <- as.Date(ww$Date, tz = "UTC")
+dateswithtimes <- as.POSIXct(ww$Date, tz = "UTC")
 udates <- unique(dates)
-uyears <- as.POSIXlt(udates)$year + 1900
+# uyears <- as.POSIXlt(udates)$year + 1900
 
 uids <- sort(unique(ww$ID))
 nids <- length(uids)
@@ -50,6 +46,7 @@ colnames(assoc) <- uids
 
 nax <- matrix(0, nids, nsamp)
 rownames(nax) <- uids
+colnames(nax) <- as.character(udates)
 
 starts <- Sys.time()
 pb <- txtProgressBar(style = 3)
@@ -84,14 +81,7 @@ setTxtProgressBar(pb, i/nsamp)
 close(pb)
 Sys.time() - starts
 
-nax_birthdeath_byyear <- birthdeath()
-togethers <- tcrossprod(nax_birthdeath_byyear)
-
-# get rid of the diag and upper triangle
-togethers[upper.tri(togethers)] <- NA
-diag(togethers) <- NA
-
-overlapping <- which(togethers != 0, arr.ind = TRUE)
+overlapping <- which(overlap >= overlapdaycutoff, arr.ind = TRUE)
 
 nmatrix <- matrix(0, nids, nids)
 yab_prime <- matrix(0, nids, nids)
@@ -106,9 +96,10 @@ for(i in 1:nrow(overlapping)) {
 		b <- overlapping[i, 2]
 		
 setTxtProgressBar(pb, i/nrow(overlapping))
-		nax_birthdeath_byyear_tmp <- nax_birthdeath_byyear[c(a, b), ]
-		overlapyears <- as.numeric(colnames(nax_birthdeath_byyear_tmp)[which(colSums(nax_birthdeath_byyear_tmp) == 2)])
-		samps_tmp <- which(uyears %in% overlapyears)
+		nax_tmp <- nax[c(a, b), ]
+		nax_avail_tmp <- nax_avail_nou[c(a, b), ]
+		samps_tmp <- colnames(nax_avail_tmp)[colSums(nax_avail_tmp) == 2]
+		samps_tmp <- intersect(samps_tmp, colnames(nax))
 		nax_tmp <- nax[c(a, b), samps_tmp]
 		
 		numsamp_a[c(a, b), c(a, b)] <- sum(nax_tmp[1, ])
@@ -130,23 +121,17 @@ sr[which(assoc == 0)] <- 0
 
 diag(sr) <- NA
 
-neverseentogether <- which(togethers == 0)
+neverseentogether <- which(overlap <= overlapdaycutoff)
 sr[neverseentogether] <- NA
 
+# get rid of individuals seen less than numsampcutoff times
 diag(numsamp_a) <- NA
 diag(numsamp_b) <- NA
 
-notenoughsightings <- which(numsamp_a < 35 | numsamp_b < 35)
+notenoughsightings <- which(numsamp_a < numsampcutoff | numsamp_b < numsampcutoff)
 sr_filtered <- sr
 sr_filtered[notenoughsightings] <- NA
 
-isallna <- apply(sr_filtered, 2, function(r) {
-	out <- FALSE
-	if(all(is.na(r))) {
-		out <- TRUE
-	}
-	
-	out
-})
+isallna <- apply(sr_filtered, 2, function(r) all(is.na(r)))
 
 sr_filtered <- sr_filtered[!isallna, !isallna]
