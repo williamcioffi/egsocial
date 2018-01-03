@@ -18,8 +18,11 @@
 # sdest <- muest * Sest
  
 ### observed data
-x <- assoc_filtered[upper.tri(assoc_filtered)]
-n <- nmatrix_filtered[upper.tri(nmatrix_filtered)]
+
+# need to calculate assoc_filtered and nmatrix_filtered
+
+# x <- assoc_filtered[upper.tri(assoc_filtered)]
+# n <- nmatrix_filtered[upper.tri(nmatrix_filtered)]
 
 N <- length(n)
 Sest <- sd(x/n)/mean(x/n)
