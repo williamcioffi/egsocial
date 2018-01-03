@@ -19,7 +19,7 @@
 ### REQUIRES TESTING
 
 ###
-# birthdeath_byday.r
+# calculate_available.r
 # create an availability matrix for egs sensitive to agesex class
 # ~wrc 20180101
 
@@ -66,7 +66,7 @@ naxlook <- function(nax, nids = nids, ny = nyears, uids = uids, uy = uyears, yla
 }
 
 ### assign each id an agesex for each sampling (survey) day
-source("../dataprep/egsocial_agesex_assignment.R")
+# source("../dataprep/egsocial_agesex_assignment.R")
 
 
 ### load files from Christin's computer
@@ -95,9 +95,9 @@ agesex  <- substring(uids, 5, 6)
 age 	<- substring(agesex, 1, 1)
 sex 	<- substring(agesex, 2, 2)
 
-nax 				<- matrix(0, nids, ndates)
-rownames(nax) 	<- uids
-colnames(nax) 	<- as.character(udates)
+nax_avail 				<- matrix(0, nids, ndates)
+rownames(nax_avail) 	<- uids
+colnames(nax_avail) 	<- as.character(udates)
 
 shortid  <- substring(uids, 1, 4)
 ushortid <- unique(shortid)
@@ -141,7 +141,7 @@ for(i in 1:nj) {
 	}
 	
 	if(en >= st) {
-		nax[js[i], st:en] <- ADDVALUE
+		nax_avail[js[i], st:en] <- ADDVALUE
 	}
 }
 
@@ -165,7 +165,7 @@ for(i in 1:nm) {
 	en <- max(which(udates < deathdate), na.rm = TRUE)
 	
 	if(en >= st) {
-		nax[ms[i], st:en] <- ADDVALUE + 1
+		nax_avail[ms[i], st:en] <- ADDVALUE + 1
 	}
 }
 
@@ -183,7 +183,7 @@ for(i in 1:nn) {
 		
 	jfmatch <- match(paste0(sid, "JF"), uids)
 	if(!is.na(jfmatch)) {
-		st <- max(which(nax[jfmatch, ] != 0)) + 1
+		st <- max(which(nax_avail[jfmatch, ] != 0)) + 1
 	} else {
 		if(is.na(birthyear)) {
 			stdate <- as.Date(paste0(firstyear + 8, "-01-01"))
@@ -205,7 +205,7 @@ for(i in 1:nn) {
 	en <- max(which(udates < deathdate), na.rm = TRUE)
 	
 	if(en >= st) {
-		nax[ns[i], st:en] <- ADDVALUE + 2
+		nax_avail[ns[i], st:en] <- ADDVALUE + 2
 	}
 }
 
@@ -235,28 +235,22 @@ for(i in 1:ln) {
 	}
 	
 	if(length(lactating > 0)) {
-		nax[lf[i], lactating] <- ADDVALUE + 3
+		nax_avail[lf[i], lactating] <- ADDVALUE + 3
 		
 		# kill these days for the nf if it exists
 		nfmatch <- match(paste0(sid, "NF"), uids)
 		if(!is.na(nfmatch)) {
-			nax[nfmatch, lactating] <- KILLVALUE
+			nax_avail[nfmatch, lactating] <- KILLVALUE
 		}
 	}
 }
 
 
-nax_nou <- nax[-which(age == "U"), ]
-
 # do some checks
 # numbers to look at different IDs (up to 1013)
 # warning: this is slow to render
-naxlook(nax_nou[25:1, ])
+# naxlook(nax_avail[25:1, ])
 
 # switch back into a binary matrix
-nax_nou[which(nax_nou == KILLVALUE)] <- 0
-nax_nou[which(nax_nou > 0)] <- 1
-
-# calculate overlap and kill diagonal
-overlap <- tcrossprod(nax_nou)
-diag(overlap) <- NA
+nax_avail[which(nax_avail == KILLVALUE)] <- 0
+nax_avail[which(nax_avail > 0)] <- 1

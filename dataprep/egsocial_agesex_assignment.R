@@ -85,6 +85,7 @@ dat <- dat[oo, ]
 date <- date[oo]
 date_posix <- date_posix[oo]
 
+dat[, 'date_posix'] <- date_posix
 
 ### apply rules
 # calves are excluded
