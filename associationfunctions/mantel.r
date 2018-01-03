@@ -4,12 +4,12 @@
 
 library(vegan)
 # load the data
-assocm0.03 <- read.table("alltables/formantel_assocrate_0.03km.ge35numsamp_nodead.txt")
-assocm01    <- read.table("alltables/formantel_assocrate_01km.ge35numsamp_nodead.txt")
-assocm05    <- read.table("alltables/formantel_assocrate_05km.ge35numsamp_nodead.txt")
-assocm10   <- read.table("alltables/formantel_assocrate_10km.ge35numsamp_nodead.txt")
-assocm15   <- read.table("alltables/formantel_assocrate_15km.ge35numsamp_nodead.txt")
-assocm20   <- read.table("alltables/formantel_assocrate_20km.ge35numsamp_nodead.txt")
+assocm0.03 <- read.table("formantel_assocrate_0.03km.ge35numsamp_nodead.txt")
+assocm01    <- read.table("formantel_assocrate_01km.ge35numsamp_nodead.txt")
+assocm05    <- read.table("formantel_assocrate_05km.ge35numsamp_nodead.txt")
+assocm10   <- read.table("formantel_assocrate_10km.ge35numsamp_nodead.txt")
+assocm15   <- read.table("formantel_assocrate_15km.ge35numsamp_nodead.txt")
+assocm20   <- read.table("formantel_assocrate_20km.ge35numsamp_nodead.txt")
 
 agesex.tmp <- read.table("agesex.csv", header = TRUE, sep = ',', stringsAsFactors = FALSE)
 anames <- read.table("names_ge35numsamp_nodead.csv", stringsAsFactors = FALSE)[, 1]
