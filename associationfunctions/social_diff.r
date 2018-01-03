@@ -19,10 +19,20 @@
  
 ### observed data
 
-# need to calculate assoc_filtered and nmatrix_filtered
+dese <- which(rownames(assoc) %in% rownames(sr_filtered))
+assoc_filtered <- assoc[dese, dese]
 
-# x <- assoc_filtered[upper.tri(assoc_filtered)]
-# n <- nmatrix_filtered[upper.tri(nmatrix_filtered)]
+dese <- which(rownames(nmatrix) %in% rownames(sr_filtered))
+nmatrix_filtered <- nmatrix[dese, dese]
+
+assoc_filtered[is.na(sr_filtered)] <- NA
+nmatrix_filtered[is.na(sr_filtered)] <- NA
+
+x <- assoc_filtered[upper.tri(assoc_filtered)]
+n <- nmatrix_filtered[upper.tri(nmatrix_filtered)]
+
+x <- x[!is.na(x)]
+n <- n[!is.na(n)]
 
 N <- length(n)
 Sest <- sd(x/n)/mean(x/n)
@@ -32,7 +42,7 @@ sdest <- sd(x/n)
 
 ### the model 
 library(rjags)
-jags <- jags.model('socialdiffmod',
+jags <- jags.model('../associationfunctions/socialdiffmod',
                    data = list('x' = x,
                                'N' = N,
 							   'n' = n,
@@ -40,7 +50,7 @@ jags <- jags.model('socialdiffmod',
 							   'cenSD' = sdest),
 				    inits = list('mu' = muest,
 							     'sd'  = sdest),
-                   n.chains = 2,
+                   n.chains = 1,
                    n.adapt = 100)
 ng <- 10000
 
