@@ -36,17 +36,12 @@ dateswithtimes <- as.POSIXct(ww$Date, tz = "UTC")
 udates <- unique(dates)
 # uyears <- as.POSIXlt(udates)$year + 1900
 
-uids <- sort(unique(ww$ID))
-nids <- length(uids)
-nsamp <- length(udates)
+uids 	<- sort(unique(ww$ID))
+nids 	<- length(uids)
+nsamp 	<- length(udates)
 
-assoc <- matrix(0, nids, nids)
-rownames(assoc) <- uids
-colnames(assoc) <- uids
-
-nax <- matrix(0, nids, nsamp)
-rownames(nax) <- uids
-colnames(nax) <- as.character(udates)
+assoc 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
+nax 	<- matrix(0, nids, nsamp, dimnames = list(uids, as.character(udates)))
 
 starts <- Sys.time()
 pb <- txtProgressBar(style = 3)
@@ -83,8 +78,9 @@ Sys.time() - starts
 
 overlapping <- which(overlap >= overlapdaycutoff, arr.ind = TRUE)
 
-nmatrix <- matrix(0, nids, nids)
-yab_prime <- matrix(0, nids, nids)
+nmatrix 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
+yab_prime 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
+
 
 numsamp_a <- matrix(0, nids, nids)
 numsamp_b <- matrix(0, nids, nids)
