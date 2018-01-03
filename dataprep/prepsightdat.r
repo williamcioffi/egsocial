@@ -1,3 +1,7 @@
+########################################
+### THIS IS A TEMPORARY TESTING FILE ###
+########################################
+
 ###
 # prepsightdat.r
 # assigns age sex classes
