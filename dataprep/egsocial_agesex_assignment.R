@@ -218,7 +218,7 @@ dat[, 'agesexid'] <- paste0(dat$EGNo, agesexid_tmp)
 
 
 ### make a table of birthdays, firstsightings, and deaths
-# check to make sure that there are no typos in BithYear or FirstYearSighted
+# check to make sure that there are no typos in BirthYear or FirstYearSighted
 # there should be only one unique value for each animal for both of values
 # watch the multinegative logic...
 dat_list <- split(dat, dat$EGNo)
@@ -252,7 +252,7 @@ lastsdeath[!is.na(lastsdeath)] <- paste0(lastsdeath[!is.na(lastsdeath)], "-01-01
 # kill if we know a real death date
 lastsdeath[!is.na(deaths)] <- NA
 
-# comebine lastsdeath and deaths
+# combine lastsdeath and deaths
 deathdates <- lastsdeath
 deathdates[is.na(lastsdeath)] <- deaths[is.na(lastsdeath)]
 
