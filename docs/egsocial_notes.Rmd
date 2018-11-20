@@ -11,5 +11,13 @@ output:
        collapsed: false
 ---
 
-# First Section
-# Second Section
+# dataset summaries
+
+# data prep
+## 0_RUN_TESTER_prepsightdat.r
+
+## calculate_available.R
+
+## egsocial_agesex_assignment.R
+
+## removeduplicatedrows.r
