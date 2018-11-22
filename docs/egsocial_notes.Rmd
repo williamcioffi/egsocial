@@ -24,10 +24,10 @@ output:
 # dataset summaries
 
 # data prep
-## 0_RUN_TESTER_prepsightdat.r
+## 0\_RUN\_TESTER\_prepsightdat.r
 
-## calculate_available.R
+## calculate\_available.R
 
-## egsocial_agesex_assignment.R
+## egsocial\_agesex\_assignment.R
 
 ## removeduplicatedrows.r
