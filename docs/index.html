@@ -216,35 +216,90 @@ div.tocify {
 </div>
 
 
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
 <blockquote>
 <p>Baleen whales lack the strong and stable long-term bonds characteristic of odontocetes such as killer whales and sperm whales, and therefore, the social structure of baleen whales has received comparatively little attention. However, recent findings of long-term associations in both right whales and humpback whales have challenged the notion that baleen whale society is characterized by short and unstable associations. Previous research has used “within 2 body lengths” to define association, while recognizing that this definition underestimates the range at which whales interact acoustically. We take a new approach and define association in North Atlantic right whales based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.</p>
 </blockquote>
 <hr />
 </div>
-<div id="analysis-decisions" class="section level2">
-<h2>Analysis Decisions</h2>
+<div id="analysis-decisions" class="section level3">
+<h3>Analysis Decisions</h3>
 <p><strong>sampling period:</strong> use ‘Day’ (see Whitehead book p.79)</p>
 <p><strong>swim speed</strong></p>
 </div>
-<div id="dataset-summaries" class="section level2">
-<h2>dataset summaries</h2>
+<div id="dataset-summaries" class="section level3">
+<h3>dataset summaries</h3>
 </div>
-<div id="data-prep" class="section level2">
-<h2>data prep</h2>
 <div id="run_tester_prepsightdat.r" class="section level3">
 <h3>0_RUN_TESTER_prepsightdat.r</h3>
-</div>
-<div id="calculate_available.r" class="section level3">
-<h3>calculate_available.R</h3>
+<p>this script is set up to run egsocial_agesex_assignment.R and then calculate_available.R.</p>
 </div>
 <div id="egsocial_agesex_assignment.r" class="section level3">
 <h3>egsocial_agesex_assignment.R</h3>
+<p>right now this script loads the raw data files. this would be better to do up a level in the organization script (right now 0_RUN_TESTER_prepsightdat.r).</p>
+<p><strong>inputs</strong>: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv</p>
+<p><strong>outputs</strong>: birthdata.csv, dat (dataframe, not currently exported)</p>
+<p>to create 5-Khan-data-cleaned-up.csv the following steps were taken:</p>
+<ul>
+<li>open data and Save As in Excel file with a new name</li>
+<li>delete ‘Calving Data’ worksheet</li>
+<li>delete ‘Code Explanation’ worksheet</li>
+<li>delete top row header that says ‘All sightings of identified whales from 1980 through 2016’</li>
+<li>highlight all and remove shading and borders<br />
+</li>
+<li>highlight top row and replace all spaces with nothing</li>
+<li>highlight all and replace all spaces with a period</li>
+<li>highlight all and replace all commas with a period</li>
+<li>highlight all and replace all double periods with a single period</li>
+<li>highlight all and replace all blanks with ‘NA’ values</li>
+<li>delete column “Association Id”</li>
+<li>delete column “Association Type”</li>
+<li>delete column “Singleton”</li>
+<li>delete column “Observer”</li>
+<li>delete column “Area Code”</li>
+<li>delete column “Letter”</li>
+<li>delete any whales (EGNo) of unknown gender ‘X’</li>
+<li>moved “Latitude” and “Longitude” columns over to the left, and formatted to 5 decimal places</li>
+<li>insert a RID column for row names</li>
+<li>save</li>
+<li>save as a .txt file</li>
+</ul>
+<p>this script applies the following rules:</p>
+<ul>
+<li>retain records which have at least a day mgonth year.</li>
+<li>calves are excluded</li>
+<li>you are a calf until December 1st of birth year and afterwards you will be a juv</li>
+<li>considered an adult if:
+<ol style="list-style-type: decimal">
+<li>it has been nine years or more since known birth year</li>
+<li>OR eight years or more ellapsed since date of first sighting (when birth year is unknown)</li>
+<li>OR Jan 1st of the year prior to giving birth to a calf</li>
+</ol></li>
+<li>whales with ak nown birth year seen for less than eight years were excluded (unknown age class)</li>
+<li>lactating:
+<ol style="list-style-type: decimal">
+<li>female are considered lactating from their first sighting with a dependent calf until dec 1st of the calving year.</li>
+<li>if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.</li>
+</ol></li>
+</ul>
 </div>
-<div id="removeduplicatedrows.r" class="section level3">
-<h3>removeduplicatedrows.r</h3>
-</div>
+<div id="calculate_available.r" class="section level3">
+<h3>calculate_available.R</h3>
+<p>this script calculates the daily overlap for “alive” ids.</p>
+<p><strong>inputs</strong>: dat (dataframe)</p>
+<p><strong>outputs</strong>: dat (dataframe), nax_avail (matrix)</p>
+<p>nax_avail is a matrix is in the style of Hal Whitehead’s nax in <a href="http://http://whitelab.biology.dal.ca/SOCPROG/social.htm">SocProg</a>.</p>
+<p><strong>functions</strong>: naxlook(nax, nids, ny, uids, uy, ylabs, xgrid, ygrid, …) a helper function to make a graphical representation of nax for error checking etc.</p>
+<p>notes:</p>
+<ul>
+<li>this script ignores unknown age ids: UM, UF.</li>
+<li><p>UUs, JUs, and AUs have already been removed at this stage</p></li>
+<li>rules for assigning agesex class is the same as in egsocial_agesex_assignment.R with the following addition made neccessary by going day by day:
+<ul>
+<li>lactating females are lactating from the first day they are seen with a calf until 11-30 of the calfcohort year or until the last sighting of the mom and calf. this could be modified if for instance a standard start day is preferable.</li>
+</ul></li>
+</ul>
 </div>
 
 

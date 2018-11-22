@@ -35,3 +35,4 @@ diag(overlap) <- NA
 
 # get rid of upper triangle
 overlap[upper.tri(overlap)] <- NA
+
