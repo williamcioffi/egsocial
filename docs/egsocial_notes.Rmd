@@ -21,13 +21,13 @@ output:
 
 **swim speed**
 
-# dataset summaries
+## dataset summaries
 
-# data prep
-## 0\_RUN\_TESTER\_prepsightdat.r
+## data prep
+### 0\_RUN\_TESTER\_prepsightdat.r
 
-## calculate\_available.R
+### calculate\_available.R
 
-## egsocial\_agesex\_assignment.R
+### egsocial\_agesex\_assignment.R
 
-## removeduplicatedrows.r
+### removeduplicatedrows.r
