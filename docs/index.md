@@ -1,7 +1,7 @@
 ---
 title: "eg social"
 author: "CK, WRC"
-date: "`r Sys.Date()`"
+date: "2018-12-05"
 output: 
   html_document:
     keep_md: true
