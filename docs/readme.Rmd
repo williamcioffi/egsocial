@@ -35,7 +35,7 @@ right now this script loads the raw data files. this would be better to do up a 
 
 **inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
 
-**outputs**: birthdata.csv, dat (dataframe, not currently exported)
+**outputs**: birthdata.csv, `dat` (dataframe, not currently exported)
 
 to create 5-Khan-data-cleaned-up.csv the following steps were taken:
 
@@ -79,13 +79,13 @@ this script applies the following rules:
 
 this script calculates the daily overlap for "alive" ids.
 
-**inputs**: dat (dataframe)
+**inputs**: `dat` (dataframe)
 
-**outputs**: dat (dataframe), nax_avail (matrix)
+**outputs**: `dat` (dataframe), `nax_avail` (matrix)
 
-nax_avail is a matrix is in the style of Hal Whitehead's nax in [SocProg](http://http://whitelab.biology.dal.ca/SOCPROG/social.htm).
+- `nax_avail` is a matrix is in the style of Hal Whitehead's nax in [SocProg](http://http://whitelab.biology.dal.ca/SOCPROG/social.htm).
 
-**functions**: naxlook(nax, nids, ny, uids, uy, ylabs, xgrid, ygrid, ...)
+**functions**: `naxlook(nax, nids, ny, uids, uy, ylabs, xgrid, ygrid, ...)`
 a helper function to make a graphical representation of nax for error checking etc.
 
 notes:

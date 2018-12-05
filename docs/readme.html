@@ -1499,7 +1499,7 @@ div.tocify {
 <h3>egsocial_agesex_assignment.R</h3>
 <p>right now this script loads the raw data files. this would be better to do up a level in the organization script (right now 0_RUN_TESTER_prepsightdat.r).</p>
 <p><strong>inputs</strong>: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv</p>
-<p><strong>outputs</strong>: birthdata.csv, dat (dataframe, not currently exported)</p>
+<p><strong>outputs</strong>: birthdata.csv, <code>dat</code> (dataframe, not currently exported)</p>
 <p>to create 5-Khan-data-cleaned-up.csv the following steps were taken:</p>
 <ul>
 <li>open data and Save As in Excel file with a new name</li>
@@ -1547,10 +1547,12 @@ div.tocify {
 <div id="calculate_available.r" class="section level3">
 <h3>calculate_available.R</h3>
 <p>this script calculates the daily overlap for “alive” ids.</p>
-<p><strong>inputs</strong>: dat (dataframe)</p>
-<p><strong>outputs</strong>: dat (dataframe), nax_avail (matrix)</p>
-<p>nax_avail is a matrix is in the style of Hal Whitehead’s nax in <a href="http://http://whitelab.biology.dal.ca/SOCPROG/social.htm">SocProg</a>.</p>
-<p><strong>functions</strong>: naxlook(nax, nids, ny, uids, uy, ylabs, xgrid, ygrid, …) a helper function to make a graphical representation of nax for error checking etc.</p>
+<p><strong>inputs</strong>: <code>dat</code> (dataframe)</p>
+<p><strong>outputs</strong>: <code>dat</code> (dataframe), <code>nax_avail</code> (matrix)</p>
+<ul>
+<li><code>nax_avail</code> is a matrix is in the style of Hal Whitehead’s nax in <a href="http://http://whitelab.biology.dal.ca/SOCPROG/social.htm">SocProg</a>.</li>
+</ul>
+<p><strong>functions</strong>: <code>naxlook(nax, nids, ny, uids, uy, ylabs, xgrid, ygrid, ...)</code> a helper function to make a graphical representation of nax for error checking etc.</p>
 <p>notes:</p>
 <ul>
 <li>this script ignores unknown age ids: UM, UF.</li>
