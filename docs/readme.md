@@ -1,7 +1,7 @@
 ---
 title: "eg social"
 author: "CK, WRC"
-date: "2018-12-05"
+date: "2018-12-07"
 output: 
   html_document:
     keep_md: true
@@ -12,6 +12,8 @@ output:
        collapsed: false
 ---
 
+# Redefining association: North Atlantic right whales within communication range
+
 ### Introduction
 
 > Baleen whales lack the strong and stable long-term bonds characteristic of odontocetes such as killer whales and sperm whales, and therefore, the social structure of baleen whales has received comparatively little attention. However, recent findings of long-term associations in both right whales and humpback whales have challenged the notion that baleen whale society is characterized by short and unstable associations. Previous research has used “within 2 body lengths” to define association, while recognizing that this definition underestimates the range at which whales interact acoustically. We take a new approach and define association in North Atlantic right whales based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.
@@ -19,11 +21,33 @@ output:
 ----
 
 ### Analysis Decisions
+
+
+**numsamp** > 35
+
+**distance** = 10km for most analysis 
+(also looked at 0.03 "2 body lengths", 1km, 5km, 10km, 15km, 20km)
+
 **sampling period:** use 'Day' (see Whitehead book p.79)
 
-**swim speed**
+**swim speed** = 3.1 km/hr
 
-### dataset summaries
+**Mantel tests** : used "multiple measures" module as that made it easier to import the custom adjusted matrix
+
+----
+
+### Dataset Summaries
+
+
+
+----
+
+### Data Prep
+
+Will -- is this how we might want to refer to the external code?:
+
+```{r, code=readLines("0\_RUN\_TESTER\_prepsightdat.r")}
+```
 
 ### 0\_RUN\_TESTER\_prepsightdat.r
 
