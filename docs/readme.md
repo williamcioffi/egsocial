@@ -44,16 +44,12 @@ output:
 
 ### Data Prep
 
-Will -- is this how we might want to refer to the external code?:
 
-```{r, code=readLines("0\_RUN\_TESTER\_prepsightdat.r")}
-```
-
-### 0\_RUN\_TESTER\_prepsightdat.r
+#### 0\_RUN\_TESTER\_prepsightdat.r
 
 this script is set up to run egsocial\_agesex\_assignment.R and then calculate\_available.R.
 
-### egsocial\_agesex\_assignment.R
+#### egsocial\_agesex\_assignment.R
 
 right now this script loads the raw data files. this would be better to do up a level in the organization script (right now 0\_RUN\_TESTER\_prepsightdat.r).
 
@@ -99,7 +95,7 @@ this script applies the following rules:
     1. female are considered lactating from their first sighting with a dependent calf until dec 1st of the calving year.
     2. if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.
 
-### calculate\_available.R
+#### calculate\_available.R
 
 this script calculates the daily overlap for "alive" ids.
 
