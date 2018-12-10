@@ -36,8 +36,13 @@ output:
 
 ----
 
-### Dataset Summaries
+### Dataset Summary
 
+Photographs of right whales and associated life history data were obtained from The North Atlantic Right Whale Consortium
+
+Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted of 
+
+65,827 sightings of individually identified right whales from 1980-2016
 
 
 ----
