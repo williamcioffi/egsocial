@@ -47,7 +47,7 @@ output:
 
 ### Data Request
 
-Photographs of right whales and associated life history data were obtained from The North Atlantic Right Whale Consortium
+Photographs of right whales and associated life history data were obtained from [The North Atlantic Right Whale Consortium](https://www.narwhttps://www.narwc.org/)
 
 Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted of 
 
