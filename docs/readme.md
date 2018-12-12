@@ -14,6 +14,10 @@ output:
 
 # Redefining association: North Atlantic right whales within communication range
 
+
+### test test push pull
+
+
 ### Introduction
 
 > Baleen whales lack the strong and stable long-term bonds characteristic of odontocetes such as killer whales and sperm whales, and therefore, the social structure of baleen whales has received comparatively little attention. However, recent findings of long-term associations in both right whales and humpback whales have challenged the notion that baleen whale society is characterized by short and unstable associations. Previous research has used “within 2 body lengths” to define association, while recognizing that this definition underestimates the range at which whales interact acoustically. We take a new approach and define association in North Atlantic right whales based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.
@@ -38,33 +42,31 @@ output:
 
 ### Dataset Summary
 
-Photographs of right whales and associated life history data were obtained from The North Atlantic Right Whale Consortium
+* 719 individual right whales
+* 65,827 sightings
+* 1980-2016
+
+
+----
+
+### Data Request
+
+Photographs of right whales and associated life history data were obtained from [The North Atlantic Right Whale Consortium](https://www.narwc.org/)
 
 Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted of 
 
 65,827 sightings of individually identified right whales from 1980-2016
 
 
-----
 
 ### Data Prep
 
+#### Inital Data Prep in Excel
 
-#### 0\_RUN\_TESTER\_prepsightdat.r
+**inputs**:  Kahn Data Request- data exported 2017-11-06.xlsx
+**outputs**: 5-Khan-data-cleaned-up.csv
 
-this script is set up to run egsocial\_agesex\_assignment.R and then calculate\_available.R.
-
-#### egsocial\_agesex\_assignment.R
-
-right now this script loads the raw data files. this would be better to do up a level in the organization script (right now 0\_RUN\_TESTER\_prepsightdat.r).
-
-**inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
-
-**outputs**: birthdata.csv, `dat` (dataframe, not currently exported)
-
-to create 5-Khan-data-cleaned-up.csv the following steps were taken:
-
-- open data and Save As in Excel file with a new name
+- open 'Kahn Data Request- data exported 2017-11-06.xlsx' and Save As in Excel file with a new name
 - delete 'Calving Data' worksheet
 - delete 'Code Explanation' worksheet
 - delete top row header that says 'All sightings of identified whales from 1980 through 2016'
@@ -85,6 +87,20 @@ to create 5-Khan-data-cleaned-up.csv the following steps were taken:
 - insert a RID column for row names
 - save
 - save as a .txt file
+
+#### Did we next run the egsocial-dataprep.r or was that rolled into the one below (prepsightdat.r)?
+
+#### 0\_RUN\_TESTER\_prepsightdat.r
+
+this script is set up to run egsocial\_agesex\_assignment.R and then calculate\_available.R.
+
+#### egsocial\_agesex\_assignment.R
+
+right now this script loads the raw data files. this would be better to do up a level in the organization script (right now 0\_RUN\_TESTER\_prepsightdat.r).
+
+**inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
+
+**outputs**: birthdata.csv, `dat` (dataframe, not currently exported)
 
 this script applies the following rules:
 
@@ -120,3 +136,19 @@ notes:
 
 - rules for assigning agesex class is the same as in egsocial\_agesex\_assignment.R with the following addition made neccessary by going day by day:
     - lactating females are lactating from the first day they are seen with a calf until 11-30 of the calfcohort year or until the last sighting of the mom and calf. this could be modified if for instance a standard start day is preferable.
+
+----
+
+### Next Steps
+
+* Finish tidying up this document on data prep to date
+
+then double check that the age-sex classes have all been assigned correctly and ready to go:
+
+* Have dead whales been removed?
+* Have missing lat/long positions been removed?
+* Have records with missing times been removed?
+* Have whales of calves been removed?
+* Check calf/juv transition December 1
+* Double check unknowns at year 8
+* Double check lactation stages
