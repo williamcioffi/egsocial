@@ -84,6 +84,8 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 - save
 - save as a .txt file
 
+#### Did we next run the egsocial-dataprep.r or was that rolled into the one below (prepsightdat.r)?
+
 #### 0\_RUN\_TESTER\_prepsightdat.r
 
 this script is set up to run egsocial\_agesex\_assignment.R and then calculate\_available.R.
