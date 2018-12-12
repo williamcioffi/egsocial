@@ -120,3 +120,13 @@ notes:
 
 - rules for assigning agesex class is the same as in egsocial\_agesex\_assignment.R with the following addition made neccessary by going day by day:
     - lactating females are lactating from the first day they are seen with a calf until 11-30 of the calfcohort year or until the last sighting of the mom and calf. this could be modified if for instance a standard start day is preferable.
+
+----
+
+### Next Steps
+
+* Have dead whales been removed?
+* Have missing lat/long positions been removed?
+* Have records with missing times been removed?
+* Have whales of calves been removed?
+
