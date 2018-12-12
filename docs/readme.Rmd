@@ -125,8 +125,14 @@ notes:
 
 ### Next Steps
 
+* Finish tidying up this document on data prep to date
+
+then double check that the age-sex classes have all been assigned correctly and ready to go:
+
 * Have dead whales been removed?
 * Have missing lat/long positions been removed?
 * Have records with missing times been removed?
 * Have whales of calves been removed?
-
+* Check calf/juv transition December 1
+* Double check unknowns at year 8
+* Double check lactation stages
