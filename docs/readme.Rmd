@@ -38,7 +38,7 @@ output:
 
 ### Dataset Summary
 
-* individually identified right whales
+* 719 individual right whales
 * 65,827 sightings
 * 1980-2016
 
