@@ -57,21 +57,12 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 
 ### Data Prep
 
-#### 0\_RUN\_TESTER\_prepsightdat.r
+#### Inital Data Prep in Excel
 
-this script is set up to run egsocial\_agesex\_assignment.R and then calculate\_available.R.
+**inputs**:  Kahn Data Request- data exported 2017-11-06.xlsx
+**outputs**: 5-Khan-data-cleaned-up.csv
 
-#### egsocial\_agesex\_assignment.R
-
-right now this script loads the raw data files. this would be better to do up a level in the organization script (right now 0\_RUN\_TESTER\_prepsightdat.r).
-
-**inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
-
-**outputs**: birthdata.csv, `dat` (dataframe, not currently exported)
-
-to create 5-Khan-data-cleaned-up.csv the following steps were taken:
-
-- open data and Save As in Excel file with a new name
+- open 'Kahn Data Request- data exported 2017-11-06.xlsx' and Save As in Excel file with a new name
 - delete 'Calving Data' worksheet
 - delete 'Code Explanation' worksheet
 - delete top row header that says 'All sightings of identified whales from 1980 through 2016'
@@ -92,6 +83,18 @@ to create 5-Khan-data-cleaned-up.csv the following steps were taken:
 - insert a RID column for row names
 - save
 - save as a .txt file
+
+#### 0\_RUN\_TESTER\_prepsightdat.r
+
+this script is set up to run egsocial\_agesex\_assignment.R and then calculate\_available.R.
+
+#### egsocial\_agesex\_assignment.R
+
+right now this script loads the raw data files. this would be better to do up a level in the organization script (right now 0\_RUN\_TESTER\_prepsightdat.r).
+
+**inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
+
+**outputs**: birthdata.csv, `dat` (dataframe, not currently exported)
 
 this script applies the following rules:
 
