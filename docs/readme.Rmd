@@ -1,7 +1,7 @@
 ---
 title: "eg social"
-author: "CK, WRC"
-date: "2018-12-07"
+author: "William Cioffi and Christin Khan"
+date: "December 12, 2018"
 output: 
   html_document:
     keep_md: true
@@ -33,7 +33,7 @@ output:
 
 **swim speed** = 3.1 km/hr
 
-**Mantel tests** : used "multiple measures" module as that made it easier to import the custom adjusted matrix
+**Mantel tests** : used "multiple measures" module to import the custom adjusted matrix
 
 ----
 
@@ -139,9 +139,11 @@ notes:
 ### Next Steps
 
 
-1. Finish tidying up this document on data prep to date -- # 0\_RUN\_TESTER\_prepsightdat.r (Will)
+1. Will will work on adding previous data prep to this document (0\_RUN\_TESTER\_prepsightdat.r)
 2. Will to look into where best to handle saving private data files
-3. Will to look into html issue
+3. Will to look into html issue -- resolved?
+
+
 
 then double check that the age-sex classes have all been assigned correctly and ready to go:
 
