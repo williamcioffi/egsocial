@@ -7,7 +7,6 @@
 
 # data
 data/*.*
-originaldatafiles/*.*
 
 # old scripts for reference
 dataprep/old/*.*
@@ -20,7 +19,9 @@ scratch/*.*
 
 # RStudio files
 .Rproj.user/
+.Rproj.user
+.Rproj
 
 # MacOS files
 .DS_Store
-.Rproj.user
+
