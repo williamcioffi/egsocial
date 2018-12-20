@@ -7,3 +7,187 @@ output:
 
 this is a temporary document for marking up (down?) some of the data prep scripts for eg social. to be recombined at a later date with the master document: readme.Rmd.
 
+#### age and sex assignment
+
+**inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
+
+**outputs**: birthdata.csv, `dat` (dataframe, not currently exported)
+
+The following rules are used to determine the age and sex class of an individual over time:
+
+1. retain records which have at least a day mgonth year.
+2. calves are excluded
+3. you are a calf until December 1st of birth year and afterwards you will be a juv
+4. considered an adult if:
+    a. it has been nine years or more since known birth year
+    b. OR eight years or more ellapsed since date of first sighting (when birth year is unknown)
+    c. OR Jan 1st of the year prior to giving birth to a calf
+5. whales with a known birth year seen for less than eight years were excluded (unknown age class)
+6. lactating:
+    a. female are considered lactating from their first sighting with a dependent calf until dec 1st of the calving year.
+    b. if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.
+
+
+First, we'll load in the data and prepare the date formats and take a peak. Dat is a table of sighting records, while cdat is a table of calving years.
+
+
+```{r}
+### load input files
+dat  <- read.table("../data/5-Khan-data-cleaned-up.csv", header = TRUE, sep = ',')
+cdat <- read.table("../data/2017-11-06-Khan-data-request-calving.csv", header = TRUE, sep = ',')
+
+head(dat)
+head(cdat)
+```
+
+Next, we'll set up some well formatted dates and flag missing dates in the bool `missingjustdate`.
+```{r}
+missingjustdate <- which(dat$Day == 0 | dat$Month == 0 | dat$Year == 0)
+
+# format for hhmm and split into hh and mm
+time_char <- sprintf("%04d", dat$Time)
+time_hrs <- substring(time_char, 1, 2)
+time_min <- substring(time_char, 3, 4)
+
+# paste together and remove entries with no date
+date <- paste0(dat$Year, "-", sprintf("%02d", dat$Month), "-", sprintf("%02d", dat$Day))
+date[missingjustdate] <- NA
+date <- as.Date(date)
+
+# put records in temporal order including missing dates
+oo1 <- order(dat$Time)
+oo2 <- order(dat$Day[oo1])
+oo3 <- order(dat$Month[oo1][oo2])
+oo4 <- order(dat$Year[oo1][oo2][oo3])
+oo <- oo1[oo2][oo3][oo4]
+
+dat <- dat[oo, ]
+date <- date[oo]
+````
+
+Now we can get started with assigning ages and sexes. first we'll make some temporary variables `ageclass_tmp` and `lactating_tmp`. These are both n records long. so there is a designation for each sighting of an animal in `dat`. `ageclass_tmp` can be U[nknown], A[dult], J[uvenile], or calf. `lactating_tmp` can be "potentiallact" which is a placeholder when a potential mom is identified or L[actating].
+
+We also create a couple of metrics to help with the agesexclass designations including `years_since_birth`, `years_since_sight` (first year sighted), and `years_since_1calf` (years since the first calving year) and save them to dat.
+
+```{r}
+ageclass_tmp <- 1:nrow(dat) * NA
+lactating_tmp <- 1:nrow(dat) * NA
+
+# create new columns to help double check agesex classes
+years_since_birth <- dat$Year - dat$BirthYear
+years_since_sight <- dat$Year - dat$FirstYearSighted
+years_since_1calf <- dat$Year - dat$FirstCalvingYear
+
+dat[, 'yearminusbirthyear']  	<- years_since_birth
+dat[, 'yearminusfirstsight'] 	<- years_since_sight
+dat[, 'yearminusfirstcalving'] 	<- years_since_1calf
+```
+
+Now we can apply a couple of simple rules about who is an adult. Rule 5 is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don't know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their nineth year of life.
+
+An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is 1 year old. In the case of first sighting as a 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older (Rules 4a,b).
+
+Finally, females will automatically be designated an adult the year before they gave birth to their first calf (if known) regardless of their real age, since they would've had to be sexually mature to become pregnant. (Rule 4c)
+
+```{r}
+# make unknowns
+ageclass_tmp[which(years_since_sight <= 8 & is.na(dat$BirthYear))] <- "U"
+
+# apply adult rules
+ageclass_tmp[which(years_since_birth >=  9)] <- "A"
+ageclass_tmp[which(years_since_sight >=  8 & is.na(years_since_birth))]  <- "A"
+ageclass_tmp[which(years_since_1calf >= -1)] <- "A"
+```
+
+Next we set up some provisional lactating and calf categories based on the behavior column in dat. These are going to be adjusted and filled in later. Calfs
+
+```{r}
+# calf and mom behaviors
+calfbehs <- c("CALFW/MOM", "CALFOFUNPHMOM", "CALF", "CALFW/OTHERS(S)", "CALFW/UNPH")
+mombehs  <- c("W/CALF", "W/CALFUNPH")
+
+allbehs  			<- strsplit(as.character(dat$Behaviors), "\\.")
+calfs_bybehavior    <- sapply(allbehs, function(l) any(l %in% calfbehs))
+calfs 				<- calfs_bybehavior | (dat$BirthYear >= dat$Year)
+moms	 			<- sapply(allbehs, function(l) any(l %in% mombehs))
+
+# make moms and calves
+ageclass_tmp[calfs] <- "calf"
+lactating_tmp[moms]  <- "potentiallact"
+```
+
+Calves become juveniles on December 1st of their birth year (Rule 3)
+
+```{r}
+calfjuvcutoff <- paste0(dat$BirthYear, "-12-01")
+calfjuvcutoff[is.na(dat$BirthYear)] <- NA
+calfjuvcutoff <- as.Date(calfjuvcutoff)
+ageclass_tmp[which(calfs & date >= calfjuvcutoff)] <- "J"
+```
+
+And finally, everyone else becomes a juvenile that doesn't have an assigned ageclass.
+
+```{r}
+ageclass_tmp[is.na(ageclass_tmp)] <- "J"
+```
+
+Now we have to go through each mom-calf pair by pair, look for the first sighting, and apply the lactation rules (6a,b). In the loop we are also making an imporved `cdat` which has each mom-calf pair and the first day seen, last day of lactation. This `cdat` will be used later when we are making a day by day availability matrix for calculating association indices. Note that the last day of lactation will be either December 1st or the day of last calf sighting before an inferred death (loss) of calf and so in most cases the end of lactation is somewhat arbitrary.
+
+```{r}
+first_lactday_tmp <- vector(mode = "character", length = nrow(cdat))
+last_lactday_tmp  <- vector(mode = "character", length = nrow(cdat))
+lost_lactday_tmp <- vector(length = nrow(cdat))
+
+for(m in 1:nrow(cdat)) {
+	calfyear <- cdat$CalvingYear[m]
+	calfyear_early <- calfyear - 1
+	mom <- cdat$EGNo[m]
+	
+	# find that mom and that calfyear (and the year before)
+	dese <- (dat$EGNo == mom & (dat$Year == calfyear | dat$Year == calfyear_early))
+	
+	# get rid off entries that have no year, month, or day
+	dese <- dese & !is.na(date)
+	
+	lactating_st <- min(which(lactating_tmp[dese] == "potentiallact"))
+	
+	if(lactating_st != Inf) {
+		calfjuvcutofflate <- paste0(calfyear, "-12-01")
+		calfjuvcutofflate <- as.Date(calfjuvcutofflate)
+		
+		lactating_en <- max(which(date[dese] < calfjuvcutofflate))
+		
+		# save these for later to incorporate into cdat
+		# start off with december 1 as last lactday, but if calf dies update to earlier
+		first_lactday_tmp[m] <- as.character(date[dese][lactating_st])
+		last_lactday_tmp[m]  <- as.character(max(date[dese]))
+		
+		lostcalf <- grep("LOST", allbehs[dese])
+		if(length(lostcalf) != 0) {
+			lostcalf_index <- max(lostcalf)
+			lostcalf_date <- as.Date(date[dese][lostcalf_index]) + 1
+			lactating_en <- max(which(date[dese] < lostcalf_date))
+			
+			# update last_lactday
+			last_lactday_tmp[m] <- as.character(date[dese][lostcalf_index])
+			lost_lactday_tmp[m] <- TRUE
+		}
+		lactating_tmp[dese][lactating_st:lactating_en] <- "L"
+	}
+}
+
+# add in additional information to cdat
+cdat[, 'first_lactday'] <- first_lactday_tmp
+cdat[, 'last_lactday'] <- last_lactday_tmp
+cdat[, 'lost_lactday'] <- lost_lactday_tmp
+
+# remove "potentiallact" temporary designation
+lactating_tmp[lactating_tmp == "potentiallact"] <- NA
+
+dat[, 'lactating'] <- lactating_tmp
+dat[, 'ageclass'] <- ageclass_tmp
+```
+
+Now we have lactating and ageclass assigned and integrated into the `dat` table.
+
+
