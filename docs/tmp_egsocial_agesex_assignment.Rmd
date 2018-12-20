@@ -188,6 +188,80 @@ dat[, 'lactating'] <- lactating_tmp
 dat[, 'ageclass'] <- ageclass_tmp
 ```
 
-Now we have lactating and ageclass assigned and integrated into the `dat` table.
+Now we have lactating and ageclass assigned and integrated into the `dat` table. Next we can paste together the sex from `dat` with `ageclass` to create an agesex class. "AF" is changed to "NF" to indicate non-lactating.
 
+```{r}
+agesexid_tmp <- paste0(ageclass_tmp, dat$Gender)
+agesexid_tmp[agesexid_tmp == "AF" & lactating_tmp == "L"] <- "LF"
+agesexid_tmp[agesexid_tmp == "AF"] <- "NF"
+```
 
+Before proceeding we do a quick check to make sure there are no typos in `BirthYear` and `FirstYearSighted` and there should be only one unique value for each animal for both values. Watch out for the multinegative logic.
+
+```{r}
+dat_list <- split(dat, dat$EGNo)
+
+stopifnot(!any(sapply(dat_list, function(l) length(unique(l$BirthYear))) != 1))
+stopifnot(!any(sapply(dat_list, function(l) length(unique(l$FirstYearSighted))) != 1))
+```
+
+Now, we'll make a table of birth days, first sightings, and deaths and save it as an intermediate output. Deaths are calculated two ways:
+
+1. a behavior code of "DEAD" in `dat` can indicate a sighting of a deceased animal
+2. an animal is assumed to be dead if not seen for 6 consecutive years.
+
+```{r}
+# make births and first
+uids <- sort(unique(dat$EGNo))
+nids <- length(uids)
+
+births <- sapply(dat_list, function(l) unique(l$BirthYear))
+firsts <- sapply(dat_list, function(l) unique(l$FirstYearSighted))
+
+# look for deaths
+deadcodes <- grep("DEAD", allbehs)
+dat[, 'date'] <- date
+dat_deads <- dat[deadcodes, ]
+dat_deads_list <- split(dat_deads, dat_deads$EGNo)
+deaths_tmp <- do.call('c', lapply(dat_deads_list, function(l) min(l$date)))
+
+deaths <- vector(mode = "character", length = nids)
+deaths[1:length(deaths)] <- NA
+deaths[match(names(deaths_tmp), uids)] <- as.character(deaths_tmp)
+
+# calculate deaths using the 6 year rule
+lasts <- sapply(dat_list, function(l) max(l$Year, na.rm = TRUE))
+lastsdeath <- lasts + 6
+lastsdeath[!is.na(lastsdeath)] <- paste0(lastsdeath[!is.na(lastsdeath)], "-01-01")
+
+# kill if we know a real death date
+lastsdeath[!is.na(deaths)] <- NA
+
+# combine lastsdeath and deaths
+deathdates <- lastsdeath
+deathdates[is.na(lastsdeath)] <- deaths[is.na(lastsdeath)]
+```
+
+We'll bundle all these fields up into a data frame to export as a csv. I call this birthdeath, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared `data.frame` called `dat`.
+
+```{r}
+birthdeath <- data.frame(
+	EGNo = uids, birthyear = births,
+	firstyearsighted = firsts, 
+	lastyearsighted = lasts, 
+	lastsighteddeath = lastsdeath, 
+	knowndeathdate = deaths, 
+	deathdates = deathdates, 
+stringsAsFactors = FALSE)
+
+# take a peak
+head(birthdeath)
+
+# output to csv
+write.table(birthdeath, "../data/birthdata.csv", row.names = FALSE, sep = ',')
+```
+
+We remove the calves from `dat` since we don't want to calculate their association indices.
+```{r}
+dat <- dat[dat$ageclass != "calf", ]
+```

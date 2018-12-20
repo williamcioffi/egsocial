@@ -1,0 +1,18 @@
+---
+output: 
+  html_document:
+    highlight: pygments
+    theme: spacelab
+---
+
+this is a temporary document for marking up (down?) some of the data prep scripts for eg social. to be recombined at a later date with the master document: readme.Rmd.
+
+#### calculate day by day availability
+
+The goal here is to create an n x m matrix of day by day (m) availability for each ID (n).
+
+```{r}
+```
+
+```{r}
+```

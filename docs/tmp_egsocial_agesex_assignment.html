@@ -537,7 +537,77 @@ $(document).ready(function () {
 <a class="sourceLine" id="cb11-50" data-line-number="50"></a>
 <a class="sourceLine" id="cb11-51" data-line-number="51">dat[, <span class="st">'lactating'</span>] &lt;-<span class="st"> </span>lactating_tmp</a>
 <a class="sourceLine" id="cb11-52" data-line-number="52">dat[, <span class="st">'ageclass'</span>] &lt;-<span class="st"> </span>ageclass_tmp</a></code></pre></div>
-<p>Now we have lactating and ageclass assigned and integrated into the <code>dat</code> table.</p>
+<p>Now we have lactating and ageclass assigned and integrated into the <code>dat</code> table. Next we can paste together the sex from <code>dat</code> with <code>ageclass</code> to create an agesex class. “AF” is changed to “NF” to indicate non-lactating.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">agesexid_tmp &lt;-<span class="st"> </span><span class="kw">paste0</span>(ageclass_tmp, dat<span class="op">$</span>Gender)</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">agesexid_tmp[agesexid_tmp <span class="op">==</span><span class="st"> &quot;AF&quot;</span> <span class="op">&amp;</span><span class="st"> </span>lactating_tmp <span class="op">==</span><span class="st"> &quot;L&quot;</span>] &lt;-<span class="st"> &quot;LF&quot;</span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">agesexid_tmp[agesexid_tmp <span class="op">==</span><span class="st"> &quot;AF&quot;</span>] &lt;-<span class="st"> &quot;NF&quot;</span></a></code></pre></div>
+<p>Before proceeding we do a quick check to make sure there are no typos in <code>BirthYear</code> and <code>FirstYearSighted</code> and there should be only one unique value for each animal for both values. Watch out for the multinegative logic.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">dat_list &lt;-<span class="st"> </span><span class="kw">split</span>(dat, dat<span class="op">$</span>EGNo)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw">stopifnot</span>(<span class="op">!</span><span class="kw">any</span>(<span class="kw">sapply</span>(dat_list, <span class="cf">function</span>(l) <span class="kw">length</span>(<span class="kw">unique</span>(l<span class="op">$</span>BirthYear))) <span class="op">!=</span><span class="st"> </span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="kw">stopifnot</span>(<span class="op">!</span><span class="kw">any</span>(<span class="kw">sapply</span>(dat_list, <span class="cf">function</span>(l) <span class="kw">length</span>(<span class="kw">unique</span>(l<span class="op">$</span>FirstYearSighted))) <span class="op">!=</span><span class="st"> </span><span class="dv">1</span>))</a></code></pre></div>
+<p>Now, we’ll make a table of birth days, first sightings, and deaths and save it as an intermediate output. Deaths are calculated two ways:</p>
+<ol style="list-style-type: decimal">
+<li>a behavior code of “DEAD” in <code>dat</code> can indicate a sighting of a deceased animal</li>
+<li>an animal is assumed to be dead if not seen for 6 consecutive years.</li>
+</ol>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co"># make births and first</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">uids &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">unique</span>(dat<span class="op">$</span>EGNo))</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">nids &lt;-<span class="st"> </span><span class="kw">length</span>(uids)</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">births &lt;-<span class="st"> </span><span class="kw">sapply</span>(dat_list, <span class="cf">function</span>(l) <span class="kw">unique</span>(l<span class="op">$</span>BirthYear))</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">firsts &lt;-<span class="st"> </span><span class="kw">sapply</span>(dat_list, <span class="cf">function</span>(l) <span class="kw">unique</span>(l<span class="op">$</span>FirstYearSighted))</a>
+<a class="sourceLine" id="cb14-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="co"># look for deaths</span></a>
+<a class="sourceLine" id="cb14-9" data-line-number="9">deadcodes &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;DEAD&quot;</span>, allbehs)</a>
+<a class="sourceLine" id="cb14-10" data-line-number="10">dat[, <span class="st">'date'</span>] &lt;-<span class="st"> </span>date</a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">dat_deads &lt;-<span class="st"> </span>dat[deadcodes, ]</a>
+<a class="sourceLine" id="cb14-12" data-line-number="12">dat_deads_list &lt;-<span class="st"> </span><span class="kw">split</span>(dat_deads, dat_deads<span class="op">$</span>EGNo)</a>
+<a class="sourceLine" id="cb14-13" data-line-number="13">deaths_tmp &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="st">'c'</span>, <span class="kw">lapply</span>(dat_deads_list, <span class="cf">function</span>(l) <span class="kw">min</span>(l<span class="op">$</span>date)))</a>
+<a class="sourceLine" id="cb14-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb14-15" data-line-number="15">deaths &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="dt">mode =</span> <span class="st">&quot;character&quot;</span>, <span class="dt">length =</span> nids)</a>
+<a class="sourceLine" id="cb14-16" data-line-number="16">deaths[<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(deaths)] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb14-17" data-line-number="17">deaths[<span class="kw">match</span>(<span class="kw">names</span>(deaths_tmp), uids)] &lt;-<span class="st"> </span><span class="kw">as.character</span>(deaths_tmp)</a>
+<a class="sourceLine" id="cb14-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="co"># calculate deaths using the 6 year rule</span></a>
+<a class="sourceLine" id="cb14-20" data-line-number="20">lasts &lt;-<span class="st"> </span><span class="kw">sapply</span>(dat_list, <span class="cf">function</span>(l) <span class="kw">max</span>(l<span class="op">$</span>Year, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb14-21" data-line-number="21">lastsdeath &lt;-<span class="st"> </span>lasts <span class="op">+</span><span class="st"> </span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb14-22" data-line-number="22">lastsdeath[<span class="op">!</span><span class="kw">is.na</span>(lastsdeath)] &lt;-<span class="st"> </span><span class="kw">paste0</span>(lastsdeath[<span class="op">!</span><span class="kw">is.na</span>(lastsdeath)], <span class="st">&quot;-01-01&quot;</span>)</a>
+<a class="sourceLine" id="cb14-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb14-24" data-line-number="24"><span class="co"># kill if we know a real death date</span></a>
+<a class="sourceLine" id="cb14-25" data-line-number="25">lastsdeath[<span class="op">!</span><span class="kw">is.na</span>(deaths)] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb14-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb14-27" data-line-number="27"><span class="co"># combine lastsdeath and deaths</span></a>
+<a class="sourceLine" id="cb14-28" data-line-number="28">deathdates &lt;-<span class="st"> </span>lastsdeath</a>
+<a class="sourceLine" id="cb14-29" data-line-number="29">deathdates[<span class="kw">is.na</span>(lastsdeath)] &lt;-<span class="st"> </span>deaths[<span class="kw">is.na</span>(lastsdeath)]</a></code></pre></div>
+<p>We’ll bundle all these fields up into a data frame to export as a csv. I call this birthdeath, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared <code>data.frame</code> called <code>dat</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">birthdeath &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">    <span class="dt">EGNo =</span> uids, <span class="dt">birthyear =</span> births,</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">    <span class="dt">firstyearsighted =</span> firsts, </a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">    <span class="dt">lastyearsighted =</span> lasts, </a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">    <span class="dt">lastsighteddeath =</span> lastsdeath, </a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">    <span class="dt">knowndeathdate =</span> deaths, </a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">    <span class="dt">deathdates =</span> deathdates, </a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co"># take a peak</span></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11"><span class="kw">head</span>(birthdeath)</a></code></pre></div>
+<pre><code>##      EGNo birthyear firstyearsighted lastyearsighted lastsighteddeath
+## 1001 1001        NA             1978            1992       1998-01-01
+## 1004 1004        NA             1975            2004             &lt;NA&gt;
+## 1005 1005        NA             1982            1997       2003-01-01
+## 1006 1006      1979             1979            1986       1992-01-01
+## 1007 1007        NA             1977            1986       1992-01-01
+## 1012 1012        NA             1978            2016       2022-01-01
+##      knowndeathdate deathdates
+## 1001           &lt;NA&gt; 1998-01-01
+## 1004     2004-02-07 2004-02-07
+## 1005           &lt;NA&gt; 2003-01-01
+## 1006           &lt;NA&gt; 1992-01-01
+## 1007           &lt;NA&gt; 1992-01-01
+## 1012           &lt;NA&gt; 2022-01-01</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># output to csv</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">write.table</span>(birthdeath, <span class="st">&quot;../data/birthdata.csv&quot;</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">sep =</span> <span class="st">','</span>)</a></code></pre></div>
 </div>
 
 
