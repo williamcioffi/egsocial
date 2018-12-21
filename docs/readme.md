@@ -16,30 +16,28 @@ output:
 
 1. See [Next Steps].
 
-2. Make some edits to readme.Rmd.
+2. Pull to make sure you have the latest version
+
+3. Make some edits to readme.Rmd.
     - readme.md is automatically generated and should not be edited by hand. any changes will be overwritten when readme.Rmd get re-knit.
 
-3. Knit
-    - this will create readme.md and readme.html
-    - readme.md will be automatically viewable when broswing the repo
+4. Save
 
-4. rename readme.html --> index.html
+5. Knit
+    - this will create readme.md and readme.html
+    - readme.md will be automatically viewable when broswing the repo (https://williamcioffi.github.io/egsocial/#age_and_sex_assignment)
+
+6. rename readme.html --> index.html (in file folder structure on your computer, delete the old "index.html" and then rename the "readme.md" to "index.html")
     - readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at https://williamcioffi.github.com/egsocial and all the fancy colors and floating table of contents will work.
     - _can this step be automated? (with a makefile?)_
 
-5. commit changes and push to github.
+7. Commit changes and push to github.
 
 ## Introduction
 
-> Baleen whales lack the strong and stable long-term bonds characteristic of odontocetes such as killer whales and sperm whales, and therefore, the social structure of baleen whales has received comparatively little attention. However, recent findings of long-term associations in both right whales and humpback whales have challenged the notion that baleen whale society is characterized by short and unstable associations. Previous research has used “within 2 body lengths” to define association, while recognizing that this definition underestimates the range at which whales interact acoustically. We take a new approach and define association in North Atlantic right whales based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.
+Baleen whales lack the strong and stable long-term bonds characteristic of odontocetes such as killer whales and sperm whales, and therefore, the social structure of baleen whales has received comparatively little attention. However, recent findings of long-term associations in both right whales and humpback whales have challenged the notion that baleen whale society is characterized by short and unstable associations. Previous research has used “within 2 body lengths” to define association, while recognizing that this definition underestimates the range at which whales interact acoustically. We take a new approach and define association in North Atlantic right whales based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.
 
 
-## how to use this document
-
-1. See [Next Steps].
-
-2. Make some edits to readme.Rmd.
-    - readme.md is automatically generated and should not be edited by hand. any changes will be overwritten when readme.Rmd get re-knit.s based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.
 
 ----
 
@@ -61,6 +59,7 @@ output:
 
 ## Dataset Summary
 
+
 * 719 individual right whales
 * 65,827 sightings
 * 1980-2016
@@ -76,13 +75,14 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 
 65,827 sightings of individually identified right whales from 1980-2016
 
-
+----
 
 ## Data Prep
 
 ### Inital Data Prep in Excel
 
 **inputs**:  Kahn Data Request- data exported 2017-11-06.xlsx
+
 **outputs**: 5-Khan-data-cleaned-up.csv
 
 - open 'Kahn Data Request- data exported 2017-11-06.xlsx' and Save As in Excel file with a new name
@@ -117,10 +117,10 @@ The following rules are used to determine the age and sex class of an individual
 
 1. retain records which have at least a day month year.
 2. calves are excluded
-3. you are a calf until December 1st of birth year and afterwards you will be a juv
+3. you are a calf until December 1st of birth year and afterwards you will be a juvenile
 4. considered an adult if:
     a. it has been nine years or more since known birth year
-    b. OR eight years or more ellapsed since date of first sighting (when birth year is unknown)
+    b. OR eight years or more since date of first sighting (when birth year is unknown)
     c. OR Jan 1st of the year prior to giving birth to a calf
 5. whales with a known birth year seen for less than eight years were excluded (unknown age class)
 6. lactating:
@@ -128,7 +128,7 @@ The following rules are used to determine the age and sex class of an individual
     b. if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.
 
 
-First, we'll load in the data and prepare the date formats and take a peak. Dat is a table of sighting records, while cdat is a table of calving years.
+First, we'll load in the data and prepare the date formats and take a peak. 'Dat' is a table of sighting records, while 'cdat' is a table of calving years.
 
 
 
@@ -172,7 +172,8 @@ head(cdat)
 ```
 
 
-Next, we'll set up some well formatted dates and flag missing dates in the bool `missingjustdate`.
+Next, we'll set up some well formatted dates and flag missing dates in the boolean `missingjustdate`.
+
 
 ```r
 missingjustdate <- which(dat$Day == 0 | dat$Month == 0 | dat$Year == 0)
@@ -198,9 +199,9 @@ dat <- dat[oo, ]
 date <- date[oo]
 ```
 
-Now we can get started with assigning ages and sexes. first we'll make some temporary variables `ageclass_tmp` and `lactating_tmp`. These are both n records long. so there is a designation for each sighting of an ani(dataframe, not currently exported)mal in `dat`. `ageclass_tmp` can be U[nknown], A[dult], J[uvenile], or calf. `lactating_tmp` can be "potentiallact" which is a placeholder when a potential mom is identified or L[actating].
+Now we can get started with assigning ages and sexes. First we'll make some temporary variables `ageclass_tmp` and `lactating_tmp`. These are both n records long so there is a designation for each sighting of an animal (dataframe, not currently exported) in `dat`. `ageclass_tmp` can be U[nknown], A[dult], J[uvenile], or calf. `lactating_tmp` can be "potentiallact" which is a placeholder when a potential mom is identified or L[actating].
 
-We also create a couple of metrics to help with the agesexclass designations including `years_since_birth`, `years_since_sight` (first year sighted), and `years_since_1calf` (years since the first calving year) and save them to dat.
+We also create a couple of metrics to help with the agesexclass designations including `years_since_birth`, `years_since_sight` (first year sighted), and `years_since_1calf` (years since the first calving year) and save them to `dat`.
 
 
 ```r
@@ -217,9 +218,9 @@ dat[, 'yearminusfirstsight'] 	<- years_since_sight
 dat[, 'yearminusfirstcalving'] 	<- years_since_1calf
 ```
 
-Now we can apply a couple of simple rules about who is an adult. Rule 5 is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don't know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their nineth year of life.
+Now we can apply a couple of simple rules about who is an adult. Rule #5 is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don't know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their ninth year of life.
 
-An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is 1 year old. In the case of first sighting as a 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older (Rules 4a,b).
+An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older (Rules 4a,b).
 
 Finally, females will automatically be designated an adult the year before they gave birth to their first calf (if known) regardless of their real age, since they would've had to be sexually mature to become pregnant. (Rule 4c)
 
@@ -234,7 +235,7 @@ ageclass_tmp[which(years_since_sight >=  8 & is.na(years_since_birth))]  <- "A"
 ageclass_tmp[which(years_since_1calf >= -1)] <- "A"
 ```
 
-Next we set up some provisional lactating and calf categories based on the behavior column in dat. These are going to be adjusted and filled in later. Calfs
+Next we set up some provisional lactating and calf categories based on the behavior column in `dat`. These are going to be adjusted and filled in later.
 
 
 ```r
@@ -269,7 +270,7 @@ And finally, everyone else becomes a juvenile that doesn't have an assigned agec
 ageclass_tmp[is.na(ageclass_tmp)] <- "J"
 ```
 
-Now we have to go through each mom-calf pair by pair, look for the first sighting, and apply the lactation rules (6a,b). In the loop we are also making an imporved `cdat` which has each mom-calf pair and the first day seen, last day of lactation. This `cdat` will be used later when we are making a day by day availability matrix for calculating association indices. Note that the last day of lactation will be either December 1st or the day of last calf sighting before an inferred death (loss) of calf and so in most cases the end of lactation is somewhat arbitrary.
+Now we have to go through each mom-calf pair by pair, look for the first sighting, and apply the lactation rules (6a,b). In the loop we are also making an improved `cdat` which has each mom-calf pair and the first and last days seen together. This `cdat` will be used later when we are making a day by day availability matrix for calculating association indices. Note that the last day of lactation will be either December 1st (presumed weaning) or the day of last calf sighting before an inferred death (loss) of calf and so in most cases the end of lactation is somewhat arbitrary.
 
 
 ```r
@@ -327,7 +328,7 @@ dat[, 'lactating'] <- lactating_tmp
 dat[, 'ageclass'] <- ageclass_tmp
 ```
 
-Now we have lactating and ageclass assigned and integrated into the `dat` table. Next we can paste together the sex from `dat` with `ageclass` to create an agesex class. "AF" is changed to "NF" to indicate non-lactating. We paste ID number and agesex class together and add this as a field to the `dat` table.
+Now we have lactating and age-sex class categories assigned and integrated into the `dat` table. Next we can paste together the sex from `dat` with `ageclass` to create an agesex class. "AF" is changed to "NF" to indicate non-lactating. We paste ID number and agesex class together and add this as a field to the `dat` table.
 
 
 ```r
@@ -348,7 +349,7 @@ stopifnot(!any(sapply(dat_list, function(l) length(unique(l$BirthYear))) != 1))
 stopifnot(!any(sapply(dat_list, function(l) length(unique(l$FirstYearSighted))) != 1))
 ```
 
-Now, we'll make a table of birth days, first sightings, and deaths and save it as an intermediate output. Deaths are calculated two ways:
+Now, we'll make a table of birthdays, first sightings, and deaths and save it as an intermediate output. Deaths are calculated two ways:
 
 1. a behavior code of "DEAD" in `dat` can indicate a sighting of a deceased animal
 
@@ -387,7 +388,7 @@ deathdates <- lastsdeath
 deathdates[is.na(lastsdeath)] <- deaths[is.na(lastsdeath)]
 ```
 
-We'll bundle all these fields up into a data frame to export as RData I call this birthdeath, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared `data.frame` called `dat`. Finally, we'll use `cdat` and `date` again so those'll be saved as well.
+We'll bundle all these fields up into a data frame to export as RData called `birthdeath`, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared `data.frame` called `dat`. Finally, we'll use `cdat` and `date` again so those'll be saved as well.
 
 
 ```r
@@ -422,7 +423,8 @@ head(birthdeath)
 ## 1012           <NA> 2022-01-01
 ```
 
-We remove the calves from `dat` since we don't want to calculate their association indices. And save the table for future use.
+We remove the calves from `dat` since we don't want to calculate their association indices (since they are dependent on their mother's movements). Save the table for future use.
+
 
 ```r
 dat <- dat[dat$ageclass != "calf", ]
@@ -436,14 +438,13 @@ save(dat, cdat, birthdeath, date, file = "../data/agesex_assigned.RData")
 ```
 
 
-
 ### calculate day by day availability
 
-The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance. This is a similar solution to that used by Ramp et al. (2010).
+The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by Ramp et al (2010).
 
 What we've done here ignores any unknown age ids: UM, UF. UU, AU, and JU should have already been removed at this stage.
 
-The rules for assinging age and sex classes are the same as above with the following adjustment made neccessary by the day by day analysis:
+The rules for assigning age and sex classes are the same as above with the following adjustment made necessary by the day by day analysis:
 
 Lactating females are lactating from the first day they are seen with a calf until 30-Nov of the calf cohort year or until the last sighting of the mom and calf before a LOST code in the behavior. This could be modified if for instance a standard start day for lactation is preferable within the calving year.
 
@@ -473,7 +474,7 @@ axis(1, at = monthstarts + 15,
 
 ![](readme_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
-This looks fairly reasonable and to be expected. There probably isn't a good way with this data set to distinguish between late first sights of calfs due to late births versus other causes for instance missed observations or females giving birth outside of the normal study area. One potential would be to use size estimates of calves to approximate birthdays (and therefore start of lactation) but this might be a lot of work and harder to do with older data. In a sense it doesn't matter too much for what we are doing here because we are most concerned with periods for which there are observations of these individuals.
+This looks fairly reasonable and to be expected. There probably isn't a good way with this data set to distinguish between late first sightings of calfs due to late births versus other causes (for instance missed observations or females giving birth outside of the normal study area). One potential would be to use size estimates of calves to approximate birthdays (and therefore start of lactation) but this might be a lot of work and harder to do with older data. In a sense it doesn't matter too much for what we are doing here because we are most concerned with periods for which there are observations of these individuals.
 
 We can use a quick helper function below to visualize `nax` and do some simple error spot checking.
 
@@ -514,7 +515,7 @@ naxlook <- function(nax,
 }
 ```
 
-We'll set some constants to help as we build up `nax_avail` one step at a time. In the end `nax_avail` will be converted to a binary matrix. `KILLVALUE` will be cells which should be removed from the final matrix (set to 0) and `ADDVALUE` will be cells whcih should be retained (set to 1) in the final matrix.
+We'll set some constants to help as we build up `nax_avail` one step at a time. In the end `nax_avail` will be converted to a binary matrix. `KILLVALUE` will be cells which should be removed from the final matrix (set to 0) and `ADDVALUE` will be cells which should be retained (set to 1) in the final matrix.
 
 
 ```r
@@ -598,7 +599,7 @@ for(i in 1:nj) {
 }
 ```
 
-We can take a peak with `naxlook` to see if this has generated the desired effect. Let's just look at the first 10.
+We can take a peak with `naxlook` to see if this has generated the desired effect. Let's just look at the first 10 individuals.
 
 
 ```r
@@ -740,7 +741,7 @@ for(i in 1:ln) {
 }
 ```
 
-Let's take another look at those same non lactating females now.
+Let's take another look at those same non-lactating females (purple) now. (lactating in yellow)
 
 
 ```r
@@ -749,7 +750,7 @@ naxlook(nax_avail[ns[1:10], ])
 
 ![](readme_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
 
-And now with the corresponding lactating IDs:
+And now with the corresponding lactating IDs (blue=non-lactating, purple/yellow=lactating):
 
 
 ```r
@@ -758,7 +759,7 @@ naxlook(nax_avail[c(rbind(ns[1:10], lf[1:10])), ])
 
 ![](readme_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
-Everything should be accounted for now, let's look at the first 25 ids:
+Everything should be accounted for now, let's look at the first 25 ids (green=adult males, blue=non-lactating females, purple/yellow lactating):
 
 
 ```r
@@ -767,7 +768,7 @@ naxlook(nax_avail[1:25, ])
 
 ![](readme_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
 
-We can convert `nax_avail` into a binary matrix and take a nother look.
+We can convert `nax_avail` into a binary matrix and take another look.
 
 
 ```r
@@ -782,21 +783,7 @@ naxlook(nax_avail[1:25, ])
 ----
 
 ## Next Steps
-1. ~~wrc will work on adding previous data prep to this document (formerly in 0\_RUN\_TESTER\_prepsightdat.r)~~
-
-_added above see [age and sex assignment] and [calculate day by day availability]._
-
-2. ~~wrc to look into where best to handle saving private data files~~
-
-_we already have these hosted on an [egsocial project](https://osf.io/r4su5/) on the [open science framework](https://osf.io). this allow simple version control, the github is linked, and it is private for now._
-
-_the recommended workflow would be to download the latest data files and put them into a data/ directory within the egsocial git repo on your local machine. this directory is already in the .gitignore and so won't be tracked. when we're ready to release we can simply remove the data/ dir from the .gitignore and upload it to the repository._
-
-3. ~~wrc to look into html issue -- resolved?~~
-
-_see [how to use this document]. just need to rename readme.html to index.html and it will be viewable at https://williamcioffi.github.com/egsocial with all the fancy extras including a floating table of contents. readme.md will be automatically viewable in the repo window, but be careful to always edit readme.Rmd and not readme.md which looks similar._
-
-4. then double check that the age-sex classes have all been assigned correctly and ready to go:
+1.Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
     - Have dead whales been removed?
     - Have missing lat/long positions been removed?
     - Have records with missing times been removed?
@@ -804,6 +791,11 @@ _see [how to use this document]. just need to rename readme.html to index.html a
     - Check calf/juv transition December 1
     - Double check unknowns at year 8
     - Double check lactation stages
+
+2. Will: move over code to run social differentiation test and calculate the simple ratio
+
+
+----
 
 ## References
 
