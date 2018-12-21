@@ -687,7 +687,8 @@ naxlook(nax_avail[1:25, ])
 ----
 
 ## Next Steps
-1.Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
+
+1. Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
     - Have dead whales been removed?
     - Have missing lat/long positions been removed?
     - Have records with missing times been removed?
