@@ -1,2 +1,2 @@
 # egsocial
-r function for egsocial project
+r functions for egsocial project
