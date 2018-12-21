@@ -27,7 +27,7 @@ output:
     - this will create readme.md and readme.html
     - readme.md will be automatically viewable when broswing the repo (https://williamcioffi.github.io/egsocial/#age_and_sex_assignment)
 
-6. rename readme.html --> index.html (in file folder structure on your computer, delete the old "index.html" and then rename the "readme.md" to "index.html")
+6. rename readme.html --> index.html (in file folder structure on your computer, delete the old "index.html" and then rename the "readme.html" to "index.html")
     - readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at https://williamcioffi.github.com/egsocial and all the fancy colors and floating table of contents will work.
     - _can this step be automated? (with a makefile?)_
 
