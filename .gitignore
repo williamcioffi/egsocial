@@ -6,7 +6,7 @@
 .RData
 
 # data
-data/*.*
+data/*
 
 # old scripts for reference
 dataprep/old/*.*
