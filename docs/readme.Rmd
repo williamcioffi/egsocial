@@ -1,7 +1,7 @@
 ---
-title: "eg social"
+title: "Redefining association: North Atlantic right whales within communication range"
 author: "William Cioffi and Christin Khan"
-date: "December 12, 2018"
+date: "December 21, 2018"
 output: 
   html_document:
     keep_md: true
@@ -11,8 +11,24 @@ output:
     toc_float:
        collapsed: false
 ---
-## Redefining association: North Atlantic right whales within communication range
 
+## how to use this document
+
+1. See [Next Steps].
+
+2. Make some edits to readme.Rmd.
+    - readme.md is automatically generated and should not be edited by hand. any changes will be overwritten when readme.Rmd get re-knit.
+
+3. Knit
+    - this will create readme.md and readme.html
+    - readme.md will be automatically viewable when broswing the repo
+
+4. rename readme.html --> index.html
+    - readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at https://williamcioffi.github.com/egsocial and all the fancy colors and floating table of contents will work.
+    - _can this step be automated? (with a makefile?)_
+
+5. commit changes and push to github.
+----
 
 ## Introduction
 
@@ -116,6 +132,7 @@ cdat <- read.table("../data/2017-11-06-Khan-data-request-calving.csv", header = 
 head(dat)
 head(cdat)
 ```
+
 
 Next, we'll set up some well formatted dates and flag missing dates in the bool `missingjustdate`.
 ```{r}
@@ -287,6 +304,7 @@ stopifnot(!any(sapply(dat_list, function(l) length(unique(l$FirstYearSighted))) 
 Now, we'll make a table of birth days, first sightings, and deaths and save it as an intermediate output. Deaths are calculated two ways:
 
 1. a behavior code of "DEAD" in `dat` can indicate a sighting of a deceased animal
+
 2. an animal is assumed to be dead if not seen for 6 consecutive years.
 
 ```{r}
@@ -353,7 +371,7 @@ save(dat, cdat, birthdeath, date, file = "../data/agesex_assigned.RData")
 
 ### calculate day by day availability
 
-The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance.
+The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance. This is a similar solution to that used by Ramp et al. (2010).
 
 What we've done here ignores any unknown age ids: UM, UF. UU, AU, and JU should have already been removed at this stage.
 
@@ -460,7 +478,7 @@ ushortid <- unique(shortid)
 nshortid <- length(ushortid)
 ```
 
-The rest of the procedure here is going through different agesex classes one by one and catching transitions to other classes correctly. First, we'll start with juveniles. Basically we loop trhough all the juveniles. Figure out their birth, first year sighted, and death year if they exist and then assign them to be juveniles for all the days in between first sighting as a juvenile and either their death or their maturity. If they are females we check to see if they have had a calf and transition them to adults that way.
+The rest of the procedure here is going through different agesex classes one by one and catching transitions to other classes correctly. First, we'll start with juveniles. Basically we loop through all the juveniles. Figure out their birth, first year sighted, and death year if they exist and then assign them to be juveniles for all the days in between first sighting as a juvenile and either their death or their maturity. If they are females we check to see if they have had a calf and transition them to adults that way.
 
 ```{r}
 js <- which(age == "J")
@@ -661,20 +679,29 @@ naxlook(nax_avail[1:25, ])
 ----
 
 ## Next Steps
-~~1. Will will work on adding previous data prep to this document (0\_RUN\_TESTER\_prepsightdat.r)~~
+1. ~~wrc will work on adding previous data prep to this document (formerly in 0\_RUN\_TESTER\_prepsightdat.r)~~
 
-~~2. Will to look into where best to handle saving private data files~~
+_added above see [age and sex assignment] and [calculate day by day availability]._
 
-~~3. Will to look into html issue -- resolved?~~
+2. ~~wrc to look into where best to handle saving private data files~~
 
+_we already have these hosted on an [egsocial project](https://osf.io/r4su5/) on the [open science framework](https://osf.io). this allow simple version control, the github is linked, and it is private for now._
 
+_the recommended workflow would be to download the latest data files and put them into a data/ directory within the egsocial git repo on your local machine. this directory is already in the .gitignore and so won't be tracked. when we're ready to release we can simply remove the data/ dir from the .gitignore and upload it to the repository._
 
-then double check that the age-sex classes have all been assigned correctly and ready to go:
+3. ~~wrc to look into html issue -- resolved?~~
 
-* Have dead whales been removed?
-* Have missing lat/long positions been removed?
-* Have records with missing times been removed?
-* Have whales of calves been removed?
-* Check calf/juv transition December 1
-* Double check unknowns at year 8
-* Double check lactation stages
+_see [how to use this document]. just need to rename readme.html to index.html and it will be viewable at https://williamcioffi.github.com/egsocial with all the fancy extras including a floating table of contents. readme.md will be automatically viewable in the repo window, but be careful to always edit readme.Rmd and not readme.md which looks similar._
+
+4. then double check that the age-sex classes have all been assigned correctly and ready to go:
+    - Have dead whales been removed?
+    - Have missing lat/long positions been removed?
+    - Have records with missing times been removed?
+    - Have whales of calves been removed?
+    - Check calf/juv transition December 1
+    - Double check unknowns at year 8
+    - Double check lactation stages
+
+## References
+
+Ramp C, Hagen W, Palsbøll P, Bérubé M, Sears R. 2010 Age-related multi-year associations in female humpback whales (<Emphasis Type="Italic">Megaptera novaeangliae</Emphasis>). Behav Ecol Sociobiol 64, 1563–1576. (doi:10.1007/s00265-010-0970-8)
