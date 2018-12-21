@@ -5,14 +5,317 @@ output:
     theme: spacelab
 ---
 
-this is a temporary document for marking up (down?) some of the data prep scripts for eg social. to be recombined at a later date with the master document: readme.Rmd.
+this is a temporary document for marking up (down?) some of the data prep scripts for eg social. to be recombined at a later date with the master document: readme.Rmd. When it is combined I won't need to reload intermediate data, but will do here so I can work on this in chunks:
+
+```{r}
+load("../data/agesex_assigned.RData")
+```
 
 #### calculate day by day availability
 
-The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others.
+The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance.
+
+What we've done here ignores any unknown age ids: UM, UF. UU, AU, and JU should have already been removed at this stage.
+
+The rules for assinging age and sex classes are the same as above with the following adjustment made neccessary by the day by day analysis:
+
+Lactating females are lactating from the first day they are seen with a calf until 30-Nov of the calf cohort year or until the last sighting of the mom and calf before a LOST code in the behavior. This could be modified if for instance a standard start day for lactation is preferable within the calving year.
+
+First let's just take a quick look at the distribution of first sightings of calves.
 
 ```{r}
+monthstarts <- as.POSIXlt(
+  seq.POSIXt(
+    as.POSIXct("1980-01-1", tz = "UTC"), 
+    as.POSIXct("1980-12-30", tz = "UTC"), 
+  by = "month")
+)$yday
+
+hist(as.POSIXlt(cdat$first_lactday, tz = "UTC")$yday, 
+     breaks = c(monthstarts, 365), 
+     xaxt = 'n', 
+     las = 1, xlab = "",
+     ylab = "",
+     col = "grey75",
+     main = ""
+)
+axis(1, at = monthstarts + 15, 
+     lab = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
+)
 ```
 
+This looks fairly reasonable and to be expected. There probably isn't a good way with this data set to distinguish between late first sights of calfs due to late births versus other causes for instance missed observations or females giving birth outside of the normal study area. One potential would be to use size estimates of calves to approximate birthdays (and therefore start of lactation) but this might be a lot of work and harder to do with older data. In a sense it doesn't matter too much for what we are doing here because we are most concerned with periods for which there are observations of these individuals.
+
+We can use a quick helper function below to visualize `nax` and do some simple error spot checking.
+
 ```{r}
+naxlook <- function(nax, 
+  nids = nids,
+  ny = nyears, 
+  uids = uids, 
+  uy = uyears, 
+  ylabs = TRUE, 
+  xgrid = TRUE, 
+  ygrid = TRUE, 
+  ...
+) {
+	require(colorspace)
+	par(mar = rep(0, 4), oma = c(4.1, 4.1, 0, 0))
+	image(t(nax), axes = FALSE, col = c("white", rainbow_hcl(max(nax))), ...)
+	plotdims <- par()$usr
+	
+	xseq <- seq(plotdims[1], plotdims[2], len = ndates)[seq(1, ndates, by = 365)]
+	xinc <- xseq[2] - xseq[1]
+	xats <- xseq[1: ny] + xinc/2
+	
+	yseq <- seq(plotdims[3], plotdims[4], len = nrow(nax) + 1)
+	yinc <- yseq[2] - yseq[1]
+	yats <- yseq[1:nrow(nax)] + yinc/2
+
+	axis(1, at = xats, labels = uy, las = 2, tick = FALSE, cex.axis = 0.75)
+	
+	if(xgrid)
+		abline(v = xseq, col = "lightgrey")
+	if(ygrid)
+		abline(h = yseq, col = "lightgrey")
+	
+	if(ylabs)
+		axis(2, at = yats, labels = rownames(nax), las = 2, tick = FALSE, cex.axis = 0.75)	
+}
 ```
+
+We'll set some constants to help as we build up `nax_avail` one step at a time. In the end `nax_avail` will be converted to a binary matrix. `KILLVALUE` will be cells which should be removed from the final matrix (set to 0) and `ADDVALUE` will be cells whcih should be retained (set to 1) in the final matrix.
+
+```{r}
+KILLVALUE <- 2
+ADDVALUE  <- 3
+```
+
+Some more set up to get things into convenient formats and generate an empty `nax_avail`.
+
+```{r}
+stdate <- as.POSIXct(paste0(format(min(date, na.rm = TRUE), "%Y"), "-01-01 00:00:00"), tz = "UTC")
+endate <- as.POSIXct(paste(max(date, na.rm = TRUE), "00:00:00"), tz = "UTC")
+
+udates <- as.Date(seq.POSIXt(stdate, endate, by = "day"))
+ndates <- length(udates)
+
+uyears <- unique(format(udates, "%Y"))
+nyears <- length(uyears)
+
+ids 		<- dat$agesexid
+uids 	  <- sort(unique(ids))
+nids 	  <- length(uids)
+
+agesex  <- substring(uids, 5, 6)
+age 	  <- substring(agesex, 1, 1)
+sex 	  <- substring(agesex, 2, 2)
+
+nax_avail 				    <- matrix(0, nids, ndates)
+rownames(nax_avail) 	<- uids
+colnames(nax_avail) 	<- as.character(udates)
+
+shortid  <- substring(uids, 1, 4)
+ushortid <- unique(shortid)
+nshortid <- length(ushortid)
+```
+
+The rest of the procedure here is going through different agesex classes one by one and catching transitions to other classes correctly. First, we'll start with juveniles. Basically we loop trhough all the juveniles. Figure out their birth, first year sighted, and death year if they exist and then assign them to be juveniles for all the days in between first sighting as a juvenile and either their death or their maturity. If they are females we check to see if they have had a calf and transition them to adults that way.
+
+```{r}
+js <- which(age == "J")
+nj <- length(js)
+
+for(i in 1:nj) {
+	sid <- shortid[js][i]
+	birthyear <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'birthyear']
+	firstyear <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'firstyearsighted']
+	deathdate <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'deathdates']
+	
+	if(is.na(birthyear)) {
+		stdate <- as.Date(paste0(firstyear, "-01-01"))
+		endate <- as.Date(paste0(firstyear + 7, "-12-31"))
+	} else {
+		stdate <- as.Date(paste0(birthyear, "-12-01"))
+		endate <- as.Date(paste0(birthyear + 8, "-12-31"))
+	}
+	
+	if(sex[js][i] == "F") {
+		firstcalving <- min(cdat[match(shortid[js][i], cdat$EGNo), 'CalvingYear'])
+		if(!is.na(firstcalving)) {
+			adultcalving <- as.Date(paste0(firstcalving - 1, "-01-01"))
+			if(endate > adultcalving) {
+				endate <- adultcalving
+			}
+		}
+	}
+
+	st <- min(which(udates >= stdate), na.rm = TRUE)
+	en <- max(which(udates <= endate), na.rm = TRUE)
+	
+	deathdate <- max(which(udates < deathdate))
+	
+	if(en > deathdate) {
+		en <- deathdate - 1
+	}
+	
+	if(en >= st) {
+		nax_avail[js[i], st:en] <- ADDVALUE
+	}
+}
+```
+
+We can take a peak with `naxlook` to see if this has generated the desired effect. Let's just look at the first 10.
+
+```{r}
+naxlook(nax_avail[1:10, ])
+```
+
+And now just the first 10 juveniles:
+
+```{r}
+naxlook(nax_avail[js[1:10], ])
+```
+
+Next are adult males. These are the most straightforward since all we have to worry about is birthday, first sighting, and death day.
+
+```{r}
+ms <- which(age == "A")
+nm <- length(ms)
+
+for(i in 1:nm) {
+	sid <- shortid[ms][i]
+	birthyear <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'birthyear']
+	firstyear <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'firstyearsighted']
+	deathdate <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'deathdates']
+	
+	if(is.na(birthyear)) {
+		stdate <- as.Date(paste0(firstyear + 8, "-01-01"))
+	} else {
+		stdate <- as.Date(paste0(birthyear + 9, "-01-01"))
+	}
+	
+	st <- min(which(udates >= stdate), na.rm = TRUE)
+	en <- max(which(udates < deathdate), na.rm = TRUE)
+	
+	if(en >= st) {
+		nax_avail[ms[i], st:en] <- ADDVALUE + 1
+	}
+}
+```
+
+Next, non lactating females. This loop is a little different than the previous two because we'll take our cue from the JF for where to start if one exists.
+
+Also, we'll use a temporary `ADDVALUE + 2` to indicate that these entries are provisional. What we've done here is set the whole period a female is adult to non lactating and then in the next loop we'll identify lactating periods and go back and remove those times from the non lactating ID.
+
+```{r}
+ns <- which(age == "N")
+nn <- length(ns)
+
+for(i in 1:nn) {
+	sid <- shortid[ns][i]
+	birthyear <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'birthyear']
+	firstyear <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'firstyearsighted']
+	deathdate <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'deathdates']
+		
+	jfmatch <- match(paste0(sid, "JF"), uids)
+	if(!is.na(jfmatch)) {
+		st <- max(which(nax_avail[jfmatch, ] != 0)) + 1
+	} else {
+		if(is.na(birthyear)) {
+			stdate <- as.Date(paste0(firstyear + 8, "-01-01"))
+		} else {
+			stdate <- as.Date(paste0(birthyear + 9, "-01-01"))
+		}
+		
+		firstcalving <- min(cdat[match(shortid[ns][i], cdat$EGNo), 'CalvingYear'])
+		if(!is.na(firstcalving)) {
+			adultcalving <- as.Date(paste0(firstcalving - 1, "-01-01"))
+			if(stdate > adultcalving) {
+				stdate <- adultcalving
+			}
+		}
+		
+		st <- min(which(udates >= stdate), na.rm = TRUE)
+	}
+	
+	en <- max(which(udates < deathdate), na.rm = TRUE)
+	
+	if(en >= st) {
+		nax_avail[ns[i], st:en] <- ADDVALUE + 2
+	}
+}
+```
+
+Let's take a quick look to see how this has worked. We'll look at these same individuals again after we've accounting for lactating females.
+
+```{r}
+naxlook(nax_avail[ns[1:10], ])
+```
+
+Finally, we assign the lactating females. As mentioned above there is an extra step here where we go back and assign `KILLVALUE` to any corresponding non-lactating ID during lactation days. Lactating females are assigned `ADDVALUE + 3` really just to give them a different color of the `naxlook` plot and double check everything has worked as intended.
+
+```{r}
+lf <- which(age == "L")
+ln <- length(lf)
+
+for(i in 1:ln) {
+	sid <- shortid[lf][i]
+	dismom <- cdat[cdat$EGNo == sid, ]
+	
+	lactating <- vector()
+	for(d in 1:nrow(dismom)) {
+		st <- which(udates == dismom[d, 'first_lactday'])
+		
+		if(!dismom[d, 'lost_lactday']) {
+			momlast <- as.Date(paste0(dismom[d, 'CalvingYear'], "-11-30"))
+			en <- max(which(udates == momlast))
+		} else {
+			en <- which(udates == dismom[d, 'last_lactday'])
+		}
+		
+		if(en >= st) {
+			lactating <- c(lactating, st:en)
+		}
+	}
+	
+	if(length(lactating > 0)) {
+		nax_avail[lf[i], lactating] <- ADDVALUE + 3
+		
+		# kill these days for the nf if it exists
+		nfmatch <- match(paste0(sid, "NF"), uids)
+		if(!is.na(nfmatch)) {
+			nax_avail[nfmatch, lactating] <- KILLVALUE
+		}
+	}
+}
+```
+
+Let's take another look at those same non lactating females now.
+
+```{r}
+naxlook(nax_avail[ns[1:10], ])
+```
+
+And now with the corresponding lactating IDs:
+
+```{r}
+naxlook(nax_avail[c(rbind(ns[1:10], lf[1:10])), ])
+```
+
+Everything should be accounted for now, let's look at the first 25 ids:
+
+```{r}
+naxlook(nax_avail[1:25, ])
+```
+
+We can convert `nax_avail` into a binary matrix and take a nother look.
+
+```{r}
+nax_avail[which(nax_avail == KILLVALUE)] <- 0
+nax_avail[which(nax_avail > 0)] <- 1
+
+naxlook(nax_avail[1:25, ])
+```
+
+

@@ -11,7 +11,7 @@ this is a temporary document for marking up (down?) some of the data prep script
 
 **inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
 
-**outputs**: birthdata.csv, `dat` (dataframe, not currently exported)
+**outputs**: `birthdeath` and `dat` exported as RData files.
 
 The following rules are used to determine the age and sex class of an individual over time:
 
@@ -65,7 +65,7 @@ dat <- dat[oo, ]
 date <- date[oo]
 ````
 
-Now we can get started with assigning ages and sexes. first we'll make some temporary variables `ageclass_tmp` and `lactating_tmp`. These are both n records long. so there is a designation for each sighting of an animal in `dat`. `ageclass_tmp` can be U[nknown], A[dult], J[uvenile], or calf. `lactating_tmp` can be "potentiallact" which is a placeholder when a potential mom is identified or L[actating].
+Now we can get started with assigning ages and sexes. first we'll make some temporary variables `ageclass_tmp` and `lactating_tmp`. These are both n records long. so there is a designation for each sighting of an ani(dataframe, not currently exported)mal in `dat`. `ageclass_tmp` can be U[nknown], A[dult], J[uvenile], or calf. `lactating_tmp` can be "potentiallact" which is a placeholder when a potential mom is identified or L[actating].
 
 We also create a couple of metrics to help with the agesexclass designations including `years_since_birth`, `years_since_sight` (first year sighted), and `years_since_1calf` (years since the first calving year) and save them to dat.
 
@@ -188,12 +188,14 @@ dat[, 'lactating'] <- lactating_tmp
 dat[, 'ageclass'] <- ageclass_tmp
 ```
 
-Now we have lactating and ageclass assigned and integrated into the `dat` table. Next we can paste together the sex from `dat` with `ageclass` to create an agesex class. "AF" is changed to "NF" to indicate non-lactating.
+Now we have lactating and ageclass assigned and integrated into the `dat` table. Next we can paste together the sex from `dat` with `ageclass` to create an agesex class. "AF" is changed to "NF" to indicate non-lactating. We paste ID number and agesex class together and add this as a field to the `dat` table.
 
 ```{r}
 agesexid_tmp <- paste0(ageclass_tmp, dat$Gender)
 agesexid_tmp[agesexid_tmp == "AF" & lactating_tmp == "L"] <- "LF"
 agesexid_tmp[agesexid_tmp == "AF"] <- "NF"
+
+dat[, 'agesexid'] <- paste0(dat$EGNo, agesexid_tmp)
 ```
 
 Before proceeding we do a quick check to make sure there are no typos in `BirthYear` and `FirstYearSighted` and there should be only one unique value for each animal for both values. Watch out for the multinegative logic.
@@ -242,11 +244,12 @@ deathdates <- lastsdeath
 deathdates[is.na(lastsdeath)] <- deaths[is.na(lastsdeath)]
 ```
 
-We'll bundle all these fields up into a data frame to export as a csv. I call this birthdeath, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared `data.frame` called `dat`.
+We'll bundle all these fields up into a data frame to export as RData I call this birthdeath, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared `data.frame` called `dat`. Finally, we'll use `cdat` and `date` again so those'll be saved as well.
 
 ```{r}
 birthdeath <- data.frame(
-	EGNo = uids, birthyear = births,
+	EGNo = uids, 
+	birthyear = births,
 	firstyearsighted = firsts, 
 	lastyearsighted = lasts, 
 	lastsighteddeath = lastsdeath, 
@@ -256,12 +259,15 @@ stringsAsFactors = FALSE)
 
 # take a peak
 head(birthdeath)
-
-# output to csv
-write.table(birthdeath, "../data/birthdata.csv", row.names = FALSE, sep = ',')
 ```
 
-We remove the calves from `dat` since we don't want to calculate their association indices.
+We remove the calves from `dat` since we don't want to calculate their association indices. And save the table for future use.
 ```{r}
 dat <- dat[dat$ageclass != "calf", ]
+```
+
+We'll save all three intermediate tables.
+
+```{r}
+save(dat, cdat, birthdeath, date, file = "../data/agesex_assigned.RData")
 ```
