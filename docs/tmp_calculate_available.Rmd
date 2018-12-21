@@ -9,7 +9,7 @@ this is a temporary document for marking up (down?) some of the data prep script
 
 #### calculate day by day availability
 
-The goal here is to create an n x m matrix of day by day (m) availability for each ID (n).
+The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others.
 
 ```{r}
 ```
