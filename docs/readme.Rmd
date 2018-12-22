@@ -25,10 +25,10 @@ output:
 
 5. Knit
     - this will create readme.md and readme.html
-    - readme.md will be automatically viewable when broswing the repo (https://github.com/williamcioffi/egsocial)
+    - readme.md will be automatically viewable when broswing the repo (https://github.com/williamcioffi/egsocial/tree/master/docs)
 
 6. rename readme.html --> index.html (in file folder structure on your computer, delete the old "index.html" and then rename the "readme.html" to "index.html")
-    - readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at https://williamcioffi.github.com/egsocial and all the fancy colors and floating table of contents will work.
+    - readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at https://williamcioffi.github.io/egsocial and all the fancy colors and floating table of contents will work.
     - _can this step be automated? (with a makefile?)_
 
 7. Commit changes and push to github.
