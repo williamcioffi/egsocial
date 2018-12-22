@@ -2,14 +2,14 @@
 title: "Redefining association: North Atlantic right whales within communication range"
 author: "William Cioffi and Christin Khan"
 date: "December 21, 2018"
-output: 
+output:
   html_document:
     keep_md: true
     highlight: pygments
     theme: spacelab
     toc: true
     toc_float:
-       collapsed: false
+      collapsed: false
 ---
 
 ## how to use this document
@@ -25,7 +25,7 @@ output:
 
 5. Knit
     - this will create readme.md and readme.html
-    - readme.md will be automatically viewable when broswing the repo (https://williamcioffi.github.io/egsocial/#age_and_sex_assignment)
+    - readme.md will be automatically viewable when broswing the repo (https://github.com/williamcioffi/egsocial)
 
 6. rename readme.html --> index.html (in file folder structure on your computer, delete the old "index.html" and then rename the "readme.html" to "index.html")
     - readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at https://williamcioffi.github.com/egsocial and all the fancy colors and floating table of contents will work.
@@ -36,8 +36,6 @@ output:
 ## Introduction
 
 Baleen whales lack the strong and stable long-term bonds characteristic of odontocetes such as killer whales and sperm whales, and therefore, the social structure of baleen whales has received comparatively little attention. However, recent findings of long-term associations in both right whales and humpback whales have challenged the notion that baleen whale society is characterized by short and unstable associations. Previous research has used “within 2 body lengths” to define association, while recognizing that this definition underestimates the range at which whales interact acoustically. We take a new approach and define association in North Atlantic right whales based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.
-
-
 
 ----
 
@@ -128,7 +126,7 @@ The following rules are used to determine the age and sex class of an individual
     b. if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.
 
 
-First, we'll load in the data and prepare the date formats and take a peak. `dat` is a table of sighting records, while `cdat` is a table of calving years.
+First, we'll load in the data and prepare the date formats and take a peak. `dat` is a table of sighting records, while 'cdat' is a table of calving years.
 
 
 
@@ -205,7 +203,7 @@ We also create a couple of metrics to help with the agesexclass designations inc
 
 
 ```r
-ageclass_tmp <- 1:nrow(dat) * NA
+ageclass_tmp  <- 1:nrow(dat) * NA
 lactating_tmp <- 1:nrow(dat) * NA
 
 # create new columns to help double check agesex classes
@@ -213,9 +211,9 @@ years_since_birth <- dat$Year - dat$BirthYear
 years_since_sight <- dat$Year - dat$FirstYearSighted
 years_since_1calf <- dat$Year - dat$FirstCalvingYear
 
-dat[, 'yearminusbirthyear']  	<- years_since_birth
-dat[, 'yearminusfirstsight'] 	<- years_since_sight
-dat[, 'yearminusfirstcalving'] 	<- years_since_1calf
+dat[, 'yearminusbirthyear']    <- years_since_birth
+dat[, 'yearminusfirstsight']   <- years_since_sight
+dat[, 'yearminusfirstcalving'] <- years_since_1calf
 ```
 
 Now we can apply a couple of simple rules about who is an adult. [Rule 5](#rules) is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don't know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their ninth year of life.
@@ -243,14 +241,14 @@ Next we set up some provisional lactating and calf categories based on the behav
 calfbehs <- c("CALFW/MOM", "CALFOFUNPHMOM", "CALF", "CALFW/OTHERS(S)", "CALFW/UNPH")
 mombehs  <- c("W/CALF", "W/CALFUNPH")
 
-allbehs  			<- strsplit(as.character(dat$Behaviors), "\\.")
+allbehs             <- strsplit(as.character(dat$Behaviors), "\\.")
 calfs_bybehavior    <- sapply(allbehs, function(l) any(l %in% calfbehs))
-calfs 				<- calfs_bybehavior | (dat$BirthYear >= dat$Year)
-moms	 			<- sapply(allbehs, function(l) any(l %in% mombehs))
+calfs               <- calfs_bybehavior | (dat$BirthYear >= dat$Year)
+moms                <- sapply(allbehs, function(l) any(l %in% mombehs))
 
 # make moms and calves
 ageclass_tmp[calfs] <- "calf"
-lactating_tmp[moms]  <- "potentiallact"
+lactating_tmp[moms] <- "potentiallact"
 ```
 
 Calves become juveniles on December 1st of their birth year ([Rule 3](#rules))
@@ -393,13 +391,13 @@ We'll bundle all these fields up into a data frame to export as RData called `bi
 
 ```r
 birthdeath <- data.frame(
-	EGNo = uids, 
-	birthyear = births,
-	firstyearsighted = firsts, 
-	lastyearsighted = lasts, 
-	lastsighteddeath = lastsdeath, 
-	knowndeathdate = deaths, 
-	deathdates = deathdates, 
+  EGNo = uids,
+  birthyear = births,
+  firstyearsighted = firsts,
+  lastyearsighted = lasts,
+  lastsighteddeath = lastsdeath,
+  knowndeathdate = deaths,
+  deathdates = deathdates,
 stringsAsFactors = FALSE)
 
 # take a peak
@@ -460,15 +458,15 @@ monthstarts <- as.POSIXlt(
 )$yday
 
 hist(as.POSIXlt(cdat$first_lactday, tz = "UTC")$yday, 
-     breaks = c(monthstarts, 365), 
-     xaxt = 'n', 
-     las = 1, xlab = "",
-     ylab = "",
-     col = "grey75",
-     main = ""
+   breaks = c(monthstarts, 365), 
+   xaxt = 'n', 
+   las = 1, xlab = "",
+   ylab = "",
+   col = "grey75",
+   main = ""
 )
 axis(1, at = monthstarts + 15, 
-     lab = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
+   lab = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
 )
 ```
 
@@ -490,28 +488,28 @@ naxlook <- function(nax,
   ygrid = TRUE, 
   ...
 ) {
-	require(colorspace)
-	par(mar = rep(0, 4), oma = c(4.1, 4.1, 0, 0))
-	image(t(nax), axes = FALSE, col = c("white", rainbow_hcl(max(nax))), ...)
-	plotdims <- par()$usr
-	
-	xseq <- seq(plotdims[1], plotdims[2], len = ndates)[seq(1, ndates, by = 365)]
-	xinc <- xseq[2] - xseq[1]
-	xats <- xseq[1: ny] + xinc/2
-	
-	yseq <- seq(plotdims[3], plotdims[4], len = nrow(nax) + 1)
-	yinc <- yseq[2] - yseq[1]
-	yats <- yseq[1:nrow(nax)] + yinc/2
+require(colorspace)
+par(mar = rep(0, 4), oma = c(4.1, 4.1, 0, 0))
+image(t(nax), axes = FALSE, col = c("white", rainbow_hcl(max(nax))), ...)
+plotdims <- par()$usr
 
-	axis(1, at = xats, labels = uy, las = 2, tick = FALSE, cex.axis = 0.75)
-	
-	if(xgrid)
-		abline(v = xseq, col = "lightgrey")
-	if(ygrid)
-		abline(h = yseq, col = "lightgrey")
-	
-	if(ylabs)
-		axis(2, at = yats, labels = rownames(nax), las = 2, tick = FALSE, cex.axis = 0.75)	
+xseq <- seq(plotdims[1], plotdims[2], len = ndates)[seq(1, ndates, by = 365)]
+xinc <- xseq[2] - xseq[1]
+xats <- xseq[1: ny] + xinc/2
+
+yseq <- seq(plotdims[3], plotdims[4], len = nrow(nax) + 1)
+yinc <- yseq[2] - yseq[1]
+yats <- yseq[1:nrow(nax)] + yinc/2
+
+axis(1, at = xats, labels = uy, las = 2, tick = FALSE, cex.axis = 0.75)
+
+if(xgrid)
+  abline(v = xseq, col = "lightgrey")
+if(ygrid)
+  abline(h = yseq, col = "lightgrey")
+
+if(ylabs)
+  axis(2, at = yats, labels = rownames(nax), las = 2, tick = FALSE, cex.axis = 0.75)	
 }
 ```
 
@@ -536,17 +534,17 @@ ndates <- length(udates)
 uyears <- unique(format(udates, "%Y"))
 nyears <- length(uyears)
 
-ids 		<- dat$agesexid
-uids 	  <- sort(unique(ids))
-nids 	  <- length(uids)
+ids    <- dat$agesexid
+uids   <- sort(unique(ids))
+nids   <- length(uids)
 
-agesex  <- substring(uids, 5, 6)
-age 	  <- substring(agesex, 1, 1)
-sex 	  <- substring(agesex, 2, 2)
+agesex <- substring(uids, 5, 6)
+age    <- substring(agesex, 1, 1)
+sex    <- substring(agesex, 2, 2)
 
-nax_avail 				    <- matrix(0, nids, ndates)
-rownames(nax_avail) 	<- uids
-colnames(nax_avail) 	<- as.character(udates)
+nax_avail <- matrix(0, nids, ndates)
+rownames(nax_avail) <- uids
+colnames(nax_avail) <- as.character(udates)
 
 shortid  <- substring(uids, 1, 4)
 ushortid <- unique(shortid)
@@ -561,41 +559,41 @@ js <- which(age == "J")
 nj <- length(js)
 
 for(i in 1:nj) {
-	sid <- shortid[js][i]
-	birthyear <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'birthyear']
-	firstyear <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'firstyearsighted']
-	deathdate <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'deathdates']
-	
-	if(is.na(birthyear)) {
-		stdate <- as.Date(paste0(firstyear, "-01-01"))
-		endate <- as.Date(paste0(firstyear + 7, "-12-31"))
-	} else {
-		stdate <- as.Date(paste0(birthyear, "-12-01"))
-		endate <- as.Date(paste0(birthyear + 8, "-12-31"))
-	}
-	
-	if(sex[js][i] == "F") {
-		firstcalving <- min(cdat[match(shortid[js][i], cdat$EGNo), 'CalvingYear'])
-		if(!is.na(firstcalving)) {
-			adultcalving <- as.Date(paste0(firstcalving - 1, "-01-01"))
-			if(endate > adultcalving) {
-				endate <- adultcalving
-			}
-		}
-	}
+  sid <- shortid[js][i]
+  birthyear <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'birthyear']
+  firstyear <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'firstyearsighted']
+  deathdate <- birthdeath[match(shortid[js][i], birthdeath$EGNo), 'deathdates']
 
-	st <- min(which(udates >= stdate), na.rm = TRUE)
-	en <- max(which(udates <= endate), na.rm = TRUE)
-	
-	deathdate <- max(which(udates < deathdate))
-	
-	if(en > deathdate) {
-		en <- deathdate - 1
-	}
-	
-	if(en >= st) {
-		nax_avail[js[i], st:en] <- ADDVALUE
-	}
+  if(is.na(birthyear)) {
+    stdate <- as.Date(paste0(firstyear, "-01-01"))
+    endate <- as.Date(paste0(firstyear + 7, "-12-31"))
+  } else {
+    stdate <- as.Date(paste0(birthyear, "-12-01"))
+    endate <- as.Date(paste0(birthyear + 8, "-12-31"))
+  }
+
+  if(sex[js][i] == "F") {
+    firstcalving <- min(cdat[match(shortid[js][i], cdat$EGNo), 'CalvingYear'])
+    if(!is.na(firstcalving)) {
+      adultcalving <- as.Date(paste0(firstcalving - 1, "-01-01"))
+      if(endate > adultcalving) {
+        endate <- adultcalving
+      }
+    }
+  }
+
+  st <- min(which(udates >= stdate), na.rm = TRUE)
+  en <- max(which(udates <= endate), na.rm = TRUE)
+
+  deathdate <- max(which(udates < deathdate))
+
+  if(en > deathdate) {
+    en <- deathdate - 1
+  }
+
+  if(en >= st) {
+    nax_avail[js[i], st:en] <- ADDVALUE
+  }
 }
 ```
 
@@ -629,23 +627,23 @@ ms <- which(age == "A")
 nm <- length(ms)
 
 for(i in 1:nm) {
-	sid <- shortid[ms][i]
-	birthyear <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'birthyear']
-	firstyear <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'firstyearsighted']
-	deathdate <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'deathdates']
-	
-	if(is.na(birthyear)) {
-		stdate <- as.Date(paste0(firstyear + 8, "-01-01"))
-	} else {
-		stdate <- as.Date(paste0(birthyear + 9, "-01-01"))
-	}
-	
-	st <- min(which(udates >= stdate), na.rm = TRUE)
-	en <- max(which(udates < deathdate), na.rm = TRUE)
-	
-	if(en >= st) {
-		nax_avail[ms[i], st:en] <- ADDVALUE + 1
-	}
+  sid <- shortid[ms][i]
+  birthyear <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'birthyear']
+  firstyear <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'firstyearsighted']
+  deathdate <- birthdeath[match(shortid[ms][i], birthdeath$EGNo), 'deathdates']
+
+  if(is.na(birthyear)) {
+    stdate <- as.Date(paste0(firstyear + 8, "-01-01"))
+  } else {
+    stdate <- as.Date(paste0(birthyear + 9, "-01-01"))
+  }
+
+  st <- min(which(udates >= stdate), na.rm = TRUE)
+  en <- max(which(udates < deathdate), na.rm = TRUE)
+
+  if(en >= st) {
+    nax_avail[ms[i], st:en] <- ADDVALUE + 1
+  }
 }
 ```
 
@@ -659,37 +657,37 @@ ns <- which(age == "N")
 nn <- length(ns)
 
 for(i in 1:nn) {
-	sid <- shortid[ns][i]
-	birthyear <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'birthyear']
-	firstyear <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'firstyearsighted']
-	deathdate <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'deathdates']
-		
-	jfmatch <- match(paste0(sid, "JF"), uids)
-	if(!is.na(jfmatch)) {
-		st <- max(which(nax_avail[jfmatch, ] != 0)) + 1
-	} else {
-		if(is.na(birthyear)) {
-			stdate <- as.Date(paste0(firstyear + 8, "-01-01"))
-		} else {
-			stdate <- as.Date(paste0(birthyear + 9, "-01-01"))
-		}
-		
-		firstcalving <- min(cdat[match(shortid[ns][i], cdat$EGNo), 'CalvingYear'])
-		if(!is.na(firstcalving)) {
-			adultcalving <- as.Date(paste0(firstcalving - 1, "-01-01"))
-			if(stdate > adultcalving) {
-				stdate <- adultcalving
-			}
-		}
-		
-		st <- min(which(udates >= stdate), na.rm = TRUE)
-	}
-	
-	en <- max(which(udates < deathdate), na.rm = TRUE)
-	
-	if(en >= st) {
-		nax_avail[ns[i], st:en] <- ADDVALUE + 2
-	}
+  sid <- shortid[ns][i]
+  birthyear <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'birthyear']
+  firstyear <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'firstyearsighted']
+  deathdate <- birthdeath[match(shortid[ns][i], birthdeath$EGNo), 'deathdates']
+
+  jfmatch <- match(paste0(sid, "JF"), uids)
+  if(!is.na(jfmatch)) {
+    st <- max(which(nax_avail[jfmatch, ] != 0)) + 1
+  } else {
+    if(is.na(birthyear)) {
+      stdate <- as.Date(paste0(firstyear + 8, "-01-01"))
+    } else {
+      stdate <- as.Date(paste0(birthyear + 9, "-01-01"))
+    }
+
+    firstcalving <- min(cdat[match(shortid[ns][i], cdat$EGNo), 'CalvingYear'])
+    if(!is.na(firstcalving)) {
+      adultcalving <- as.Date(paste0(firstcalving - 1, "-01-01"))
+      if(stdate > adultcalving) {
+        stdate <- adultcalving
+      }
+    }
+
+    st <- min(which(udates >= stdate), na.rm = TRUE)
+  }
+
+  en <- max(which(udates < deathdate), na.rm = TRUE)
+
+  if(en >= st) {
+    nax_avail[ns[i], st:en] <- ADDVALUE + 2
+  }
 }
 ```
 
@@ -710,34 +708,34 @@ lf <- which(age == "L")
 ln <- length(lf)
 
 for(i in 1:ln) {
-	sid <- shortid[lf][i]
-	dismom <- cdat[cdat$EGNo == sid, ]
-	
-	lactating <- vector()
-	for(d in 1:nrow(dismom)) {
-		st <- which(udates == dismom[d, 'first_lactday'])
-		
-		if(!dismom[d, 'lost_lactday']) {
-			momlast <- as.Date(paste0(dismom[d, 'CalvingYear'], "-11-30"))
-			en <- max(which(udates == momlast))
-		} else {
-			en <- which(udates == dismom[d, 'last_lactday'])
-		}
-		
-		if(en >= st) {
-			lactating <- c(lactating, st:en)
-		}
-	}
-	
-	if(length(lactating > 0)) {
-		nax_avail[lf[i], lactating] <- ADDVALUE + 3
-		
-		# kill these days for the nf if it exists
-		nfmatch <- match(paste0(sid, "NF"), uids)
-		if(!is.na(nfmatch)) {
-			nax_avail[nfmatch, lactating] <- KILLVALUE
-		}
-	}
+  sid <- shortid[lf][i]
+  dismom <- cdat[cdat$EGNo == sid, ]
+
+  lactating <- vector()
+  for(d in 1:nrow(dismom)) {
+    st <- which(udates == dismom[d, 'first_lactday'])
+
+    if(!dismom[d, 'lost_lactday']) {
+      momlast <- as.Date(paste0(dismom[d, 'CalvingYear'], "-11-30"))
+      en <- max(which(udates == momlast))
+    } else {
+      en <- which(udates == dismom[d, 'last_lactday'])
+    }
+
+    if(en >= st) {
+      lactating <- c(lactating, st:en)
+    }
+  }
+
+  if(length(lactating > 0)) {
+    nax_avail[lf[i], lactating] <- ADDVALUE + 3
+
+    # kill these days for the nf if it exists
+    nfmatch <- match(paste0(sid, "NF"), uids)
+    if(!is.na(nfmatch)) {
+      nax_avail[nfmatch, lactating] <- KILLVALUE
+    }
+  }
 }
 ```
 
@@ -800,4 +798,4 @@ naxlook(nax_avail[1:25, ])
 
 ## References
 
-Ramp C, Hagen W, Palsbøll P, Bérubé M, Sears R. 2010 Age-related multi-year associations in female humpback whales (<Emphasis Type="Italic">Megaptera novaeangliae</Emphasis>). Behav Ecol Sociobiol 64, 1563–1576. (doi:10.1007/s00265-010-0970-8)
+Ramp C, Hagen W, Palsbøll P, Bérubé M, Sears R. 2010 Age-related multi-year associations in female humpback whales (_Megaptera novaeangliae_). Behav Ecol Sociobiol 64, 1563–1576. (doi:10.1007/s00265-010-0970-8)
