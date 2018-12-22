@@ -1291,7 +1291,7 @@ window.buildTabsets = function(tocID) {
 <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
@@ -1304,11 +1304,13 @@ code.sourceCode { white-space: pre-wrap; }
 a.sourceLine { text-indent: -1em; padding-left: 1em; }
 }
 pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
 pre.numberSource a.sourceLine::before
   { content: attr(data-line-number);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -1629,7 +1631,7 @@ div.tocify {
 <li>save as a .txt file</li>
 </ul>
 </div>
-<div id="age-and-sex-assignment" class="section level3">
+<div id="rules" class="section level3">
 <h3>age and sex assignment</h3>
 <p><strong>inputs</strong>: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv</p>
 <p><strong>outputs</strong>: <code>birthdeath</code> and <code>dat</code> exported as RData files.</p>
@@ -1651,8 +1653,8 @@ div.tocify {
 <li>if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.</li>
 </ol></li>
 </ol>
-<p>First, we’ll load in the data and prepare the date formats and take a peak. ‘Dat’ is a table of sighting records, while ‘cdat’ is a table of calving years.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">### load input files</span></a>
+<p>First, we’ll load in the data and prepare the date formats and take a peak. <code>dat</code> is a table of sighting records, while <code>cdat</code> is a table of calving years.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">### load input files</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">dat  &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;../data/5-Khan-data-cleaned-up.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">','</span>)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">cdat &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;../data/2017-11-06-Khan-data-request-calving.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">','</span>)</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"></a>
@@ -1714,9 +1716,9 @@ div.tocify {
 <a class="sourceLine" id="cb6-9" data-line-number="9">dat[, <span class="st">'yearminusbirthyear'</span>]     &lt;-<span class="st"> </span>years_since_birth</a>
 <a class="sourceLine" id="cb6-10" data-line-number="10">dat[, <span class="st">'yearminusfirstsight'</span>]    &lt;-<span class="st"> </span>years_since_sight</a>
 <a class="sourceLine" id="cb6-11" data-line-number="11">dat[, <span class="st">'yearminusfirstcalving'</span>]  &lt;-<span class="st"> </span>years_since_1calf</a></code></pre></div>
-<p>Now we can apply a couple of simple rules about who is an adult. Rule #5 is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don’t know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their ninth year of life.</p>
-<p>An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older (Rules 4a,b).</p>
-<p>Finally, females will automatically be designated an adult the year before they gave birth to their first calf (if known) regardless of their real age, since they would’ve had to be sexually mature to become pregnant. (Rule 4c)</p>
+<p>Now we can apply a couple of simple rules about who is an adult. <a href="#rules">Rule 5</a> is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don’t know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their ninth year of life.</p>
+<p>An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older (<a href="#rules">Rules 4a,b</a>).</p>
+<p>Finally, females will automatically be designated an adult the year before they gave birth to their first calf (if known) regardless of their real age, since they would’ve had to be sexually mature to become pregnant. (<a href="#rules">Rule 4c</a>)</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># make unknowns</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">ageclass_tmp[<span class="kw">which</span>(years_since_sight <span class="op">&lt;=</span><span class="st"> </span><span class="dv">8</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">is.na</span>(dat<span class="op">$</span>BirthYear))] &lt;-<span class="st"> &quot;U&quot;</span></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"></a>
@@ -1737,14 +1739,14 @@ div.tocify {
 <a class="sourceLine" id="cb8-10" data-line-number="10"><span class="co"># make moms and calves</span></a>
 <a class="sourceLine" id="cb8-11" data-line-number="11">ageclass_tmp[calfs] &lt;-<span class="st"> &quot;calf&quot;</span></a>
 <a class="sourceLine" id="cb8-12" data-line-number="12">lactating_tmp[moms]  &lt;-<span class="st"> &quot;potentiallact&quot;</span></a></code></pre></div>
-<p>Calves become juveniles on December 1st of their birth year (Rule 3)</p>
+<p>Calves become juveniles on December 1st of their birth year (<a href="#rules">Rule 3</a>)</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">calfjuvcutoff &lt;-<span class="st"> </span><span class="kw">paste0</span>(dat<span class="op">$</span>BirthYear, <span class="st">&quot;-12-01&quot;</span>)</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">calfjuvcutoff[<span class="kw">is.na</span>(dat<span class="op">$</span>BirthYear)] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
 <a class="sourceLine" id="cb9-3" data-line-number="3">calfjuvcutoff &lt;-<span class="st"> </span><span class="kw">as.Date</span>(calfjuvcutoff)</a>
 <a class="sourceLine" id="cb9-4" data-line-number="4">ageclass_tmp[<span class="kw">which</span>(calfs <span class="op">&amp;</span><span class="st"> </span>date <span class="op">&gt;=</span><span class="st"> </span>calfjuvcutoff)] &lt;-<span class="st"> &quot;J&quot;</span></a></code></pre></div>
 <p>And finally, everyone else becomes a juvenile that doesn’t have an assigned ageclass.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">ageclass_tmp[<span class="kw">is.na</span>(ageclass_tmp)] &lt;-<span class="st"> &quot;J&quot;</span></a></code></pre></div>
-<p>Now we have to go through each mom-calf pair by pair, look for the first sighting, and apply the lactation rules (6a,b). In the loop we are also making an improved <code>cdat</code> which has each mom-calf pair and the first and last days seen together. This <code>cdat</code> will be used later when we are making a day by day availability matrix for calculating association indices. Note that the last day of lactation will be either December 1st (presumed weaning) or the day of last calf sighting before an inferred death (loss) of calf and so in most cases the end of lactation is somewhat arbitrary.</p>
+<p>Now we have to go through each mom-calf pair by pair, look for the first sighting, and apply the lactation <a href="#rules">rules (6a,b)</a>. In the loop we are also making an improved <code>cdat</code> which has each mom-calf pair and the first and last days seen together. This <code>cdat</code> will be used later when we are making a day by day availability matrix for calculating association indices. Note that the last day of lactation will be either December 1st (presumed weaning) or the day of last calf sighting before an inferred death (loss) of calf and so in most cases the end of lactation is somewhat arbitrary.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">first_lactday_tmp &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="dt">mode =</span> <span class="st">&quot;character&quot;</span>, <span class="dt">length =</span> <span class="kw">nrow</span>(cdat))</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">last_lactday_tmp  &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="dt">mode =</span> <span class="st">&quot;character&quot;</span>, <span class="dt">length =</span> <span class="kw">nrow</span>(cdat))</a>
 <a class="sourceLine" id="cb11-3" data-line-number="3">lost_lactday_tmp &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="dt">length =</span> <span class="kw">nrow</span>(cdat))</a>

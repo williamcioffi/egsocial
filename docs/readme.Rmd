@@ -107,7 +107,7 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 - save
 - save as a .txt file
 
-### age and sex assignment
+### age and sex assignment {#rules}
 
 **inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
 
@@ -128,7 +128,7 @@ The following rules are used to determine the age and sex class of an individual
     b. if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.
 
 
-First, we'll load in the data and prepare the date formats and take a peak. 'Dat' is a table of sighting records, while 'cdat' is a table of calving years.
+First, we'll load in the data and prepare the date formats and take a peak. `dat` is a table of sighting records, while `cdat` is a table of calving years.
 
 
 ```{r}
@@ -185,11 +185,11 @@ dat[, 'yearminusfirstsight'] 	<- years_since_sight
 dat[, 'yearminusfirstcalving'] 	<- years_since_1calf
 ```
 
-Now we can apply a couple of simple rules about who is an adult. Rule #5 is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don't know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their ninth year of life.
+Now we can apply a couple of simple rules about who is an adult. [Rule 5](#rules) is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don't know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their ninth year of life.
 
-An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older (Rules 4a,b).
+An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older ([Rules 4a,b](#rules)).
 
-Finally, females will automatically be designated an adult the year before they gave birth to their first calf (if known) regardless of their real age, since they would've had to be sexually mature to become pregnant. (Rule 4c)
+Finally, females will automatically be designated an adult the year before they gave birth to their first calf (if known) regardless of their real age, since they would've had to be sexually mature to become pregnant. ([Rule 4c](#rules))
 
 ```{r}
 # make unknowns
@@ -218,7 +218,7 @@ ageclass_tmp[calfs] <- "calf"
 lactating_tmp[moms]  <- "potentiallact"
 ```
 
-Calves become juveniles on December 1st of their birth year (Rule 3)
+Calves become juveniles on December 1st of their birth year ([Rule 3](#rules))
 
 ```{r}
 calfjuvcutoff <- paste0(dat$BirthYear, "-12-01")
@@ -233,7 +233,7 @@ And finally, everyone else becomes a juvenile that doesn't have an assigned agec
 ageclass_tmp[is.na(ageclass_tmp)] <- "J"
 ```
 
-Now we have to go through each mom-calf pair by pair, look for the first sighting, and apply the lactation rules (6a,b). In the loop we are also making an improved `cdat` which has each mom-calf pair and the first and last days seen together. This `cdat` will be used later when we are making a day by day availability matrix for calculating association indices. Note that the last day of lactation will be either December 1st (presumed weaning) or the day of last calf sighting before an inferred death (loss) of calf and so in most cases the end of lactation is somewhat arbitrary.
+Now we have to go through each mom-calf pair by pair, look for the first sighting, and apply the lactation [rules (6a,b)](#rules). In the loop we are also making an improved `cdat` which has each mom-calf pair and the first and last days seen together. This `cdat` will be used later when we are making a day by day availability matrix for calculating association indices. Note that the last day of lactation will be either December 1st (presumed weaning) or the day of last calf sighting before an inferred death (loss) of calf and so in most cases the end of lactation is somewhat arbitrary.
 
 ```{r}
 first_lactday_tmp <- vector(mode = "character", length = nrow(cdat))
