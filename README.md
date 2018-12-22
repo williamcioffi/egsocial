@@ -1,2 +1,1 @@
-see [docs](docs/index.html)
-c
+see [docs](https://williamcioffi.github.io/egsocial)
