@@ -1,2 +1,2 @@
-# egsocial
-r functions for egsocial project
+see [docs](docs/index.html)
+c
