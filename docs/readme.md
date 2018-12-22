@@ -29,9 +29,10 @@ output:
 
 6. rename readme.html --> index.html (in file folder structure on your computer, delete the old "index.html" and then rename the "readme.html" to "index.html")
     - readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at https://williamcioffi.github.io/egsocial and all the fancy colors and floating table of contents will work.
-    - _can this step be automated? (with a makefile?)_
 
 7. Commit changes and push to github.
+
+_alternative steps 5-6:_ I have included a very simple makefile which renders the md and html and then renames readme.html to index.html. To use, simply open your favorite terminal emulator navigate to egsocial/docs/ and type `make`. You can delete all outputs by using `make clean`. This all can also be done from the terminal emulator within rstudio just make sure you are in the right directory.
 
 ## Introduction
 

@@ -277,10 +277,10 @@ div.tocify {
 <li>rename readme.html –&gt; index.html (in file folder structure on your computer, delete the old “index.html” and then rename the “readme.html” to “index.html”)
 <ul>
 <li>readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at <a href="https://williamcioffi.github.io/egsocial" class="uri">https://williamcioffi.github.io/egsocial</a> and all the fancy colors and floating table of contents will work.</li>
-<li><em>can this step be automated? (with a makefile?)</em></li>
 </ul></li>
 <li><p>Commit changes and push to github.</p></li>
 </ol>
+<p><em>alternative steps 5-6:</em> I have included a very simple makefile which renders the md and html and then renames readme.html to index.html. To use, simply open your favorite terminal emulator navigate to egsocial/docs/ and type <code>make</code>. You can delete all outputs by using <code>make clean</code>. This all can also be done from the terminal emulator within rstudio just make sure you are in the right directory.</p>
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
@@ -437,7 +437,7 @@ ageclass_tmp[<span class="kw">which</span>(years_since_sight <span class="op">&l
 <span class="co"># apply adult rules</span>
 ageclass_tmp[<span class="kw">which</span>(years_since_birth <span class="op">&gt;=</span><span class="st">  </span><span class="dv">9</span>)] &lt;-<span class="st"> &quot;A&quot;</span>
 ageclass_tmp[<span class="kw">which</span>(years_since_sight <span class="op">&gt;=</span><span class="st">  </span><span class="dv">8</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">is.na</span>(years_since_birth))]  &lt;-<span class="st"> &quot;A&quot;</span>
-ageclass_tmp[<span class="kw">which</span>(years_since_1calf <span class="op">&gt;=</span><span class="st"> </span><span class="op">-</span><span class="dv">1</span>)] &lt;-<span class="st"> &quot;A&quot;</span></code></pre></div>
+ageclass_tmp[<span class="kw">which</span>(years_since_1calf <span class="op">&gt;=</span><span class="st"> </span><span class="dv">-1</span>)] &lt;-<span class="st"> &quot;A&quot;</span></code></pre></div>
 <p>Next we set up some provisional lactating and calf categories based on the behavior column in <code>dat</code>. These are going to be adjusted and filled in later.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># calf and mom behaviors</span>
 calfbehs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CALFW/MOM&quot;</span>, <span class="st">&quot;CALFOFUNPHMOM&quot;</span>, <span class="st">&quot;CALF&quot;</span>, <span class="st">&quot;CALFW/OTHERS(S)&quot;</span>, <span class="st">&quot;CALFW/UNPH&quot;</span>)
