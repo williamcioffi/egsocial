@@ -10,8 +10,6 @@ output:
     toc: true
     toc_float:
       collapsed: false
-  md_document:
-    variant: gfm
 ---
 
 # How to Use This Document

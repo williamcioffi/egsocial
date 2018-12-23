@@ -1,5 +1,5 @@
 index:
-	Rscript --vanilla -e 'rmarkdown::render("readme.Rmd", output_format = "all")'
+	Rscript --vanilla -e 'rmarkdown::render("readme.Rmd")'
 	mv -f readme.html index.html
 
 clean:
