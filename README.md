@@ -1,5 +1,3 @@
-# egsocial documentation
-
 A nicely rendered html page outlining the analysis is viewable [here](https://williamcioffi.github.io/egsocial/)
 
 ## How to edit documentation
