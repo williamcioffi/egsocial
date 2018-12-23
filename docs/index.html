@@ -1517,13 +1517,13 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: North Atlantic right whales within communication range</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2018-12-22 21:27:45 EST</em></h4>
+<h4 class="date"><em>2018-12-22 22:16:51 EST</em></h4>
 
 </div>
 
 
-<div id="how-to-use-this-document" class="section level2">
-<h2>How to Use This Document</h2>
+<div id="how-to-use-this-document" class="section level1">
+<h1><span class="header-section-number">1</span> How to Use This Document</h1>
 <ol style="list-style-type: decimal">
 <li><p>See <a href="#next-steps">Next Steps</a>.</p></li>
 <li><p>Pull to make sure you have the latest version</p></li>
@@ -1545,13 +1545,13 @@ div.tocify {
 </ol>
 <p><em>alternative steps 5-6:</em> I have included a very simple makefile which renders the md and html and then renames readme.html to index.html. To use, simply open your favorite terminal emulator navigate to egsocial/docs/ and type <code>make</code>. You can delete all outputs by using <code>make clean</code>. This all can also be done from the terminal emulator within rstudio just make sure you are in the right directory.</p>
 </div>
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">2</span> Introduction</h1>
 <p>Baleen whales lack the strong and stable long-term bonds characteristic of odontocetes such as killer whales and sperm whales, and therefore, the social structure of baleen whales has received comparatively little attention. However, recent findings of long-term associations in both right whales and humpback whales have challenged the notion that baleen whale society is characterized by short and unstable associations. Previous research has used “within 2 body lengths” to define association, while recognizing that this definition underestimates the range at which whales interact acoustically. We take a new approach and define association in North Atlantic right whales based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.</p>
 <hr />
 </div>
-<div id="analysis-decisions" class="section level2">
-<h2>Analysis Decisions</h2>
+<div id="analysis-decisions" class="section level1">
+<h1><span class="header-section-number">3</span> Analysis Decisions</h1>
 <p><strong>numsamp</strong> &gt; 35</p>
 <p><strong>distance</strong> = 10km for most analysis (also looked at 0.03 “2 body lengths”, 1km, 5km, 10km, 15km, 20km)</p>
 <p><strong>sampling period:</strong> use ‘Day’ (see Whitehead book p.79)</p>
@@ -1559,8 +1559,8 @@ div.tocify {
 <p><strong>Mantel tests</strong> : used “multiple measures” module to import the custom adjusted matrix</p>
 <hr />
 </div>
-<div id="dataset-summary" class="section level2">
-<h2>Dataset Summary</h2>
+<div id="dataset-summary" class="section level1">
+<h1><span class="header-section-number">4</span> Dataset Summary</h1>
 <ul>
 <li>719 individual right whales</li>
 <li>65,827 sightings</li>
@@ -1568,17 +1568,17 @@ div.tocify {
 </ul>
 <hr />
 </div>
-<div id="data-request" class="section level2">
-<h2>Data Request</h2>
+<div id="data-request" class="section level1">
+<h1><span class="header-section-number">5</span> Data Request</h1>
 <p>Photographs of right whales and associated life history data were obtained from <a href="https://www.narwc.org/">The North Atlantic Right Whale Consortium</a></p>
 <p>Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted of</p>
 <p>65,827 sightings of individually identified right whales from 1980-2016</p>
 <hr />
 </div>
-<div id="data-prep" class="section level2">
-<h2>Data Prep</h2>
-<div id="inital-data-prep-in-excel" class="section level3">
-<h3>Inital Data Prep in Excel</h3>
+<div id="data-prep" class="section level1">
+<h1><span class="header-section-number">6</span> Data Prep</h1>
+<div id="inital-data-prep-in-excel" class="section level2">
+<h2><span class="header-section-number">6.1</span> Inital Data Prep in Excel</h2>
 <p><strong>inputs</strong>: Kahn Data Request- data exported 2017-11-06.xlsx</p>
 <p><strong>outputs</strong>: 5-Khan-data-cleaned-up.csv</p>
 <ul>
@@ -1606,8 +1606,8 @@ div.tocify {
 <li>save as a .txt file</li>
 </ul>
 </div>
-<div id="rules" class="section level3">
-<h3>Age and Sex Assignment</h3>
+<div id="rules" class="section level2">
+<h2><span class="header-section-number">6.2</span> Age and Sex Assignment</h2>
 <p><strong>inputs</strong>: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv</p>
 <p><strong>outputs</strong>: <code>birthdeath</code> and <code>dat</code> exported as RData files.</p>
 <p>The following rules are used to determine the age and sex class of an individual over time:</p>
@@ -1851,8 +1851,8 @@ div.tocify {
 <p>We’ll save all three intermediate tables.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">save</span>(dat, cdat, birthdeath, date, <span class="dt">file =</span> <span class="st">&quot;../data/agesex_assigned.RData&quot;</span>)</a></code></pre></div>
 </div>
-<div id="calculate-ray-by-day-availability" class="section level3">
-<h3>Calculate Ray by Day Availability</h3>
+<div id="calculate-ray-by-day-availability" class="section level2">
+<h2><span class="header-section-number">6.3</span> Calculate Ray by Day Availability</h2>
 <p>The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were “alive” on that day and therefore available to associate with others. We call that <code>nax_avail</code> by analogy with <code>nax</code> in <a href="http://whitelab.biology.dal.ca/SOCPROG/social.htm">socprog</a>. Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by Ramp et al (2010).</p>
 <p>What we’ve done here ignores any unknown age ids: UM, UF. UU, AU, and JU should have already been removed at this stage.</p>
 <p>The rules for assigning age and sex classes are the same as above with the following adjustment made necessary by the day by day analysis:</p>
@@ -2104,8 +2104,8 @@ div.tocify {
 <hr />
 </div>
 </div>
-<div id="session-info" class="section level2">
-<h2>Session Info</h2>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">7</span> Session Info</h1>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
 <pre><code>## R version 3.5.1 (2018-07-02)
 ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
@@ -2131,8 +2131,8 @@ div.tocify {
 ## [13] digest_0.6.18   evaluate_0.12</code></pre>
 <hr />
 </div>
-<div id="next-steps" class="section level2">
-<h2>Next Steps</h2>
+<div id="next-steps" class="section level1">
+<h1><span class="header-section-number">8</span> Next Steps</h1>
 <ol style="list-style-type: decimal">
 <li>Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
 <ul>
@@ -2148,8 +2148,8 @@ div.tocify {
 </ol>
 <hr />
 </div>
-<div id="references" class="section level2">
-<h2>References</h2>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">9</span> References</h1>
 <p>Ramp C, Hagen W, Palsbøll P, Bérubé M, Sears R. 2010 Age-related multi-year associations in female humpback whales (<em>Megaptera novaeangliae</em>). Behav Ecol Sociobiol 64, 1563–1576. (<a href="doi:10.1007/s00265-010-0970-8" class="uri">doi:10.1007/s00265-010-0970-8</a>)</p>
 </div>
 

@@ -6,12 +6,13 @@ output:
   html_document:
     keep_md: true
     highlight: pygments
+    number_sections: true
     toc: true
     toc_float:
       collapsed: false
 ---
 
-## How to Use This Document
+# How to Use This Document
 
 1. See [Next Steps].
 
@@ -33,13 +34,13 @@ output:
 
 _alternative steps 5-6:_ I have included a very simple makefile which renders the md and html and then renames readme.html to index.html. To use, simply open your favorite terminal emulator navigate to egsocial/docs/ and type `make`. You can delete all outputs by using `make clean`. This all can also be done from the terminal emulator within rstudio just make sure you are in the right directory.
 
-## Introduction
+# Introduction
 
 Baleen whales lack the strong and stable long-term bonds characteristic of odontocetes such as killer whales and sperm whales, and therefore, the social structure of baleen whales has received comparatively little attention. However, recent findings of long-term associations in both right whales and humpback whales have challenged the notion that baleen whale society is characterized by short and unstable associations. Previous research has used “within 2 body lengths” to define association, while recognizing that this definition underestimates the range at which whales interact acoustically. We take a new approach and define association in North Atlantic right whales based on communication range. We analyzed a rich dataset of 41,301 sightings of individually identified right whales from 1981-2009 throughout their geographic range. We calculated the mean and maximum association indices between and within age-sex classes (adult males, adult lactating females, adult non-lactating females, juvenile males, and juvenile females) and found significant preferred associations using permutation tests. Lactating females had the lowest rates of association across all age-sex classes as is common among mammals. The highest rates of association were found among juveniles with other juveniles, and adult males with other adult males. High rates of association among juveniles are common in mammals as the period between weaning and adulthood is important for the formation of social relationships and learning. The high rates of association among adult males are consistent with previous work on right whales and in contrast to associations in adult male humpback whales, likely due to differences in the mating systems of the two species. These results are consistent with our current understanding of right whale social structure using the “within 2 body lengths” definition of association and support the hypothesis that right whales are interacting acoustically at ranges out to at least 10 kilometers.
 
 ----
 
-## Analysis Decisions
+# Analysis Decisions
 
 
 **numsamp** > 35
@@ -55,7 +56,7 @@ Baleen whales lack the strong and stable long-term bonds characteristic of odont
 
 ----
 
-## Dataset Summary
+# Dataset Summary
 
 
 * 719 individual right whales
@@ -65,7 +66,7 @@ Baleen whales lack the strong and stable long-term bonds characteristic of odont
 
 ----
 
-## Data Request
+# Data Request
 
 Photographs of right whales and associated life history data were obtained from [The North Atlantic Right Whale Consortium](https://www.narwc.org/)
 
@@ -75,9 +76,9 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 
 ----
 
-## Data Prep
+# Data Prep
 
-### Inital Data Prep in Excel
+## Inital Data Prep in Excel
 
 **inputs**:  Kahn Data Request- data exported 2017-11-06.xlsx
 
@@ -105,7 +106,7 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 - save
 - save as a .txt file
 
-### Age and Sex Assignment {#rules}
+## Age and Sex Assignment {#rules}
 
 **inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
 
@@ -375,7 +376,7 @@ save(dat, cdat, birthdeath, date, file = "../data/agesex_assigned.RData")
 ```
 
 
-### Calculate Ray by Day Availability
+## Calculate Ray by Day Availability
 
 The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by Ramp et al (2010).
 
@@ -684,7 +685,7 @@ naxlook(nax_avail[1:25, ])
 
 ----
 
-## Session Info
+# Session Info
 
 ```{r}
 sessionInfo()
@@ -692,7 +693,7 @@ sessionInfo()
 
 ----
 
-## Next Steps
+# Next Steps
 
 1. Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
     - Have dead whales been removed?
@@ -708,6 +709,6 @@ sessionInfo()
 
 ----
 
-## References
+# References
 
 Ramp C, Hagen W, Palsbøll P, Bérubé M, Sears R. 2010 Age-related multi-year associations in female humpback whales (_Megaptera novaeangliae_). Behav Ecol Sociobiol 64, 1563–1576. (doi:10.1007/s00265-010-0970-8)
