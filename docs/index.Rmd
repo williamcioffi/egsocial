@@ -4,12 +4,14 @@ author: 'William Cioffi and Christin Khan'
 date: '`r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`'
 output:
   html_document:
-    keep_md: true
     highlight: pygments
     number_sections: true
     toc: true
     toc_float:
       collapsed: false
+bibliography: biblio.bib
+csl: journal-of-mammalogy.csl
+link-citations: true
 ---
 
 # How to Use This Document
@@ -18,21 +20,15 @@ output:
 
 2. Pull to make sure you have the latest version
 
-3. Make some edits to readme.Rmd.
-    - readme.md is automatically generated and should not be edited by hand. any changes will be overwritten when readme.Rmd get re-knit.
+3. Make some edits to index.Rmd.
 
 4. Save
 
-5. Knit
-    - this will create readme.md and readme.html
-    - readme.md will be automatically viewable when broswing the repo (https://github.com/williamcioffi/egsocial/tree/master/docs)
+5. Knit (or make)
+    - this will create index.html
+    - in a few minutes it will be automatically viewable https://williamcioffi.github.io/egsocial
 
-6. rename readme.html --> index.html (in file folder structure on your computer, delete the old "index.html" and then rename the "readme.html" to "index.html")
-    - readme.html will not be automatically viewable until renamed to index.html it will be automatically viewable at https://williamcioffi.github.io/egsocial and all the fancy colors and floating table of contents will work.
-
-7. Commit changes and push to github.
-
-_alternative steps 5-6:_ I have included a very simple makefile which renders the md and html and then renames readme.html to index.html. To use, simply open your favorite terminal emulator navigate to egsocial/docs/ and type `make`. You can delete all outputs by using `make clean`. This all can also be done from the terminal emulator within rstudio just make sure you are in the right directory.
+6. Commit changes and push to github.
 
 # Introduction
 
@@ -378,7 +374,7 @@ save(dat, cdat, birthdeath, date, file = "../data/agesex_assigned.RData")
 
 ## Calculate Ray by Day Availability
 
-The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by Ramp et al (2010).
+The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by @ramp2010.
 
 What we've done here ignores any unknown age ids: UM, UF. UU, AU, and JU should have already been removed at this stage.
 
@@ -711,4 +707,3 @@ sessionInfo()
 
 # References
 
-Ramp C, Hagen W, Palsbøll P, Bérubé M, Sears R. 2010 Age-related multi-year associations in female humpback whales (_Megaptera novaeangliae_). Behav Ecol Sociobiol 64, 1563–1576. (doi:10.1007/s00265-010-0970-8)

@@ -1,8 +1,7 @@
-index:
-	Rscript --vanilla -e 'rmarkdown::render("readme.Rmd")'
-	mv -f readme.html index.html
+index.html : index.Rmd
+	Rscript --vanilla -e 'rmarkdown::render("index.Rmd")'
 
 clean:
-	rm -f readme.html readme.md index.html
-	rm -fr readme_files
+	rm -f index.html
+	rm -fr index_files 
 
