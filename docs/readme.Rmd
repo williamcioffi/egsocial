@@ -1,18 +1,17 @@
 ---
-title: "Redefining association: North Atlantic right whales within communication range"
-author: "William Cioffi and Christin Khan"
-date: "December 21, 2018"
+title: 'Redefining association: North Atlantic right whales within communication range'
+author: 'William Cioffi and Christin Khan'
+date: '`r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`'
 output:
   html_document:
     keep_md: true
     highlight: pygments
-    theme: spacelab
     toc: true
     toc_float:
       collapsed: false
 ---
 
-## how to use this document
+## How to Use This Document
 
 1. See [Next Steps].
 
@@ -106,7 +105,7 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 - save
 - save as a .txt file
 
-### age and sex assignment {#rules}
+### Age and Sex Assignment {#rules}
 
 **inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
 
@@ -131,7 +130,7 @@ First, we'll load in the data and prepare the date formats and take a peak. `dat
 
 
 ```{r}
-### load input files
+# load input files
 dat  <- read.table("../data/5-Khan-data-cleaned-up.csv", header = TRUE, sep = ',')
 cdat <- read.table("../data/2017-11-06-Khan-data-request-calving.csv", header = TRUE, sep = ',')
 
@@ -376,7 +375,7 @@ save(dat, cdat, birthdeath, date, file = "../data/agesex_assigned.RData")
 ```
 
 
-### calculate day by day availability
+### Calculate Ray by Day Availability
 
 The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by Ramp et al (2010).
 
@@ -681,6 +680,14 @@ nax_avail[which(nax_avail == KILLVALUE)] <- 0
 nax_avail[which(nax_avail > 0)] <- 1
 
 naxlook(nax_avail[1:25, ])
+```
+
+----
+
+## Session Info
+
+```{r}
+sessionInfo()
 ```
 
 ----

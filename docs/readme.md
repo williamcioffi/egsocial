@@ -1,18 +1,17 @@
 ---
-title: "Redefining association: North Atlantic right whales within communication range"
-author: "William Cioffi and Christin Khan"
-date: "December 21, 2018"
+title: 'Redefining association: North Atlantic right whales within communication range'
+author: 'William Cioffi and Christin Khan'
+date: '2018-12-22 21:27:45 EST'
 output:
   html_document:
     keep_md: true
     highlight: pygments
-    theme: spacelab
     toc: true
     toc_float:
       collapsed: false
 ---
 
-## how to use this document
+## How to Use This Document
 
 1. See [Next Steps].
 
@@ -106,7 +105,7 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 - save
 - save as a .txt file
 
-### age and sex assignment {#rules}
+### Age and Sex Assignment {#rules}
 
 **inputs**: 5-Khan-data-cleaned-up.csv, 2017-11-06-Khan-data-request-calving.csv
 
@@ -132,7 +131,7 @@ First, we'll load in the data and prepare the date formats and take a peak. `dat
 
 
 ```r
-### load input files
+# load input files
 dat  <- read.table("../data/5-Khan-data-cleaned-up.csv", header = TRUE, sep = ',')
 cdat <- read.table("../data/2017-11-06-Khan-data-request-calving.csv", header = TRUE, sep = ',')
 
@@ -437,7 +436,7 @@ save(dat, cdat, birthdeath, date, file = "../data/agesex_assigned.RData")
 ```
 
 
-### calculate day by day availability
+### Calculate Ray by Day Availability
 
 The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by Ramp et al (2010).
 
@@ -778,6 +777,40 @@ naxlook(nax_avail[1:25, ])
 ```
 
 ![](readme_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
+
+----
+
+## Session Info
+
+
+```r
+sessionInfo()
+```
+
+```
+## R version 3.5.1 (2018-07-02)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS  10.14.1
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] colorspace_1.3-2
+## 
+## loaded via a namespace (and not attached):
+##  [1] compiler_3.5.1  backports_1.1.2 magrittr_1.5    rprojroot_1.3-2
+##  [5] tools_3.5.1     htmltools_0.3.6 yaml_2.2.0      Rcpp_0.12.19   
+##  [9] stringi_1.2.4   rmarkdown_1.10  knitr_1.20      stringr_1.3.1  
+## [13] digest_0.6.18   evaluate_0.12
+```
 
 ----
 
