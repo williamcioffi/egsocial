@@ -25,3 +25,6 @@ scratch/*.*
 # MacOS files
 .DS_Store
 
+# vim files
+*.swp
+
