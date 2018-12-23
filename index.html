@@ -1517,17 +1517,20 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: North Atlantic right whales within communication range</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2018-12-23 01:25:53 EST</em></h4>
+<h4 class="date"><em>2018-12-23 01:45:39 EST</em></h4>
 
 </div>
 
 
-<div id="how-to-use-this-document" class="section level1">
+<div id="how" class="section level1">
 <h1><span class="header-section-number">1</span> How to Use This Document</h1>
 <ol style="list-style-type: decimal">
-<li><p>See <a href="#next-steps">Next Steps</a>.</p></li>
+<li><p>See <a href="https://williamcioffi.github.io/egsocial/#next-steps">Next Steps</a></p></li>
 <li><p>Pull to make sure you have the latest version</p></li>
-<li><p>Make some edits to index.Rmd.</p></li>
+<li>Make some edits to index.Rmd.
+<ul>
+<li>update biblio.bib as needed with new refs. use <code>[@citekey]</code> to ref in text.</li>
+</ul></li>
 <li><p>Save</p></li>
 <li>Knit (or make)
 <ul>
@@ -1622,8 +1625,8 @@ div.tocify {
 </ol>
 <p>First, we’ll load in the data and prepare the date formats and take a peak. <code>dat</code> is a table of sighting records, while ‘cdat’ is a table of calving years.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># load input files</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">dat  &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;../data/5-Khan-data-cleaned-up.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">','</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">cdat &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;../data/2017-11-06-Khan-data-request-calving.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">','</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">dat  &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;data/5-Khan-data-cleaned-up.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">','</span>)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">cdat &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;data/2017-11-06-Khan-data-request-calving.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">','</span>)</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">head</span>(dat)</a></code></pre></div>
 <pre><code>##   RowNames Latitude Longitude EGNo Gender FirstYearSighted BirthYear
@@ -1841,7 +1844,7 @@ div.tocify {
 <p>We remove the calves from <code>dat</code> since we don’t want to calculate their association indices (since they are dependent on their mother’s movements). Save the table for future use.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">dat &lt;-<span class="st"> </span>dat[dat<span class="op">$</span>ageclass <span class="op">!=</span><span class="st"> &quot;calf&quot;</span>, ]</a></code></pre></div>
 <p>We’ll save all three intermediate tables.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">save</span>(dat, cdat, birthdeath, date, <span class="dt">file =</span> <span class="st">&quot;../data/agesex_assigned.RData&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">save</span>(dat, cdat, birthdeath, date, <span class="dt">file =</span> <span class="st">&quot;data/agesex_assigned.RData&quot;</span>)</a></code></pre></div>
 </div>
 <div id="calculate-ray-by-day-availability" class="section level2">
 <h2><span class="header-section-number">6.3</span> Calculate Ray by Day Availability</h2>
@@ -2125,6 +2128,7 @@ div.tocify {
 </div>
 <div id="next-steps" class="section level1">
 <h1><span class="header-section-number">8</span> Next Steps</h1>
+<p><a href="#how"><strong>editing instructions</strong></a></p>
 <ol style="list-style-type: decimal">
 <li>Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
 <ul>
