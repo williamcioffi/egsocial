@@ -680,41 +680,15 @@ nax_avail[which(nax_avail > 0)] <- 1
 naxlook(nax_avail[1:25, ])
 ```
 
+Finally let's save `nax_avail`.
+
+```{r}
+save(nax_avail, file = "data/nax_avail.RData")
+```
+
 ----
 
-# Calculate simple ratio association indices
 
-We decided on the simple ratio association index [@cairns1987] because it had the fewest assumptions of the commonly used association indices [for more discussion see @hoppitt2018]. This index is defined as:
-
-$$\frac{x}{x + y_{ab} + y_a + y_b}$$
-
-where $x$ is the total number of sightings where animal $A$ and $B$ are located together, $y_{ab}$ is the number of sightings in which animals $A$ and $B$ are both located apart, $y_a$ and $y_b$ are the number of sightings in which only $A$ or only $B$ is located respectively.
-
-We used a set of custom functions to calculate the simple ratio for this dataset with the following restrictions.
-
-- Each age sex class for a particular real individual was considered a separate id for the purposes of this model.
-- Each day was considered a sampling period.
-- Two animals were considered associated if they were within a certain time-distance threshold.
-- Only animals with at least 35 total sightings were considered.
-- Only dyads that overlapped in the database for at least 1 year (365 days) were considered.
-
-## Time-distance threshold
-
-Our goal was to score dyads as associated if they were within a critical distance $d_c$ of each other. Since all animals are not sampled simulatenously we considered a conservative time-distance threshold where we calculated how far the animals might have separated during the time interval between sightings based on an average swim speed $\bar{u}$. We calculated relative velocity as $u_{rel} = 2 \cdot \bar{u}$. Of course, animals might also move closer together during this time, but we decided to be conservative in assigning associations. That is, in this model we minimized the chance that dyads were scored as associated when they had not been in truth within $d_c$ of each other, while increasing the likelyhood that animals that were in truth within $d_c$ of each other were not scored as associated. 
-
-If animals $A$ and $B$ were sighted at $t_a$ and $t_b$ times with a relative velocity away from each other of $u_{rel}$ then we considered a dyad associated if
-
-$$u_{rel} \cdot ||t_a - t_b|| \le d_c$$
- 
-### Initial values
-
-- $d_c = 10$ kilometers
-- $\bar{u} = 3.1$ kilometers per hour, based on literature review.
-
-## Overlap threshold
-
-As mentioned above we considered only dyads that overlapped at least 365 days in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 365 days even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular age sex classes that animals spend less time in (juvenile and lactating) would have more difficulty meeting this threshold.
- 
 
 # Session Info
 
