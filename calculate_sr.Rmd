@@ -87,7 +87,7 @@ timedifferences <- function(n, p) {
 Set some initial values:
 
 ```{r}
-max_assoc_distance <- 10 #km
+max_assoc_distance <- 10 # km
 numsampcutoff <- 35
 overlapdaycutoff <- 365
 relative_speed_km_per_hour <- 3.1 * 2
@@ -98,4 +98,41 @@ Load in the raw data. We only want to consider sightings which have a date and a
 ```{r}
 dat <- read.table("data/5-Khan-data-cleaned-up.csv", sep = ',', header = TRUE, stringsAsFactors = FALSE)
 ```
+
+Organize the dates and ids.
+
+```{r}
+dates <- as.Date(ww$Date, tz = "UTC")
+dateswithtimes <- as.POSIXct(ww$Date, tz = "UTC")
+udates <- unique(dates)
+# uyears <- as.POSIXlt(udates)$year + 1900
+
+uids 	<- sort(unique(ww$ID))
+nids 	<- length(uids)
+nsamp 	<- length(udates)
+```
+
+Make some blank matrices to hold results:
+-  `assoc` nid x nid matrix of the number of sampling periods any two ids were "associated"
+-  `nax` nid x n(sampling period) binary matrix where 1 = seen in that sampling period and 0 = not seen
+
+```{r}
+assoc 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
+nax 	<- matrix(0, nids, nsamp, dimnames = list(uids, as.character(udates)))
+```
+
+Here is the megaloop:
+-  go through sampling period by sampling period.
+-  grab the ids
+-  calculate distances
+-  calculate time differences
+-  assign associations
+-  increment
+
+```{r}
+
+```
+
+
+
 
