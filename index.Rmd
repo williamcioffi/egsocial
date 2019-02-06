@@ -16,9 +16,10 @@ link-citations: true
 
 # How to Use This Document {#how}
 
+
 1. See [Next Steps](https://williamcioffi.github.io/egsocial/#next-steps)
 
-2. From RStudio, do a GitHub Pull to make sure you have the latest version
+2. In RStudio, do a GitHub Pull to make sure you have the latest version
 
 3. Make some edits to index.Rmd in [egsocial](https://github.com/williamcioffi/egsocial).
     - update biblio.bib as needed with new refs. use `[@citekey]` to ref in text.
@@ -29,7 +30,7 @@ link-citations: true
     - this will create index.html
     - in a few minutes it will be automatically viewable https://williamcioffi.github.io/egsocial
 
-6. Commit changes and push to github.
+6. Commit changes and Push to Github.
 
 # Introduction
 
