@@ -338,7 +338,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: North Atlantic right whales within communication range</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2019-02-06 14:59:13 EST</em></h4>
+<h4 class="date"><em>2019-02-06 15:51:30 EST</em></h4>
 
 </div>
 
@@ -444,7 +444,7 @@ div.tocify {
 <li>if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.</li>
 </ol></li>
 </ol>
-<p>First, we’ll load in the data and prepare the date formats and take a peak. <code>dat</code> is a table of sighting records, while ‘cdat’ is a table of calving years.</p>
+<p>First, we’ll load in the data and prepare the date formats and take a peek. <code>dat</code> is a table of sighting records, while <code>cdat</code> is a table of calving years.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load input files</span>
 dat  &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;data/5-Khan-data-cleaned-up.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">','</span>)
 cdat &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;data/2017-11-06-Khan-data-request-calving.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">','</span>)
@@ -508,7 +508,7 @@ dat[, <span class="st">'yearminusbirthyear'</span>]    &lt;-<span class="st"> </
 dat[, <span class="st">'yearminusfirstsight'</span>]   &lt;-<span class="st"> </span>years_since_sight
 dat[, <span class="st">'yearminusfirstcalving'</span>] &lt;-<span class="st"> </span>years_since_1calf</code></pre></div>
 <p>Now we can apply a couple of simple rules about who is an adult. <a href="#rules">Rule 5</a> is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don’t know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their ninth year of life.</p>
-<p>An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older (<a href="#rules">Rules 4a,b</a>).</p>
+<p>An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their ninth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older (<a href="#rules">Rules 4a,b</a>).</p>
 <p>Finally, females will automatically be designated an adult the year before they gave birth to their first calf (if known) regardless of their real age, since they would’ve had to be sexually mature to become pregnant. (<a href="#rules">Rule 4c</a>)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># make unknowns</span>
 ageclass_tmp[<span class="kw">which</span>(years_since_sight <span class="op">&lt;=</span><span class="st"> </span><span class="dv">8</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">is.na</span>(dat<span class="op">$</span>BirthYear))] &lt;-<span class="st"> &quot;U&quot;</span>
@@ -670,7 +670,7 @@ deathdates[<span class="kw">is.na</span>(lastsdeath)] &lt;-<span class="st"> </s
 <div id="calculate-day-by-day-availability" class="section level2">
 <h2><span class="header-section-number">6.3</span> Calculate Day by Day Availability</h2>
 <p>The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were “alive” on that day and therefore available to associate with others. We call that <code>nax_avail</code> by analogy with <code>nax</code> in <a href="http://whitelab.biology.dal.ca/SOCPROG/social.htm">socprog</a>. Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by <span class="citation">Ramp et al. (<a href="#ref-ramp2010">2010</a>)</span>.</p>
-<p>What we’ve done here ignores any unknown age ids: UM, UF. UU, AU, and JU should have already been removed at this stage.</p>
+<p>UU, AU, and JU should have already been removed at this stage. What we’ve done here ignores any unknown age ids: UM, UF.</p>
 <p>The rules for assigning age and sex classes are the same as above with the following adjustment made necessary by the day by day analysis:</p>
 <p>Lactating females are lactating from the first day they are seen with a calf until 30-Nov of the calf cohort year or until the last sighting of the mom and calf before a LOST code in the behavior. This could be modified if for instance a standard start day for lactation is preferable within the calving year.</p>
 <p>First let’s just take a quick look at the distribution of first sightings of calves.</p>
@@ -828,7 +828,7 @@ nm &lt;-<span class="st"> </span><span class="kw">length</span>(ms)
     nax_avail[ms[i], st<span class="op">:</span>en] &lt;-<span class="st"> </span>ADDVALUE <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
   }
 }</code></pre></div>
-<p>Next, non lactating females. This loop is a little different than the previous two because we’ll take our cue from the JF for where to start if one exists.</p>
+<p>Next, non lactating females. This loop is a little different than the previous two because we’ll take our cue from the juvenile females (JF) for where to start if one exists.</p>
 <p>Also, we’ll use a temporary <code>ADDVALUE + 2</code> to indicate that these entries are provisional. What we’ve done here is set the whole period a female is adult to non lactating and then in the next loop we’ll identify lactating periods and go back and remove those times from the non lactating ID.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ns &lt;-<span class="st"> </span><span class="kw">which</span>(age <span class="op">==</span><span class="st"> &quot;N&quot;</span>)
 nn &lt;-<span class="st"> </span><span class="kw">length</span>(ns)
@@ -961,7 +961,6 @@ nax_avail[<span class="kw">which</span>(nax_avail <span class="op">&gt;</span><s
 <li>Have dead whales been removed?</li>
 <li>Have missing lat/long positions been removed?</li>
 <li>Have records with missing times been removed?</li>
-<li>Have whales of calves been removed?</li>
 <li>Check calf/juv transition December 1</li>
 <li>Double check unknowns at year 8</li>
 <li>Double check lactation stages</li>

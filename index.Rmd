@@ -17,6 +17,7 @@ link-citations: true
 # How to Use This Document {#how}
 
 
+
 1. See [Next Steps](https://williamcioffi.github.io/egsocial/#next-steps)
 
 2. In RStudio, do a GitHub Pull to make sure you have the latest version
@@ -125,7 +126,8 @@ The following rules are used to determine the age and sex class of an individual
     b. if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.
 
 
-First, we'll load in the data and prepare the date formats and take a peak. `dat` is a table of sighting records, while 'cdat' is a table of calving years.
+
+First, we'll load in the data and prepare the date formats and take a peek. `dat` is a table of sighting records, while `cdat` is a table of calving years.
 
 
 ```{r}
@@ -184,7 +186,7 @@ dat[, 'yearminusfirstcalving'] <- years_since_1calf
 
 Now we can apply a couple of simple rules about who is an adult. [Rule 5](#rules) is applied first. Animals are unknown ageclass if they have been seen less than 8 years since first sighting and we don't know a real birth year (would have had to be observed as a calf). Otherwise animals become adults in their ninth year of life.
 
-An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their nineth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older ([Rules 4a,b](#rules)).
+An animals without a known birth year will be designated as an adult in the 8th year since first sighting. This is because the animal was not determined to be a calf upon first sighting (otherwise it would have a known birth year) and so at youngest it is at least 1 year old. In the case of first sighting as an at least 1 year old, this criteria would be exactly the same as the previous, that is, animals become adults in their ninth year of life, but it is in general conservative because animals may be first seen as adults as well and we make no attempt to distinguish between animals first sighted as 1 year olds versus potentially older ([Rules 4a,b](#rules)).
 
 Finally, females will automatically be designated an adult the year before they gave birth to their first calf (if known) regardless of their real age, since they would've had to be sexually mature to become pregnant. ([Rule 4c](#rules))
 
@@ -378,7 +380,7 @@ save(dat, cdat, birthdeath, date, file = "data/agesex_assigned.RData")
 
 The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by @ramp2010.
 
-What we've done here ignores any unknown age ids: UM, UF. UU, AU, and JU should have already been removed at this stage.
+UU, AU, and JU should have already been removed at this stage. What we've done here ignores any unknown age ids: UM, UF.
 
 The rules for assigning age and sex classes are the same as above with the following adjustment made necessary by the day by day analysis:
 
@@ -567,7 +569,7 @@ for(i in 1:nm) {
 }
 ```
 
-Next, non lactating females. This loop is a little different than the previous two because we'll take our cue from the JF for where to start if one exists.
+Next, non lactating females. This loop is a little different than the previous two because we'll take our cue from the juvenile females (JF) for where to start if one exists.
 
 Also, we'll use a temporary `ADDVALUE + 2` to indicate that these entries are provisional. What we've done here is set the whole period a female is adult to non lactating and then in the next loop we'll identify lactating periods and go back and remove those times from the non lactating ID.
 
@@ -707,7 +709,6 @@ sessionInfo()
     - Have dead whales been removed?
     - Have missing lat/long positions been removed?
     - Have records with missing times been removed?
-    - Have whales of calves been removed?
     - Check calf/juv transition December 1
     - Double check unknowns at year 8
     - Double check lactation stages
