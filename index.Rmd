@@ -22,15 +22,15 @@ link-citations: true
 2. In RStudio, do a GitHub Pull to make sure you have the latest version
 
 3. Make some edits to index.Rmd in [egsocial](https://github.com/williamcioffi/egsocial).
-    - update biblio.bib as needed with new refs. use `[@citekey]` to ref in text.
+   * update biblio.bib as needed with new refs. use `[@citekey]` to ref in text.
 
 4. Save
 
 5. Knit (or make)
-    - this will create index.html
-    - in a few minutes it will be automatically viewable https://williamcioffi.github.io/egsocial
+   * this will create index.html
+   * in a few minutes it will be automatically viewable https://williamcioffi.github.io/egsocial
 
-6. Commit changes and Push to Github.
+6. Commit changes and Push to GitHub.
 
 # Introduction
 
@@ -374,7 +374,7 @@ save(dat, cdat, birthdeath, date, file = "data/agesex_assigned.RData")
 ```
 
 
-## Calculate Ray by Day Availability
+## Calculate Day by Day Availability
 
 The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by @ramp2010.
 
