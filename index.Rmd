@@ -308,7 +308,9 @@ stopifnot(!any(sapply(dat_list, function(l) length(unique(l$BirthYear))) != 1))
 stopifnot(!any(sapply(dat_list, function(l) length(unique(l$FirstYearSighted))) != 1))
 ```
 
-Now, we'll make a table of birthdays, first sightings, and deaths and save it as an intermediate output. Deaths are calculated two ways:
+Now, we'll make a table of birthdays, first sightings, and deaths and save it as an intermediate output. 
+
+Deaths are calculated two ways:
 
 1. a behavior code of "DEAD" in `dat` can indicate a sighting of a deceased animal
 
@@ -359,7 +361,7 @@ birthdeath <- data.frame(
   deathdates = deathdates,
 stringsAsFactors = FALSE)
 
-# take a peak
+# take a peek
 head(birthdeath)
 ```
 
@@ -530,7 +532,7 @@ for(i in 1:nj) {
 }
 ```
 
-We can take a peak with `naxlook` to see if this has generated the desired effect. Let's just look at the first 10 individuals.
+We can take a peek with `naxlook` to see if this has generated the desired effect. Let's just look at the first 10 individuals.
 
 ```{r}
 naxlook(nax_avail[1:10, ])
@@ -706,7 +708,7 @@ sessionInfo()
 [**editing instructions**](#how)
 
 1. Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
-    - Have dead whales been removed?
+    - Have dead whales been removed? Emailed Will to discuss on 2/6/2019
     - Have missing lat/long positions been removed?
     - Have records with missing times been removed?
     - Check calf/juv transition December 1

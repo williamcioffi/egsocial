@@ -338,7 +338,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: North Atlantic right whales within communication range</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2019-02-06 15:51:30 EST</em></h4>
+<h4 class="date"><em>2019-02-06 16:29:14 EST</em></h4>
 
 </div>
 
@@ -601,7 +601,8 @@ dat[, <span class="st">'agesexid'</span>] &lt;-<span class="st"> </span><span cl
 
 <span class="kw">stopifnot</span>(<span class="op">!</span><span class="kw">any</span>(<span class="kw">sapply</span>(dat_list, <span class="cf">function</span>(l) <span class="kw">length</span>(<span class="kw">unique</span>(l<span class="op">$</span>BirthYear))) <span class="op">!=</span><span class="st"> </span><span class="dv">1</span>))
 <span class="kw">stopifnot</span>(<span class="op">!</span><span class="kw">any</span>(<span class="kw">sapply</span>(dat_list, <span class="cf">function</span>(l) <span class="kw">length</span>(<span class="kw">unique</span>(l<span class="op">$</span>FirstYearSighted))) <span class="op">!=</span><span class="st"> </span><span class="dv">1</span>))</code></pre></div>
-<p>Now, we’ll make a table of birthdays, first sightings, and deaths and save it as an intermediate output. Deaths are calculated two ways:</p>
+<p>Now, we’ll make a table of birthdays, first sightings, and deaths and save it as an intermediate output.</p>
+<p>Deaths are calculated two ways:</p>
 <ol style="list-style-type: decimal">
 <li><p>a behavior code of “DEAD” in <code>dat</code> can indicate a sighting of a deceased animal</p></li>
 <li><p>an animal is assumed to be dead if not seen for 6 consecutive years.</p></li>
@@ -646,7 +647,7 @@ deathdates[<span class="kw">is.na</span>(lastsdeath)] &lt;-<span class="st"> </s
   <span class="dt">deathdates =</span> deathdates,
 <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 
-<span class="co"># take a peak</span>
+<span class="co"># take a peek</span>
 <span class="kw">head</span>(birthdeath)</code></pre></div>
 <pre><code>##      EGNo birthyear firstyearsighted lastyearsighted lastsighteddeath
 ## 1001 1001        NA             1978            1992       1998-01-01
@@ -797,7 +798,7 @@ nj &lt;-<span class="st"> </span><span class="kw">length</span>(js)
     nax_avail[js[i], st<span class="op">:</span>en] &lt;-<span class="st"> </span>ADDVALUE
   }
 }</code></pre></div>
-<p>We can take a peak with <code>naxlook</code> to see if this has generated the desired effect. Let’s just look at the first 10 individuals.</p>
+<p>We can take a peek with <code>naxlook</code> to see if this has generated the desired effect. Let’s just look at the first 10 individuals.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">naxlook</span>(nax_avail[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ])</code></pre></div>
 <pre><code>## Loading required package: colorspace</code></pre>
 <pre><code>## Warning: package 'colorspace' was built under R version 3.4.4</code></pre>
@@ -958,7 +959,7 @@ nax_avail[<span class="kw">which</span>(nax_avail <span class="op">&gt;</span><s
 <ol style="list-style-type: decimal">
 <li>Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
 <ul>
-<li>Have dead whales been removed?</li>
+<li>Have dead whales been removed? Emailed Will to discuss on 2/6/2019</li>
 <li>Have missing lat/long positions been removed?</li>
 <li>Have records with missing times been removed?</li>
 <li>Check calf/juv transition December 1</li>
