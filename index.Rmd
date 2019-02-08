@@ -348,7 +348,7 @@ deathdates <- lastsdeath
 deathdates[is.na(lastsdeath)] <- deaths[is.na(lastsdeath)]
 ```
 
-We'll bundle all these fields up into a data frame to export as RData called `birthdeath`, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared `data.frame` called `dat`. Finally, we'll use `cdat` and `date` again so those'll be saved as well.
+We'll bundle all these fields up into a data frame to export as RData called `birthdeath`, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared data frame called `dat`. Finally, we'll use `cdat` and `date` again so those'll be saved as well.
 
 ```{r}
 birthdeath <- data.frame(
