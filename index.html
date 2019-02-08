@@ -338,7 +338,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: North Atlantic right whales within communication range</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2019-02-06 16:29:14 EST</em></h4>
+<h4 class="date"><em>2019-02-08 12:29:32 EST</em></h4>
 
 </div>
 
@@ -636,7 +636,7 @@ lastsdeath[<span class="op">!</span><span class="kw">is.na</span>(deaths)] &lt;-
 <span class="co"># combine lastsdeath and deaths</span>
 deathdates &lt;-<span class="st"> </span>lastsdeath
 deathdates[<span class="kw">is.na</span>(lastsdeath)] &lt;-<span class="st"> </span>deaths[<span class="kw">is.na</span>(lastsdeath)]</code></pre></div>
-<p>We’ll bundle all these fields up into a data frame to export as RData called <code>birthdeath</code>, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared <code>data.frame</code> called <code>dat</code>. Finally, we’ll use <code>cdat</code> and <code>date</code> again so those’ll be saved as well.</p>
+<p>We’ll bundle all these fields up into a data frame to export as RData called <code>birthdeath</code>, because it is a summary of that sort of information for each animal. This is the first main output of this section of code. The second is the prepared data frame called <code>dat</code>. Finally, we’ll use <code>cdat</code> and <code>date</code> again so those’ll be saved as well.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">birthdeath &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
   <span class="dt">EGNo =</span> uids,
   <span class="dt">birthyear =</span> births,
