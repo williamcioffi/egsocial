@@ -708,12 +708,9 @@ sessionInfo()
 [**editing instructions**](#how)
 
 1. Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
-    - Have dead whales been removed? Emailed Will to discuss on 2/6/2019
-    - Have missing lat/long positions been removed?
-    - Have records with missing times been removed?
-    - Check calf/juv transition December 1
-    - Double check unknowns at year 8
-    - Double check lactation stages
+    - Have dead whales been removed? Emailed Will 2/6/2019
+    - Have missing lat/long positions been removed? Emailed Will 2/8/2019 
+    - Have records with missing times been removed? Emailed Will 2/8/2019
 
 2. Will: move over code to run social differentiation test and calculate the simple ratio
 
