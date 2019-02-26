@@ -368,7 +368,7 @@ We remove the calves from `dat` since we don't want to calculate their associati
 dat <- dat[dat$ageclass != "calf", ]
 ```
 
-We'll save all three intermediate tables.
+We'll save all three intermediate tables ('dat', 'cdat', and 'birthdeath'.
 
 ```{r}
 save(dat, cdat, birthdeath, date, file = "data/agesex_assigned.RData")
