@@ -28,7 +28,6 @@ We used a set of custom functions to calculate the simple ratio for this dataset
 - Each day was considered a sampling period.
 - Two animals were considered associated if they were within a certain time-distance threshold.
 - Only animals with at least 35 total sightings were considered.
-    -  I implemented sighting requirement in a very conservative way.
 - Only dyads that overlapped in the database for at least 1 year (365 days) were considered.
 
 ## Time-distance threshold
@@ -183,11 +182,11 @@ for(i in 1:nsamp) {
 	curids <- dat[samp,]$agesexid
 	nax[match(curids, uids), i] <- 1
   
-	# calculate the pariwise distance between all individauls sighted that day
+	# calculate the pairwise distance between all individauls sighted that day
 	dists <- outer(samp,samp, FUN = pairdistances)
 	diag(dists) <- NA
 
-	# calculat the pairwise time difference between all individuals sighted that day
+	# calculate the pairwise time difference between all individuals sighted that day
 	timediffs <- outer(samp, samp, FUN = timedifferences)
 	diag(timediffs) <- NA
 
@@ -262,8 +261,8 @@ So here's the second megaloop:
 
 **This is the slowest loop in this whole process and there is probably a more efficient way to write this, but it works for now.**
 
-```{r, eval = FALSE}
-# eval = FALSE
+```{r, eval = TRUE}
+# eval = TRUE
 
 pb <- txtProgressBar(style = 3)
 for(i in 1:nrow(overlapping)) {
@@ -279,13 +278,13 @@ if((i %% 100) == 0) setTxtProgressBar(pb, i / nrow(overlapping))
   # get the days on which they were both alive
   samps_tmp <- colnames(nax_avail_tmp)[colSums(nax_avail_tmp) == 2]
   
-  # get those days on which there were any sightings and theyw ere both alive
+  # get those days on which there were any sightings and they were both alive
   samps_tmp <- intersect(samps_tmp, colnames(nax))
   
   # get the nax for just these samples
   nax_tmp <- nax[c(a, b), samps_tmp]
   
-  # calulate the total number of times each was seen during the days that both were alive
+  # calculate the total number of times each was seen during the days that both were alive
   numsamp_a[c(a, b), c(a, b)] <- sum(nax_tmp[1, ])
   numsamp_b[c(a, b), c(a, b)] <- sum(nax_tmp[2, ])
   
@@ -319,8 +318,8 @@ diag(sr) <- NA
 
 Ready to filter a little bit:
 
--  If dyads weren't alive for long enought to make the cut let's make their association index NA not 0.
--  If either individual in the dyad wasn't sighted more than `numsampcutoff` during the time they were both alive let's make their association index NA. **This is quite restrictive and probably not neccessary. Especially since 35 is fairly high to begin with. We could apply the `numsampcutoff` to total observations not accounting for overlap if we wanted to be slightly less restrictive.**
+-  If dyads weren't alive for long enough to make the cut let's make their association index NA not 0.
+-  If either individual in the dyad wasn't sighted more than `numsampcutoff` during the time they were both alive let's make their association index NA. **This is quite restrictive and probably not necessary. Especially since 35 is fairly high to begin with. We could apply the `numsampcutoff` to total observations not accounting for overlap if we wanted to be slightly less restrictive.**
 -  We can now remove any individuals that has a NA with every other dyad.
 -  If a dyad passes all these and still was never seen together than it should really be a 0 not an NA. This doesn't turn out to happen for any of the ids here.
 
