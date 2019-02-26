@@ -28,6 +28,7 @@ We used a set of custom functions to calculate the simple ratio for this dataset
 - Each day was considered a sampling period.
 - Two animals were considered associated if they were within a certain time-distance threshold.
 - Only animals with at least 35 total sightings were considered.
+    -  I implemented sighting requirement in a very conservative way.
 - Only dyads that overlapped in the database for at least 1 year (365 days) were considered.
 
 ## Time-distance threshold
@@ -38,14 +39,14 @@ If animals $A$ and $B$ were sighted at $t_a$ and $t_b$ times with a relative vel
 
 $$u_{rel} \cdot ||t_a - t_b|| \le d_c$$
  
-### Initial values
+We decided on:
 
-- $d_c = 10$ kilometers
+- $d_c = {0.03, 1, 5, 10, 15, 20}$ kilometers
 - $\bar{u} = 3.1$ kilometers per hour, based on literature review.
 
 ## Overlap threshold
 
-As mentioned above we considered only dyads that overlapped at least 365 days in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 365 days even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular age sex classes that animals spend less time in (juvenile and lactating) would have more difficulty meeting this threshold.
+As mentioned above we considered only dyads that overlapped at least 365 days in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 365 days even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular, age classes that animals spend less time in (juvenile and lactating) would have more difficulty (and not necceessarily uniform) meeting this threshold with other dyads.
 
 ## Set up
 
@@ -106,7 +107,7 @@ overlapdaycutoff <- 365
 relative_speed_km_per_hour <- 3.1 * 2 # 3.1 kph * 2 whales diametrically opposed
 ```
 
-Load in the raw data. We only want to consider sightings which have a date and a time associated with them.
+Load in the raw data.
 
 ```{r}
 load("data/agesex_assigned.RData")
@@ -152,7 +153,8 @@ all(rownames(nax_avail) == uids)
 ```
 
 Make some blank matrices to hold results:
--  `assoc` nid x nid matrix of the number of sampling periods any two ids were "associated"
+
+-  `assoc` nid x nid matrix of the number of sampling periods any two ids were associated
 -  `nax` nid x n(sampling period) binary matrix where 1 = seen in that sampling period and 0 = not seen
 
 ```{r}
@@ -161,7 +163,7 @@ nax 	  <- matrix(0, nids, nsamp, dimnames = list(uids, as.character(udates)))
 ```
 
 ## Calculate associations (numerator)
-First we'll calculate associations and save it to `assoc` which will be the start of `x` in the Cairns and Schwager notation. While we're doing this we can also calculate `nax` (the sighting matrix) which we'll need later on to help calculate the denominator of the association index
+First we'll calculate associations and save it to `assoc` which will be the start of `x` in the Cairns and Schwager notation. While we're doing this we can also calculate `nax` (the sighting matrix) which we'll need later on to help calculate the denominator of the association index.
 
 Here is the first megaloop:
 
@@ -214,21 +216,21 @@ for(i in 1:nsamp) {
 ```
 
 ## Calculate denominator
-Now we're going to calculate the pieces needed for the denominator of the simple ratio. I'll use two concepts from SOCPROG: `nmatrix` and `yab_prime`, which are easier with some simple linear algebra than the simple ratio denominator directly.
+Now we're going to calculate the pieces needed for the denominator of the simple ratio. I'll use two concepts from SOCPROG: `nmatrix` and `yab_prime`, which are relatively easy to calculate with some simple linear algebra.
 
-The `nmatrix` is simply an nid x nid matrix with the number of times both animals in a dyad were observed. In other words, it should be $2 x + 2y_{ab} + y_a + y_b$ in Cairns and Schwager notation.
+The `nmatrix` is an nid x nid matrix with the number of times both animals in a dyad were observed. In other words, it should be $2x + 2y_{ab} + y_a + y_b$.
 
-`yab_prime` is an nid x nid matrix is equal to the transpose crossproduct of `nax`. Or in other words, it should be $x + y_{ab}$ in Cairns and Schwager notation.
+`yab_prime` is an nid x nid matrix is equal to the transpose crossproduct of `nax`. Or in other words, it should be $x + y_{ab}$.
 
 So to get the denominator we can simply do:
 
 $nmatrix - yabprime$
 
-Which is equal to:
+which is equal to:
 
 $2x + 2y{ab} + y_a + y_b - y_{ab} - x$
 
-Which simplifies to the desired denominator:
+and which simplifies to the desired denominator:
 
 $x + y_{ab} + y_a + y_b$
 
@@ -255,10 +257,10 @@ And we'll limit our calculations to those dyads that meet our overlap cutoff. In
 So here's the second megaloop:
 
 -  grab the dyads
--  find their sampling dayds of overlap
+-  find their sampling periods of overlap
 -  calculate yab_prime and nmatrix for this period of overlap (as well as total sightings of each)
 
-**This is probably the slowest loop in this whole process. There is probably a more efficient way to write this. All of the intersections make it slow.**
+**This is the slowest loop in this whole process and there is probably a more efficient way to write this, but it works for now.**
 
 ```{r, eval = FALSE}
 # eval = FALSE
@@ -298,7 +300,7 @@ if((i %% 100) == 0) setTxtProgressBar(pb, i / nrow(overlapping))
 }
 close(pb)
 
-# save these outputs because they took a longtime
+# save these outputs because they took a long time
 save(assoc, yab_prime, nmatrix, numsamp_a, numsamp_b, dat, file = "data/simple_ratio_calc.RData")
 ```
 
@@ -318,9 +320,9 @@ diag(sr) <- NA
 Ready to filter a little bit:
 
 -  If dyads weren't alive for long enought to make the cut let's make their association index NA not 0.
--  If either individual in the dyad wasn't sighted more than numsampcutoff during the time they were both alive let's make their association index NA.
+-  If either individual in the dyad wasn't sighted more than `numsampcutoff` during the time they were both alive let's make their association index NA. **This is quite restrictive and probably not neccessary. Especially since 35 is fairly high to begin with. We could apply the `numsampcutoff` to total observations not accounting for overlap if we wanted to be slightly less restrictive.**
 -  We can now remove any individuals that has a NA with every other dyad.
--  If a dyad passes all these and still was never seen together than it should really be a 0 not an NA.
+-  If a dyad passes all these and still was never seen together than it should really be a 0 not an NA. This doesn't turn out to happen for any of the ids here.
 
 ```{r filter}
 diag(numsamp_a) <- NA
