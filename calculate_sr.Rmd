@@ -46,7 +46,7 @@ We decided on:
 
 ## Overlap threshold
 
-As mentioned above we considered only dyads that overlapped at least 365 days in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 365 days even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular, age classes that animals spend less time in (juvenile and lactating) would have more difficulty (and not necceessarily uniform) meeting this threshold with other dyads.
+As mentioned above we considered only dyads that overlapped at least 365 days in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 365 days even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular, age classes that animals spend less time in (juvenile and lactating) would have more difficulty (and not necessarily uniform) meeting this threshold with other dyads.
 
 ## Set up
 
