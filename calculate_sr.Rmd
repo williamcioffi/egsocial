@@ -1,7 +1,20 @@
+---
+title: 'Redefining association: Calculating simple ratio'
+author: 'William Cioffi and Christin Khan'
+date: '`r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`'
+output:
+  html_document:
+    highlight: pygments
+    number_sections: true
+    toc: true
+    toc_float:
+      collapsed: false
+bibliography: biblio.bib
+csl: journal-of-mammalogy.csl
+link-citations: true
+---
+
 # Calculate simple ratio association indices
-```{r}
-ls()
-```
 
 We decided on the simple ratio association index [@cairns1987] because it had the fewest assumptions of the commonly used association indices [for more discussion see @hoppitt2018]. This index is defined as:
 
@@ -67,10 +80,10 @@ These helper functions are for `outer` to return the difference in time and dist
 source("associationfunctions/distance.R")
 
 pairdistances <- function(n, p) {
-	lat1 <- ww[n, 'yy']
-	lon1 <- ww[n, 'xx']
-	lat2 <- ww[p, 'yy']
-	lon2 <- ww[p, 'xx']
+	lat1 <- dat[n, 'Latitude']
+	lon1 <- dat[n, 'Longitude']
+	lat2 <- dat[p, 'Latitude']
+	lon2 <- dat[p, 'Longitude']
 				
 	dists <- latlond(lat1, lon1, lat2, lon2)
 	
@@ -90,26 +103,52 @@ Set some initial values:
 max_assoc_distance <- 10 # km
 numsampcutoff <- 35
 overlapdaycutoff <- 365
-relative_speed_km_per_hour <- 3.1 * 2
+relative_speed_km_per_hour <- 3.1 * 2 # 3.1 kph * 2 whales diametrically opposed
 ```
 
 Load in the raw data. We only want to consider sightings which have a date and a time associated with them.
 
 ```{r}
-dat <- read.table("data/5-Khan-data-cleaned-up.csv", sep = ',', header = TRUE, stringsAsFactors = FALSE)
+load("data/agesex_assigned.RData")
+load("data/nax_avail.RData")
 ```
 
-Organize the dates and ids.
+Calculate dates. We're only going to use entries with times, because we have used time in our association index calculation.
 
-```{r}
-dates <- as.Date(ww$Date, tz = "UTC")
-dateswithtimes <- as.POSIXct(ww$Date, tz = "UTC")
+```{r calculatedate}
+# if there is a missing value in any of these fields we won't use it
+missing_date_or_time <- (is.na(dat$date) | dat$Time == 0)
+
+# remove these rows from dat
+dat <- dat[!missing_date_or_time, ]
+
+# format for hhmm and split into hh and mm
+time_char <- sprintf("%04d", dat$Time)
+time_hrs <- substring(time_char, 1, 2)
+time_min <- substring(time_char, 3, 4)
+
+dateswithtimes <- paste0(dat$date, " ", time_hrs, ":", time_min)
+dateswithtimes <- as.POSIXct(dateswithtimes, format = "%Y-%m-%d %H:%M", tz = "UTC")
+
+dates <- as.Date(dat$date, tz = "UTC")
 udates <- unique(dates)
-# uyears <- as.POSIXlt(udates)$year + 1900
+```
 
-uids 	<- sort(unique(ww$ID))
+Set up the ids and `nsamp` which will be the number of sampling periods (days in this case).
+```{r}
+uids 	<- sort(unique(dat$agesexid))
 nids 	<- length(uids)
 nsamp 	<- length(udates)
+```
+
+There were some ids that were never observed with times (even though there was a good date). So we can remove those here, since we can't calculate our association index without a time.
+
+```{r remove-never-timed}
+removedese <- -which(!(rownames(nax_avail) %in% uids))
+nax_avail <- nax_avail[removedese, ]
+
+# check to make sure everything lines up
+all(rownames(nax_avail) == uids)
 ```
 
 Make some blank matrices to hold results:
@@ -118,10 +157,14 @@ Make some blank matrices to hold results:
 
 ```{r}
 assoc 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
-nax 	<- matrix(0, nids, nsamp, dimnames = list(uids, as.character(udates)))
+nax 	  <- matrix(0, nids, nsamp, dimnames = list(uids, as.character(udates)))
 ```
 
-Here is the megaloop:
+## Calculate associations (numerator)
+First we'll calculate associations and save it to `assoc` which will be the start of `x` in the Cairns and Schwager notation. While we're doing this we can also calculate `nax` (the sighting matrix) which we'll need later on to help calculate the denominator of the association index
+
+Here is the first megaloop:
+
 -  go through sampling period by sampling period.
 -  grab the ids
 -  calculate distances
@@ -130,9 +173,173 @@ Here is the megaloop:
 -  increment
 
 ```{r}
+for(i in 1:nsamp) {
+  # these rows (individuals) were observed on the current sampling day
+  samp <- which(dates == udates[i])
+	
+  # get the ids for the individuals sampled on that day and increment nax
+	curids <- dat[samp,]$agesexid
+	nax[match(curids, uids), i] <- 1
+  
+	# calculate the pariwise distance between all individauls sighted that day
+	dists <- outer(samp,samp, FUN = pairdistances)
+	diag(dists) <- NA
 
+	# calculat the pairwise time difference between all individuals sighted that day
+	timediffs <- outer(samp, samp, FUN = timedifferences)
+	diag(timediffs) <- NA
+
+	# calculate the association threshold and which dyads meet it
+	new_dists <- dists + (relative_speed_km_per_hour * timediffs)
+	close_enough <- which(new_dists <= max_assoc_distance, arr.ind = TRUE)
+
+	# if any dayds were close enough in spacetime to be associated
+	# then increment assoc (= x in cairns and schwager notation)
+	if(nrow(close_enough) > 0) {
+		a <- match(dat$agesexid[samp[close_enough[,1]]], uids)
+		b <- match(dat$agesexid[samp[close_enough[,2]]], uids)
+	  
+		# is this condition ever met?
+		kill <- which(a == b)
+		if(length(kill) > 0) {
+			a <- a[-kill]
+			b <- b[-kill]
+		}
+		
+		# goods just calculates the right cell in the matrix for each of the dyads
+		goods <- unique(c((b-1)*nids + a))
+		assoc[goods] <- assoc[goods] + 1
+		}
+}
+```
+
+## Calculate denominator
+Now we're going to calculate the pieces needed for the denominator of the simple ratio. I'll use two concepts from SOCPROG: `nmatrix` and `yab_prime`, which are easier with some simple linear algebra than the simple ratio denominator directly.
+
+The `nmatrix` is simply an nid x nid matrix with the number of times both animals in a dyad were observed. In other words, it should be $2 x + 2y_{ab} + y_a + y_b$ in Cairns and Schwager notation.
+
+`yab_prime` is an nid x nid matrix is equal to the transpose crossproduct of `nax`. Or in other words, it should be $x + y_{ab}$ in Cairns and Schwager notation.
+
+So to get the denominator we can simply do:
+
+$nmatrix - yabprime$
+
+Which is equal to:
+
+$2x + 2y{ab} + y_a + y_b - y_{ab} - x$
+
+Which simplifies to the desired denominator:
+
+$x + y_{ab} + y_a + y_b$
+
+First, we'll set up some matrices. In addition to `nmatrix` and `yab_prime` we'll use `numsamp_a` and `numsamp_b` to keep track of how many times each individual in a dyad was sighted during the period when both were alive so we can smartly apply some sort of inclusion cutoff there.
+
+```{r}
+nmatrix 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
+yab_prime 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
+
+numsamp_a <- matrix(0, nids, nids)
+numsamp_b <- matrix(0, nids, nids)
+```
+
+As elluded to above, we're going to keep track of availability of individuals (those that were alive at the same time). To do that we'll calculate overlap which is just the transpose crossproduct of `nax_avail`.
+
+```{r}
+overlap <- tcrossprod(nax_avail)
+diag(overlap) <- NA
+overlapping <- which(overlap >= overlapdaycutoff, arr.ind = TRUE)
+```
+
+And we'll limit our calculations to those dyads that meet our overlap cutoff. In addition, we'll make sure that we're calculating `nmatrix` and `yab_prime` only for those time periods of overlap.
+
+So here's the second megaloop:
+
+-  grab the dyads
+-  find their sampling dayds of overlap
+-  calculate yab_prime and nmatrix for this period of overlap (as well as total sightings of each)
+
+**This is probably the slowest loop in this whole process. There is probably a more efficient way to write this. All of the intersections make it slow.**
+
+```{r, eval = FALSE}
+# eval = FALSE
+
+pb <- txtProgressBar(style = 3)
+for(i in 1:nrow(overlapping)) {
+if((i %% 100) == 0) setTxtProgressBar(pb, i / nrow(overlapping))
+  # grab the dyads one by one
+  a <- overlapping[i, 1]
+  b <- overlapping[i, 2]
+  
+  # just subsetting the nax and nax_avail for this dyad
+  nax_tmp <- nax[c(a, b), ]
+  nax_avail_tmp <- nax_avail[c(a, b), ]
+  
+  # get the days on which they were both alive
+  samps_tmp <- colnames(nax_avail_tmp)[colSums(nax_avail_tmp) == 2]
+  
+  # get those days on which there were any sightings and theyw ere both alive
+  samps_tmp <- intersect(samps_tmp, colnames(nax))
+  
+  # get the nax for just these samples
+  nax_tmp <- nax[c(a, b), samps_tmp]
+  
+  # calulate the total number of times each was seen during the days that both were alive
+  numsamp_a[c(a, b), c(a, b)] <- sum(nax_tmp[1, ])
+  numsamp_b[c(a, b), c(a, b)] <- sum(nax_tmp[2, ])
+  
+  # calculate yab_prime
+  yab_prime_tmp <- tcrossprod(nax_tmp)
+  yab_prime[c(a, b), c(a, b)] <- yab_prime_tmp
+  
+  # calculate nmatrix
+  nsight_tmp <- rowSums(nax_tmp)
+  nmatrix_tmp <- outer(nsight_tmp, nsight_tmp, '+')
+  nmatrix[c(a, b), c(a, b)] <- nmatrix_tmp
+}
+close(pb)
+
+# save these outputs because they took a longtime
+save(assoc, yab_prime, nmatrix, numsamp_a, numsamp_b, dat, file = "data/simple_ratio_calc.RData")
 ```
 
 
+Now we can actually calculate the simple ratio and do some filtering.
 
+```{r simple-ratio}
+# load in the results if not rerunning
+load("data/simple_ratio_calc.RData")
 
+sr <- assoc / (nmatrix - yab_prime)
+
+# The diagonal isn't that meaningful here
+diag(sr) <- NA
+```
+
+Ready to filter a little bit:
+
+-  If dyads weren't alive for long enought to make the cut let's make their association index NA not 0.
+-  If either individual in the dyad wasn't sighted more than numsampcutoff during the time they were both alive let's make their association index NA.
+-  We can now remove any individuals that has a NA with every other dyad.
+-  If a dyad passes all these and still was never seen together than it should really be a 0 not an NA.
+
+```{r filter}
+diag(numsamp_a) <- NA
+diag(numsamp_b) <- NA
+
+# set all the never associates to zero first and then deal with the NAs
+sr[assoc == 0] <- 0
+
+# not enough overlap
+notenoughoverlap <- overlap <= overlapdaycutoff
+sr[notenoughoverlap] <- NA
+
+# either individual in the dyad wasn't seen enough during the overlap period
+notenoughsightings <- (numsamp_a < numsampcutoff | numsamp_b < numsampcutoff)
+sr[notenoughsightings] <- NA
+
+# remove individauls completely if they never even had the opportunity to associate with anyone
+isallna <- apply(sr, 2, function(r) all(is.na(r)))
+sr <- sr[!isallna, !isallna]
+```
+
+# References
