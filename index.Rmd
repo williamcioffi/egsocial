@@ -99,7 +99,7 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 - delete column "Observer"
 - delete column "Area Code"
 - delete column "Letter"
-- delete any whales (EGNo) of unknown gender 'X'
+- delete any whales (EGNo) of unknown sex 'X'
 - moved "Latitude" and "Longitude" columns over to the left, and formatted to 5 decimal places
 - insert a RID column for row names
 - save
@@ -145,11 +145,6 @@ Next, we'll set up some well formatted dates and flag missing dates in the boole
 ```{r}
 missingjustdate <- which(dat$Day == 0 | dat$Month == 0 | dat$Year == 0)
 
-# format for hhmm and split into hh and mm
-time_char <- sprintf("%04d", dat$Time)
-time_hrs <- substring(time_char, 1, 2)
-time_min <- substring(time_char, 3, 4)
-
 # paste together and remove entries with no date
 date <- paste0(dat$Year, "-", sprintf("%02d", dat$Month), "-", sprintf("%02d", dat$Day))
 date[missingjustdate] <- NA
@@ -164,6 +159,8 @@ oo <- oo1[oo2][oo3][oo4]
 
 dat <- dat[oo, ]
 date <- date[oo]
+
+dat[, 'date'] <- date
 ```
 
 Now we can get started with assigning ages and sexes. First we'll make some temporary variables `ageclass_tmp` and `lactating_tmp`. These are both n records long so there is a designation for each sighting of an animal (dataframe, not currently exported) in `dat`. `ageclass_tmp` can be U[nknown], A[dult], J[uvenile], or calf. `lactating_tmp` can be "potentiallact" which is a placeholder when a potential mom is identified or L[actating].
@@ -292,7 +289,7 @@ dat[, 'ageclass'] <- ageclass_tmp
 Now we have lactating and age-sex class categories assigned and integrated into the `dat` table. Next we can paste together the sex from `dat` with `ageclass` to create an agesex class. "AF" is changed to "NF" to indicate non-lactating. We paste ID number and agesex class together and add this as a field to the `dat` table.
 
 ```{r}
-agesexid_tmp <- paste0(ageclass_tmp, dat$Gender)
+agesexid_tmp <- paste0(ageclass_tmp, dat$Sex)
 agesexid_tmp[agesexid_tmp == "AF" & lactating_tmp == "L"] <- "LF"
 agesexid_tmp[agesexid_tmp == "AF"] <- "NF"
 
@@ -691,9 +688,11 @@ Finally let's save `nax_avail`.
 save(nax_avail, file = "data/nax_avail.RData")
 ```
 
+# Calculate simple ratio
+
+I put this in a separate file because it is quite a slow process. See [here](calculate_sr.html).
+
 ----
-
-
 
 # Session Info
 
