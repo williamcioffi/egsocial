@@ -338,7 +338,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: North Atlantic right whales within communication range</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2019-02-26 15:25:00 EST</em></h4>
+<h4 class="date"><em>2019-02-26 15:45:00 EST</em></h4>
 
 </div>
 
@@ -958,13 +958,19 @@ nax_avail[<span class="kw">which</span>(nax_avail <span class="op">&gt;</span><s
 <h1><span class="header-section-number">9</span> Next Steps</h1>
 <p><a href="#how"><strong>editing instructions</strong></a></p>
 <ol style="list-style-type: decimal">
-<li>Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
+<li><p>Christin:</p>
 <ul>
-<li>Have dead whales been removed? Emailed Will 2/6/2019</li>
-<li>Have missing lat/long positions been removed? Emailed Will 2/8/2019</li>
-<li>Have records with missing times been removed? Emailed Will 2/8/2019</li>
+<li><p>double check that the age-sex classes have all been assigned correctly and ready to go (nearly there I think)</p></li>
+<li><p>think more on the overlap criteria for being alive in the same age-sex class and if 1 day (instead of 365 days) is most appropriate metric, especially for juveniles and lactating females</p></li>
 </ul></li>
-<li>Will: move over code to run social differentiation test and calculate the simple ratio</li>
+<li><p>Will:</p>
+<ul>
+<li>change 35 sample size restriction to be just at individual egno level (not at age-sex level)</li>
+<li>change the overlap criteria to just if they are both available for at least one day (rather than 365) and think more on that</li>
+<li>put in a filter to explicitly kick out any sightings of dead whales (both a behavior code of ‘DEAD’ OR an assumption of death if not seen for 6 consecutive years)</li>
+<li>put in a filter to kick out missing latitude/longitude values</li>
+<li>move over the R code to run social differentiation test</li>
+</ul></li>
 </ol>
 <hr />
 </div>

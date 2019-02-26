@@ -706,12 +706,20 @@ sessionInfo()
 
 [**editing instructions**](#how)
 
-1. Christin: then double check that the age-sex classes have all been assigned correctly and ready to go:
-    - Have dead whales been removed? Emailed Will 2/6/2019
-    - Have missing lat/long positions been removed? Emailed Will 2/8/2019 
-    - Have records with missing times been removed? Emailed Will 2/8/2019
+1. Christin: 
 
-2. Will: move over code to run social differentiation test and calculate the simple ratio
+    - double check that the age-sex classes have all been assigned correctly and ready to go (nearly there I think)
+  
+    - think more on the overlap criteria for being alive in the same age-sex class and if 1 day (instead of 365 days) is most appropriate metric, especially for juveniles and lactating females
+
+2. Will:
+
+    - change 35 sample size restriction to be just at individual egno level (not at age-sex level)
+    - change the overlap criteria to just if they are both available for at least one day (rather than 365) and think more on that
+    - put in a filter to explicitly kick out any sightings of dead whales (both a behavior code of 'DEAD' OR an assumption of death if not seen for 6 consecutive years)
+    - put in a filter to kick out missing latitude/longitude values
+    - move over the R code to run social differentiation test
+
 
 
 ----
