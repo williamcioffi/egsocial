@@ -102,7 +102,7 @@ Set some initial values:
 ```{r}
 max_assoc_distance <- 10 # km
 numsampcutoff <- 35
-overlapdaycutoff <- 365
+overlapdaycutoff <- 1
 relative_speed_km_per_hour <- 3.1 * 2 # 3.1 kph * 2 whales diametrically opposed
 ```
 
@@ -243,14 +243,11 @@ and which simplifies to the desired denominator:
 
 $x + y_{ab} + y_a + y_b$
 
-First, we'll set up some matrices. In addition to `nmatrix` and `yab_prime` we'll use `numsamp_a` and `numsamp_b` to keep track of how many times each individual in a dyad was sighted during the period when both were alive so we can smartly apply some sort of inclusion cutoff there.
+First, we'll set up some matrices.
 
 ```{r}
 nmatrix 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
 yab_prime 	<- matrix(0, nids, nids, dimnames = list(uids, uids))
-
-numsamp_a <- matrix(0, nids, nids)
-numsamp_b <- matrix(0, nids, nids)
 ```
 
 As elluded to above, we're going to keep track of availability of individuals (those that were alive at the same time). To do that we'll calculate overlap which is just the transpose crossproduct of `nax_avail`.
@@ -267,12 +264,12 @@ So here's the second megaloop:
 
 -  grab the dyads
 -  find their sampling periods of overlap
--  calculate yab_prime and nmatrix for this period of overlap (as well as total sightings of each)
+-  calculate yab_prime and nmatrix for this period of overlap
 
 **This is the slowest loop in this whole process and there is probably a more efficient way to write this, but it works for now.**
 
-```{r, eval = TRUE}
-# eval = TRUE
+```{r, eval = FALSE}
+# eval = FALSE
 
 pb <- txtProgressBar(style = 3)
 for(i in 1:nrow(overlapping)) {
@@ -282,7 +279,6 @@ if((i %% 100) == 0) setTxtProgressBar(pb, i / nrow(overlapping))
   b <- overlapping[i, 2]
   
   # just subsetting the nax and nax_avail for this dyad
-  nax_tmp <- nax[c(a, b), ]
   nax_avail_tmp <- nax_avail[c(a, b), ]
   
   # get the days on which they were both alive
@@ -292,11 +288,7 @@ if((i %% 100) == 0) setTxtProgressBar(pb, i / nrow(overlapping))
   samps_tmp <- intersect(samps_tmp, colnames(nax))
   
   # get the nax for just these samples
-  nax_tmp <- nax[c(a, b), samps_tmp]
-  
-  # calculate the total number of times each was seen during the days that both were alive
-  numsamp_a[c(a, b), c(a, b)] <- sum(nax_tmp[1, ])
-  numsamp_b[c(a, b), c(a, b)] <- sum(nax_tmp[2, ])
+  nax_tmp <- nax[c(a, b), samps_tmp, drop = FALSE]
   
   # calculate yab_prime
   yab_prime_tmp <- tcrossprod(nax_tmp)
@@ -310,7 +302,7 @@ if((i %% 100) == 0) setTxtProgressBar(pb, i / nrow(overlapping))
 close(pb)
 
 # save these outputs because they took a long time
-save(assoc, yab_prime, nmatrix, numsamp_a, numsamp_b, dat, file = "data/simple_ratio_calc.RData")
+save(assoc, yab_prime, nmatrix, dat, file = "data/simple_ratio_calc.RData")
 ```
 
 
@@ -328,25 +320,38 @@ diag(sr) <- NA
 
 Ready to filter a little bit:
 
+-  calculate and apply numsampcutoff
 -  If dyads weren't alive for long enough to make the cut let's make their association index NA not 0.
--  If either individual in the dyad wasn't sighted more than `numsampcutoff` during the time they were both alive let's make their association index NA. **This is quite restrictive and probably not necessary. Especially since 35 is fairly high to begin with. We could apply the `numsampcutoff` to total observations not accounting for overlap if we wanted to be slightly less restrictive.**
 -  We can now remove any individuals that has a NA with every other dyad.
 -  If a dyad passes all these and still was never seen together than it should really be a 0 not an NA. This doesn't turn out to happen for any of the ids here.
 
-```{r filter}
-diag(numsamp_a) <- NA
-diag(numsamp_b) <- NA
+```{r calc-numsamp-cutoff}
+# nsightings by agesexid
+nsightings <- rowSums(nax)
 
+# egno (cross agesexid)
+egno <- substring(names(nsightings), 1, 4)
+
+# dataframe pasting everything together
+nsightings_df <- data.frame(agesexid = names(nsightings), egno = egno, nsight_agesex = nsightings, stringsAsFactors = FALSE)
+
+# aggregate and match back in
+nsight_total <- aggregate(nsight_agesex ~ egno, data = nsightings_df, FUN = sum)
+nsightings_df[, 'nsight_total'] <- nsight_total$nsight_agesex[match(nsightings_df$egno, nsight_total$egno)]
+```
+
+```{r filter}
 # set all the never associates to zero first and then deal with the NAs
 sr[assoc == 0] <- 0
+diag(sr) <- NA
+
+# apply numsampcutoff
+enoughsamps <- nsightings_df$nsight_total >= numsampcutoff
+sr[!enoughsamps, !enoughsamps] <- NA
 
 # not enough overlap
 notenoughoverlap <- overlap <= overlapdaycutoff
 sr[notenoughoverlap] <- NA
-
-# either individual in the dyad wasn't seen enough during the overlap period
-notenoughsightings <- (numsamp_a < numsampcutoff | numsamp_b < numsampcutoff)
-sr[notenoughsightings] <- NA
 
 # remove individauls completely if they never even had the opportunity to associate with anyone
 isallna <- apply(sr, 2, function(r) all(is.na(r)))
