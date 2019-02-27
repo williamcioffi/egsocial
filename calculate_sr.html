@@ -338,7 +338,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: Calculating simple ratio</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2019-02-26 17:27:21 EST</em></h4>
+<h4 class="date"><em>2019-02-27 12:20:07 EST</em></h4>
 
 </div>
 
@@ -416,12 +416,18 @@ timedifferences &lt;-<span class="st"> </span><span class="cf">function</span>(n
 <p>Set some initial values:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_assoc_distance &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># km</span>
 numsampcutoff &lt;-<span class="st"> </span><span class="dv">35</span>
-overlapdaycutoff &lt;-<span class="st"> </span><span class="dv">365</span>
+overlapdaycutoff &lt;-<span class="st"> </span><span class="dv">1</span>
 relative_speed_km_per_hour &lt;-<span class="st"> </span><span class="fl">3.1</span> <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="co"># 3.1 kph * 2 whales diametrically opposed</span></code></pre></div>
 <p>Load in the raw data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;data/agesex_assigned.RData&quot;</span>)
 <span class="kw">load</span>(<span class="st">&quot;data/nax_avail.RData&quot;</span>)</code></pre></div>
-<p>Calculate dates. We’re only going to use entries with times, because we have used time in our association index calculation.</p>
+<p>Remove any sightings of dead animals, or those missing lat or lon from <code>dat</code>. As in other fields, it appears that a Latitude or Longitude of <code>0</code> indicates <code>NA</code> even though <code>0</code> could be a valid value. Dead animals are identified from the behavior codes.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">missing_lat_or_lon &lt;-<span class="st"> </span>(dat<span class="op">$</span>Latitude <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">|</span><span class="st"> </span>dat<span class="op">$</span>Longitude <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)
+dat &lt;-<span class="st"> </span>dat[<span class="op">!</span>missing_lat_or_lon, ]
+
+sightings_of_dead_whales &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;DEAD&quot;</span>, <span class="kw">toupper</span>(dat<span class="op">$</span>Behaviors))
+dat &lt;-<span class="st"> </span>dat[<span class="op">!</span>sightings_of_dead_whales, ]</code></pre></div>
+<p>Calculate dates. We’re only going to use entries with times, because we have used time in our association index calculation. Instead of <code>0</code> meaning midnight. I think in this context it means <code>NA</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># if there is a missing value in any of these fields we won't use it</span>
 missing_date_or_time &lt;-<span class="st"> </span>(<span class="kw">is.na</span>(dat<span class="op">$</span>date) <span class="op">|</span><span class="st"> </span>dat<span class="op">$</span>Time <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)
 
@@ -519,12 +525,9 @@ nax       &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span cla
 <p><span class="math inline">\(2x + 2y{ab} + y_a + y_b - y_{ab} - x\)</span></p>
 <p>and which simplifies to the desired denominator:</p>
 <p><span class="math inline">\(x + y_{ab} + y_a + y_b\)</span></p>
-<p>First, we’ll set up some matrices. In addition to <code>nmatrix</code> and <code>yab_prime</code> we’ll use <code>numsamp_a</code> and <code>numsamp_b</code> to keep track of how many times each individual in a dyad was sighted during the period when both were alive so we can smartly apply some sort of inclusion cutoff there.</p>
+<p>First, we’ll set up some matrices.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nmatrix     &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, nids, nids, <span class="dt">dimnames =</span> <span class="kw">list</span>(uids, uids))
-yab_prime   &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, nids, nids, <span class="dt">dimnames =</span> <span class="kw">list</span>(uids, uids))
-
-numsamp_a &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, nids, nids)
-numsamp_b &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, nids, nids)</code></pre></div>
+yab_prime   &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, nids, nids, <span class="dt">dimnames =</span> <span class="kw">list</span>(uids, uids))</code></pre></div>
 <p>As elluded to above, we’re going to keep track of availability of individuals (those that were alive at the same time). To do that we’ll calculate overlap which is just the transpose crossproduct of <code>nax_avail</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">overlap &lt;-<span class="st"> </span><span class="kw">tcrossprod</span>(nax_avail)
 <span class="kw">diag</span>(overlap) &lt;-<span class="st"> </span><span class="ot">NA</span>
@@ -534,23 +537,19 @@ overlapping &lt;-<span class="st"> </span><span class="kw">which</span>(overlap 
 <ul>
 <li>grab the dyads</li>
 <li>find their sampling periods of overlap</li>
-<li>calculate yab_prime and nmatrix for this period of overlap (as well as total sightings of each)</li>
+<li>calculate yab_prime and nmatrix for this period of overlap</li>
 </ul>
 <p><strong>This is the slowest loop in this whole process and there is probably a more efficient way to write this, but it works for now.</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># eval = TRUE</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># eval = FALSE</span>
 
-pb &lt;-<span class="st"> </span><span class="kw">txtProgressBar</span>(<span class="dt">style =</span> <span class="dv">3</span>)</code></pre></div>
-<pre><code>## 
-  |                                                                       
-  |                                                                 |   0%</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(overlapping)) {
+pb &lt;-<span class="st"> </span><span class="kw">txtProgressBar</span>(<span class="dt">style =</span> <span class="dv">3</span>)
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(overlapping)) {
 <span class="cf">if</span>((i <span class="op">%%</span><span class="st"> </span><span class="dv">100</span>) <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) <span class="kw">setTxtProgressBar</span>(pb, i <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(overlapping))
   <span class="co"># grab the dyads one by one</span>
   a &lt;-<span class="st"> </span>overlapping[i, <span class="dv">1</span>]
   b &lt;-<span class="st"> </span>overlapping[i, <span class="dv">2</span>]
   
   <span class="co"># just subsetting the nax and nax_avail for this dyad</span>
-  nax_tmp &lt;-<span class="st"> </span>nax[<span class="kw">c</span>(a, b), ]
   nax_avail_tmp &lt;-<span class="st"> </span>nax_avail[<span class="kw">c</span>(a, b), ]
   
   <span class="co"># get the days on which they were both alive</span>
@@ -560,11 +559,7 @@ pb &lt;-<span class="st"> </span><span class="kw">txtProgressBar</span>(<span cl
   samps_tmp &lt;-<span class="st"> </span><span class="kw">intersect</span>(samps_tmp, <span class="kw">colnames</span>(nax))
   
   <span class="co"># get the nax for just these samples</span>
-  nax_tmp &lt;-<span class="st"> </span>nax[<span class="kw">c</span>(a, b), samps_tmp]
-  
-  <span class="co"># calculate the total number of times each was seen during the days that both were alive</span>
-  numsamp_a[<span class="kw">c</span>(a, b), <span class="kw">c</span>(a, b)] &lt;-<span class="st"> </span><span class="kw">sum</span>(nax_tmp[<span class="dv">1</span>, ])
-  numsamp_b[<span class="kw">c</span>(a, b), <span class="kw">c</span>(a, b)] &lt;-<span class="st"> </span><span class="kw">sum</span>(nax_tmp[<span class="dv">2</span>, ])
+  nax_tmp &lt;-<span class="st"> </span>nax[<span class="kw">c</span>(a, b), samps_tmp, drop =<span class="st"> </span><span class="ot">FALSE</span>]
   
   <span class="co"># calculate yab_prime</span>
   yab_prime_tmp &lt;-<span class="st"> </span><span class="kw">tcrossprod</span>(nax_tmp)
@@ -574,341 +569,11 @@ pb &lt;-<span class="st"> </span><span class="kw">txtProgressBar</span>(<span cl
   nsight_tmp &lt;-<span class="st"> </span><span class="kw">rowSums</span>(nax_tmp)
   nmatrix_tmp &lt;-<span class="st"> </span><span class="kw">outer</span>(nsight_tmp, nsight_tmp, <span class="st">'+'</span>)
   nmatrix[<span class="kw">c</span>(a, b), <span class="kw">c</span>(a, b)] &lt;-<span class="st"> </span>nmatrix_tmp
-}</code></pre></div>
-<pre><code>## 
-  |                                                                       
-  |                                                                 |   1%
-  |                                                                       
-  |=                                                                |   1%
-  |                                                                       
-  |=                                                                |   2%
-  |                                                                       
-  |==                                                               |   2%
-  |                                                                       
-  |==                                                               |   3%
-  |                                                                       
-  |==                                                               |   4%
-  |                                                                       
-  |===                                                              |   4%
-  |                                                                       
-  |===                                                              |   5%
-  |                                                                       
-  |====                                                             |   5%
-  |                                                                       
-  |====                                                             |   6%
-  |                                                                       
-  |====                                                             |   7%
-  |                                                                       
-  |=====                                                            |   7%
-  |                                                                       
-  |=====                                                            |   8%
-  |                                                                       
-  |======                                                           |   8%
-  |                                                                       
-  |======                                                           |   9%
-  |                                                                       
-  |======                                                           |  10%
-  |                                                                       
-  |=======                                                          |  10%
-  |                                                                       
-  |=======                                                          |  11%
-  |                                                                       
-  |=======                                                          |  12%
-  |                                                                       
-  |========                                                         |  12%
-  |                                                                       
-  |========                                                         |  13%
-  |                                                                       
-  |=========                                                        |  13%
-  |                                                                       
-  |=========                                                        |  14%
-  |                                                                       
-  |=========                                                        |  15%
-  |                                                                       
-  |==========                                                       |  15%
-  |                                                                       
-  |==========                                                       |  16%
-  |                                                                       
-  |===========                                                      |  16%
-  |                                                                       
-  |===========                                                      |  17%
-  |                                                                       
-  |===========                                                      |  18%
-  |                                                                       
-  |============                                                     |  18%
-  |                                                                       
-  |============                                                     |  19%
-  |                                                                       
-  |=============                                                    |  19%
-  |                                                                       
-  |=============                                                    |  20%
-  |                                                                       
-  |=============                                                    |  21%
-  |                                                                       
-  |==============                                                   |  21%
-  |                                                                       
-  |==============                                                   |  22%
-  |                                                                       
-  |===============                                                  |  22%
-  |                                                                       
-  |===============                                                  |  23%
-  |                                                                       
-  |===============                                                  |  24%
-  |                                                                       
-  |================                                                 |  24%
-  |                                                                       
-  |================                                                 |  25%
-  |                                                                       
-  |=================                                                |  25%
-  |                                                                       
-  |=================                                                |  26%
-  |                                                                       
-  |=================                                                |  27%
-  |                                                                       
-  |==================                                               |  27%
-  |                                                                       
-  |==================                                               |  28%
-  |                                                                       
-  |===================                                              |  28%
-  |                                                                       
-  |===================                                              |  29%
-  |                                                                       
-  |===================                                              |  30%
-  |                                                                       
-  |====================                                             |  30%
-  |                                                                       
-  |====================                                             |  31%
-  |                                                                       
-  |====================                                             |  32%
-  |                                                                       
-  |=====================                                            |  32%
-  |                                                                       
-  |=====================                                            |  33%
-  |                                                                       
-  |======================                                           |  33%
-  |                                                                       
-  |======================                                           |  34%
-  |                                                                       
-  |======================                                           |  35%
-  |                                                                       
-  |=======================                                          |  35%
-  |                                                                       
-  |=======================                                          |  36%
-  |                                                                       
-  |========================                                         |  36%
-  |                                                                       
-  |========================                                         |  37%
-  |                                                                       
-  |========================                                         |  38%
-  |                                                                       
-  |=========================                                        |  38%
-  |                                                                       
-  |=========================                                        |  39%
-  |                                                                       
-  |==========================                                       |  39%
-  |                                                                       
-  |==========================                                       |  40%
-  |                                                                       
-  |==========================                                       |  41%
-  |                                                                       
-  |===========================                                      |  41%
-  |                                                                       
-  |===========================                                      |  42%
-  |                                                                       
-  |============================                                     |  42%
-  |                                                                       
-  |============================                                     |  43%
-  |                                                                       
-  |============================                                     |  44%
-  |                                                                       
-  |=============================                                    |  44%
-  |                                                                       
-  |=============================                                    |  45%
-  |                                                                       
-  |==============================                                   |  45%
-  |                                                                       
-  |==============================                                   |  46%
-  |                                                                       
-  |==============================                                   |  47%
-  |                                                                       
-  |===============================                                  |  47%
-  |                                                                       
-  |===============================                                  |  48%
-  |                                                                       
-  |================================                                 |  48%
-  |                                                                       
-  |================================                                 |  49%
-  |                                                                       
-  |================================                                 |  50%
-  |                                                                       
-  |=================================                                |  50%
-  |                                                                       
-  |=================================                                |  51%
-  |                                                                       
-  |=================================                                |  52%
-  |                                                                       
-  |==================================                               |  52%
-  |                                                                       
-  |==================================                               |  53%
-  |                                                                       
-  |===================================                              |  53%
-  |                                                                       
-  |===================================                              |  54%
-  |                                                                       
-  |===================================                              |  55%
-  |                                                                       
-  |====================================                             |  55%
-  |                                                                       
-  |====================================                             |  56%
-  |                                                                       
-  |=====================================                            |  56%
-  |                                                                       
-  |=====================================                            |  57%
-  |                                                                       
-  |=====================================                            |  58%
-  |                                                                       
-  |======================================                           |  58%
-  |                                                                       
-  |======================================                           |  59%
-  |                                                                       
-  |=======================================                          |  59%
-  |                                                                       
-  |=======================================                          |  60%
-  |                                                                       
-  |=======================================                          |  61%
-  |                                                                       
-  |========================================                         |  61%
-  |                                                                       
-  |========================================                         |  62%
-  |                                                                       
-  |=========================================                        |  62%
-  |                                                                       
-  |=========================================                        |  63%
-  |                                                                       
-  |=========================================                        |  64%
-  |                                                                       
-  |==========================================                       |  64%
-  |                                                                       
-  |==========================================                       |  65%
-  |                                                                       
-  |===========================================                      |  65%
-  |                                                                       
-  |===========================================                      |  66%
-  |                                                                       
-  |===========================================                      |  67%
-  |                                                                       
-  |============================================                     |  67%
-  |                                                                       
-  |============================================                     |  68%
-  |                                                                       
-  |=============================================                    |  68%
-  |                                                                       
-  |=============================================                    |  69%
-  |                                                                       
-  |=============================================                    |  70%
-  |                                                                       
-  |==============================================                   |  70%
-  |                                                                       
-  |==============================================                   |  71%
-  |                                                                       
-  |==============================================                   |  72%
-  |                                                                       
-  |===============================================                  |  72%
-  |                                                                       
-  |===============================================                  |  73%
-  |                                                                       
-  |================================================                 |  73%
-  |                                                                       
-  |================================================                 |  74%
-  |                                                                       
-  |================================================                 |  75%
-  |                                                                       
-  |=================================================                |  75%
-  |                                                                       
-  |=================================================                |  76%
-  |                                                                       
-  |==================================================               |  76%
-  |                                                                       
-  |==================================================               |  77%
-  |                                                                       
-  |==================================================               |  78%
-  |                                                                       
-  |===================================================              |  78%
-  |                                                                       
-  |===================================================              |  79%
-  |                                                                       
-  |====================================================             |  79%
-  |                                                                       
-  |====================================================             |  80%
-  |                                                                       
-  |====================================================             |  81%
-  |                                                                       
-  |=====================================================            |  81%
-  |                                                                       
-  |=====================================================            |  82%
-  |                                                                       
-  |======================================================           |  82%
-  |                                                                       
-  |======================================================           |  83%
-  |                                                                       
-  |======================================================           |  84%
-  |                                                                       
-  |=======================================================          |  84%
-  |                                                                       
-  |=======================================================          |  85%
-  |                                                                       
-  |========================================================         |  85%
-  |                                                                       
-  |========================================================         |  86%
-  |                                                                       
-  |========================================================         |  87%
-  |                                                                       
-  |=========================================================        |  87%
-  |                                                                       
-  |=========================================================        |  88%
-  |                                                                       
-  |==========================================================       |  88%
-  |                                                                       
-  |==========================================================       |  89%
-  |                                                                       
-  |==========================================================       |  90%
-  |                                                                       
-  |===========================================================      |  90%
-  |                                                                       
-  |===========================================================      |  91%
-  |                                                                       
-  |===========================================================      |  92%
-  |                                                                       
-  |============================================================     |  92%
-  |                                                                       
-  |============================================================     |  93%
-  |                                                                       
-  |=============================================================    |  93%
-  |                                                                       
-  |=============================================================    |  94%
-  |                                                                       
-  |=============================================================    |  95%
-  |                                                                       
-  |==============================================================   |  95%
-  |                                                                       
-  |==============================================================   |  96%
-  |                                                                       
-  |===============================================================  |  96%
-  |                                                                       
-  |===============================================================  |  97%
-  |                                                                       
-  |===============================================================  |  98%
-  |                                                                       
-  |================================================================ |  98%
-  |                                                                       
-  |================================================================ |  99%
-  |                                                                       
-  |=================================================================|  99%
-  |                                                                       
-  |=================================================================| 100%</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">close</span>(pb)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># save these outputs because they took a long time</span>
-<span class="kw">save</span>(assoc, yab_prime, nmatrix, numsamp_a, numsamp_b, dat, <span class="dt">file =</span> <span class="st">&quot;data/simple_ratio_calc.RData&quot;</span>)</code></pre></div>
+}
+<span class="kw">close</span>(pb)
+
+<span class="co"># save these outputs because they took a long time</span>
+<span class="kw">save</span>(assoc, yab_prime, nmatrix, dat, <span class="dt">file =</span> <span class="st">&quot;data/simple_ratio_calc.RData&quot;</span>)</code></pre></div>
 <p>Now we can actually calculate the simple ratio and do some filtering.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load in the results if not rerunning</span>
 <span class="kw">load</span>(<span class="st">&quot;data/simple_ratio_calc.RData&quot;</span>)
@@ -919,24 +584,34 @@ sr &lt;-<span class="st"> </span>assoc <span class="op">/</span><span class="st"
 <span class="kw">diag</span>(sr) &lt;-<span class="st"> </span><span class="ot">NA</span></code></pre></div>
 <p>Ready to filter a little bit:</p>
 <ul>
+<li>calculate and apply numsampcutoff</li>
 <li>If dyads weren’t alive for long enough to make the cut let’s make their association index NA not 0.</li>
-<li>If either individual in the dyad wasn’t sighted more than <code>numsampcutoff</code> during the time they were both alive let’s make their association index NA. <strong>This is quite restrictive and probably not necessary. Especially since 35 is fairly high to begin with. We could apply the <code>numsampcutoff</code> to total observations not accounting for overlap if we wanted to be slightly less restrictive.</strong></li>
 <li>We can now remove any individuals that has a NA with every other dyad.</li>
 <li>If a dyad passes all these and still was never seen together than it should really be a 0 not an NA. This doesn’t turn out to happen for any of the ids here.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">diag</span>(numsamp_a) &lt;-<span class="st"> </span><span class="ot">NA</span>
-<span class="kw">diag</span>(numsamp_b) &lt;-<span class="st"> </span><span class="ot">NA</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># nsightings by agesexid</span>
+nsightings &lt;-<span class="st"> </span><span class="kw">rowSums</span>(nax)
 
-<span class="co"># set all the never associates to zero first and then deal with the NAs</span>
+<span class="co"># egno (cross agesexid)</span>
+egno &lt;-<span class="st"> </span><span class="kw">substring</span>(<span class="kw">names</span>(nsightings), <span class="dv">1</span>, <span class="dv">4</span>)
+
+<span class="co"># dataframe pasting everything together</span>
+nsightings_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">agesexid =</span> <span class="kw">names</span>(nsightings), <span class="dt">egno =</span> egno, <span class="dt">nsight_agesex =</span> nsightings, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+
+<span class="co"># aggregate and match back in</span>
+nsight_total &lt;-<span class="st"> </span><span class="kw">aggregate</span>(nsight_agesex <span class="op">~</span><span class="st"> </span>egno, <span class="dt">data =</span> nsightings_df, <span class="dt">FUN =</span> sum)
+nsightings_df[, <span class="st">'nsight_total'</span>] &lt;-<span class="st"> </span>nsight_total<span class="op">$</span>nsight_agesex[<span class="kw">match</span>(nsightings_df<span class="op">$</span>egno, nsight_total<span class="op">$</span>egno)]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># set all the never associates to zero first and then deal with the NAs</span>
 sr[assoc <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="dv">0</span>
+<span class="kw">diag</span>(sr) &lt;-<span class="st"> </span><span class="ot">NA</span>
+
+<span class="co"># apply numsampcutoff</span>
+enoughsamps &lt;-<span class="st"> </span>nsightings_df<span class="op">$</span>nsight_total <span class="op">&gt;=</span><span class="st"> </span>numsampcutoff
+sr[<span class="op">!</span>enoughsamps, <span class="op">!</span>enoughsamps] &lt;-<span class="st"> </span><span class="ot">NA</span>
 
 <span class="co"># not enough overlap</span>
 notenoughoverlap &lt;-<span class="st"> </span>overlap <span class="op">&lt;=</span><span class="st"> </span>overlapdaycutoff
 sr[notenoughoverlap] &lt;-<span class="st"> </span><span class="ot">NA</span>
-
-<span class="co"># either individual in the dyad wasn't seen enough during the overlap period</span>
-notenoughsightings &lt;-<span class="st"> </span>(numsamp_a <span class="op">&lt;</span><span class="st"> </span>numsampcutoff <span class="op">|</span><span class="st"> </span>numsamp_b <span class="op">&lt;</span><span class="st"> </span>numsampcutoff)
-sr[notenoughsightings] &lt;-<span class="st"> </span><span class="ot">NA</span>
 
 <span class="co"># remove individauls completely if they never even had the opportunity to associate with anyone</span>
 isallna &lt;-<span class="st"> </span><span class="kw">apply</span>(sr, <span class="dv">2</span>, <span class="cf">function</span>(r) <span class="kw">all</span>(<span class="kw">is.na</span>(r)))
