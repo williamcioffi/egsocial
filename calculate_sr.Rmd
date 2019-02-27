@@ -113,7 +113,17 @@ load("data/agesex_assigned.RData")
 load("data/nax_avail.RData")
 ```
 
-Calculate dates. We're only going to use entries with times, because we have used time in our association index calculation.
+Remove any sightings of dead animals, or those missing lat or lon from `dat`. As in other fields, it appears that a Latitude or Longitude of `0` indicates `NA` even though `0` could be a valid value. Dead animals are identified from the behavior codes.
+
+```{r remove-na-and-dead}
+missing_lat_or_lon <- (dat$Latitude == 0 | dat$Longitude == 0)
+dat <- dat[!missing_lat_or_lon, ]
+
+sightings_of_dead_whales <- grepl("DEAD", toupper(dat$Behaviors))
+dat <- dat[!sightings_of_dead_whales, ]
+```
+
+Calculate dates. We're only going to use entries with times, because we have used time in our association index calculation. Instead of `0` meaning midnight. I think in this context it means `NA`.
 
 ```{r calculatedate}
 # if there is a missing value in any of these fields we won't use it
