@@ -708,7 +708,11 @@ sessionInfo()
 
 1. Christin: 
 
-    - double check that the age-sex classes have all been assigned correctly and ready to go (nearly there I think)
+    - double check that the age-sex classes have all been assigned correctly and ready to go 
+    - duplicate data rows removed? 
+    - dead whales removed? 
+    - missing date/time/position removed?
+    - correct sightings of 1012 in 1983?
   
     - think more on the overlap criteria for being alive in the same age-sex class and if 1 day (instead of 365 days) is most appropriate metric, especially for juveniles and lactating females
 
