@@ -720,8 +720,7 @@ sessionInfo()
     - put in a filter to explicitly kick out any sightings of dead whales (both a behavior code of 'DEAD' OR an assumption of death if not seen for 6 consecutive years)
     - put in a filter to kick out missing latitude/longitude values
     - move over the R code to remove duplicate rows (between sections 6.1 and 6.2)
-    - move over the R code to run social differentiation test
-
+    - move over the R code to run social differentiation test (but maybe not... see email from Christin 3/20/2019)
 
 
 ----
