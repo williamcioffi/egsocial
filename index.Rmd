@@ -101,6 +101,7 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 - delete column "Letter"
 - delete any whales (EGNo) of unknown sex 'X'
 - moved "Latitude" and "Longitude" columns over to the left, and formatted to 5 decimal places
+- manually added "W/CALF" to the behavior columns for all sightings of egno 1012 in 1983 (there should be 3 sightings and only 1 of them had the behavior code).  The reasoning behind this is that if 1012 had a calf on September 30th and was therefore lactating, then she must also have had a calf the day before on September 29th even if the researcher in the field didn't notice it.  I had inquired with Philip Hamilton at NEAQ about this and he agreed.
 - insert a RID column for row names
 - save
 - save as a .txt file
@@ -712,8 +713,6 @@ sessionInfo()
     - duplicate data rows removed? 
     - dead whales removed? 
     - missing date/time/position removed?
-    - correct sightings of 1012 in 1983?
-  
     - think more on the overlap criteria for being alive in the same age-sex class and if 1 day (instead of 365 days) is most appropriate metric, especially for juveniles and lactating females
 
 2. Will:
