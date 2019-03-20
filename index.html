@@ -338,7 +338,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: North Atlantic right whales within communication range</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2019-03-20 14:51:02 EDT</em></h4>
+<h4 class="date"><em>2019-03-20 15:02:11 EDT</em></h4>
 
 </div>
 
@@ -962,8 +962,6 @@ nax_avail[<span class="kw">which</span>(nax_avail <span class="op">&gt;</span><s
 <li><p>Christin:</p>
 <ul>
 <li>double check that the age-sex classes have all been assigned correctly and ready to go</li>
-<li>duplicate data rows removed?</li>
-<li>dead whales removed?</li>
 <li>missing date/time/position removed?</li>
 <li>think more on the overlap criteria for being alive in the same age-sex class and if 1 day (instead of 365 days) is most appropriate metric, especially for juveniles and lactating females</li>
 </ul></li>
@@ -973,6 +971,7 @@ nax_avail[<span class="kw">which</span>(nax_avail <span class="op">&gt;</span><s
 <li>change the overlap criteria to just if they are both available for at least one day (rather than 365) and think more on that</li>
 <li>put in a filter to explicitly kick out any sightings of dead whales (both a behavior code of ‘DEAD’ OR an assumption of death if not seen for 6 consecutive years)</li>
 <li>put in a filter to kick out missing latitude/longitude values</li>
+<li>move over the R code to remove duplicate rows (between sections 6.1 and 6.2)</li>
 <li>move over the R code to run social differentiation test</li>
 </ul></li>
 </ol>
