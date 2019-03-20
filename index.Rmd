@@ -119,10 +119,10 @@ The following rules are used to determine the age and sex class of an individual
 4. considered an adult if:
     a. it has been nine years or more since known birth year
     b. OR eight years or more since date of first sighting (when birth year is unknown)
-    c. OR Jan 1st of the year prior to giving birth to a calf
+    c. OR January 1st of the year prior to giving birth to a calf
 5. whales with a known birth year seen for less than eight years were excluded (unknown age class)
 6. lactating:
-    a. female are considered lactating from their first sighting with a dependent calf until dec 1st of the calving year.
+    a. female are considered lactating from their first sighting with a dependent calf until December 1st of the calving year.
     b. if a calf is lost; mother was considered lactating until the last sighting of calf, and non-lactating afterwards.
 
 
@@ -256,7 +256,7 @@ for(m in 1:nrow(cdat)) {
 		lactating_en <- max(which(date[dese] < calfjuvcutofflate))
 		
 		# save these for later to incorporate into cdat
-		# start off with december 1 as last lactday, but if calf dies update to earlier
+		# start off with December 1 as last lactday, but if calf dies update to earlier
 		first_lactday_tmp[m] <- as.character(date[dese][lactating_st])
 		last_lactday_tmp[m]  <- as.character(max(date[dese]))
 		
