@@ -338,7 +338,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: Calculating simple ratio</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2019-02-27 12:20:07 EST</em></h4>
+<h4 class="date"><em>2019-03-27 11:13:34 EDT</em></h4>
 
 </div>
 
@@ -354,7 +354,7 @@ div.tocify {
 <li>Each day was considered a sampling period.</li>
 <li>Two animals were considered associated if they were within a certain time-distance threshold.</li>
 <li>Only animals with at least 35 total sightings were considered.</li>
-<li>Only dyads that overlapped in the database for at least 1 year (365 days) were considered.</li>
+<li>Only dyads that overlapped in the database for at least 1 day were considered.</li>
 </ul>
 <div id="time-distance-threshold" class="section level2">
 <h2><span class="header-section-number">1.1</span> Time-distance threshold</h2>
@@ -369,7 +369,7 @@ div.tocify {
 </div>
 <div id="overlap-threshold" class="section level2">
 <h2><span class="header-section-number">1.2</span> Overlap threshold</h2>
-<p>As mentioned above we considered only dyads that overlapped at least 365 days in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 365 days even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular, age classes that animals spend less time in (juvenile and lactating) would have more difficulty (and not necessarily uniform) meeting this threshold with other dyads.</p>
+<p>As mentioned above we considered only dyads that overlapped at least 1 day in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 1 day even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular, age classes that animals spend less time in (juvenile and lactating) would have more difficulty (and not necessarily uniform) meeting this threshold with other dyads.</p>
 </div>
 <div id="set-up" class="section level2">
 <h2><span class="header-section-number">1.3</span> Set up</h2>
@@ -381,7 +381,7 @@ div.tocify {
 
 <span class="co"># haversine</span>
 latlond &lt;-<span class="st"> </span><span class="cf">function</span>(lat1, lon1, lat2, lon2) {
-    R &lt;-<span class="st"> </span><span class="dv">6371</span>
+    R &lt;-<span class="st"> </span><span class="dv">6371</span> <span class="co"># radius of the earth in km</span>
 
     dlat &lt;-<span class="st"> </span><span class="kw">torad</span>(lat2) <span class="op">-</span><span class="st"> </span><span class="kw">torad</span>(lat1)
     dlon &lt;-<span class="st"> </span><span class="kw">torad</span>(lon2) <span class="op">-</span><span class="st"> </span><span class="kw">torad</span>(lon1)
@@ -416,7 +416,7 @@ timedifferences &lt;-<span class="st"> </span><span class="cf">function</span>(n
 <p>Set some initial values:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_assoc_distance &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># km</span>
 numsampcutoff &lt;-<span class="st"> </span><span class="dv">35</span>
-overlapdaycutoff &lt;-<span class="st"> </span><span class="dv">1</span>
+overlapdaycutoff &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># day</span>
 relative_speed_km_per_hour &lt;-<span class="st"> </span><span class="fl">3.1</span> <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="co"># 3.1 kph * 2 whales diametrically opposed</span></code></pre></div>
 <p>Load in the raw data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;data/agesex_assigned.RData&quot;</span>)
@@ -509,7 +509,7 @@ nax       &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span cla
         }
         
         <span class="co"># goods just calculates the right cell in the matrix for each of the dyads</span>
-        goods &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">c</span>((b<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span>nids <span class="op">+</span><span class="st"> </span>a))
+        goods &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">c</span>((b<span class="dv">-1</span>)<span class="op">*</span>nids <span class="op">+</span><span class="st"> </span>a))
         assoc[goods] &lt;-<span class="st"> </span>assoc[goods] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
         }
 }</code></pre></div>

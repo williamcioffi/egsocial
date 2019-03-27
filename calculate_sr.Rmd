@@ -28,7 +28,7 @@ We used a set of custom functions to calculate the simple ratio for this dataset
 - Each day was considered a sampling period.
 - Two animals were considered associated if they were within a certain time-distance threshold.
 - Only animals with at least 35 total sightings were considered.
-- Only dyads that overlapped in the database for at least 1 year (365 days) were considered.
+- Only dyads that overlapped in the database for at least 1 day were considered.
 
 ## Time-distance threshold
 
@@ -45,7 +45,7 @@ We decided on:
 
 ## Overlap threshold
 
-As mentioned above we considered only dyads that overlapped at least 365 days in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 365 days even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular, age classes that animals spend less time in (juvenile and lactating) would have more difficulty (and not necessarily uniform) meeting this threshold with other dyads.
+As mentioned above we considered only dyads that overlapped at least 1 day in the database. Another way to concieve of this was that the dyads were available to associate with each other for at least 1 day even if they never did. Note that this threshold produces slightly different effects for different age sex classes. In particular, age classes that animals spend less time in (juvenile and lactating) would have more difficulty (and not necessarily uniform) meeting this threshold with other dyads.
 
 ## Set up
 
@@ -59,7 +59,7 @@ torad <- function(ang) {
 
 # haversine
 latlond <- function(lat1, lon1, lat2, lon2) {
-	R <- 6371
+	R <- 6371 # radius of the earth in km
 
 	dlat <- torad(lat2) - torad(lat1)
 	dlon <- torad(lon2) - torad(lon1)
@@ -102,7 +102,7 @@ Set some initial values:
 ```{r}
 max_assoc_distance <- 10 # km
 numsampcutoff <- 35
-overlapdaycutoff <- 1
+overlapdaycutoff <- 1 # day
 relative_speed_km_per_hour <- 3.1 * 2 # 3.1 kph * 2 whales diametrically opposed
 ```
 
