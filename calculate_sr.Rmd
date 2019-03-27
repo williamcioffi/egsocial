@@ -358,4 +358,21 @@ isallna <- apply(sr, 2, function(r) all(is.na(r)))
 sr <- sr[!isallna, !isallna]
 ```
 
+```{r lemma-how-filtering-matters}
+
+cutoff <- seq(0, 700, by = 10)[-1]
+filtered_perc <- vector(mode = "numeric", length = length(cutoff))
+for(i in 1:length(cutoff))
+  filtered_perc[i] <- 100* (1- (length(which(overlap >= cutoff[i])) / length(overlap)))
+
+plot(cutoff, filtered_perc,
+  las = 1,
+  pch = 3,
+  xlab = "Mininum number of days overlapping",
+  ylab = "percentage of dayds filtered"
+)
+legend("topleft", legend = "n = 1498176 dyads", bty = 'n')
+
+```
+
 # References
