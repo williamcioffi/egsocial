@@ -338,7 +338,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: Calculating simple ratio</h1>
 <h4 class="author"><em>William Cioffi and Christin Khan</em></h4>
-<h4 class="date"><em>2019-03-27 11:25:23 EDT</em></h4>
+<h4 class="date"><em>2019-03-27 11:27:37 EDT</em></h4>
 
 </div>
 
@@ -616,6 +616,10 @@ sr[notenoughoverlap] &lt;-<span class="st"> </span><span class="ot">NA</span>
 <span class="co"># remove individauls completely if they never even had the opportunity to associate with anyone</span>
 isallna &lt;-<span class="st"> </span><span class="kw">apply</span>(sr, <span class="dv">2</span>, <span class="cf">function</span>(r) <span class="kw">all</span>(<span class="kw">is.na</span>(r)))
 sr &lt;-<span class="st"> </span>sr[<span class="op">!</span>isallna, <span class="op">!</span>isallna]</code></pre></div>
+</div>
+<div id="lemma-take-a-look-at-different-overlap-days-thresholds." class="section level2">
+<h2><span class="header-section-number">1.6</span> LEMMA: take a look at different overlap days thresholds.</h2>
+<p>Look at 1-700 by 10 and plot the percentage that get filtered out. Note that more than half of the dyads overlap 0 days. You can see the big jump at the year because a lot of the catagorization happens at the yearly scale.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cutoff &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">700</span>, <span class="dt">by =</span> <span class="dv">10</span>)[<span class="op">-</span><span class="dv">1</span>]
 filtered_perc &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="dt">mode =</span> <span class="st">&quot;numeric&quot;</span>, <span class="dt">length =</span> <span class="kw">length</span>(cutoff))
 <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(cutoff))

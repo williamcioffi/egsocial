@@ -358,6 +358,10 @@ isallna <- apply(sr, 2, function(r) all(is.na(r)))
 sr <- sr[!isallna, !isallna]
 ```
 
+## LEMMA: take a look at different overlap days thresholds. 
+
+Look at 1-700 by 10 and plot the percentage that get filtered out. Note that more than half of the dyads overlap 0 days. You can see the big jump at the year because a lot of the catagorization happens at the yearly scale.
+
 ```{r lemma-how-filtering-matters}
 
 cutoff <- seq(0, 700, by = 10)[-1]
