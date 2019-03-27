@@ -299,7 +299,7 @@ dat[, 'ageclass'] <- ageclass_tmp
 Now we have lactating and age-sex class categories assigned and integrated into the `dat` table. Next we can paste together the sex from `dat` with `ageclass` to create an agesex class. "AF" is changed to "NF" to indicate non-lactating. We paste ID number and agesex class together and add this as a field to the `dat` table.
 
 ```{r}
-agesexid_tmp <- paste0(ageclass_tmp, dat$Sex)
+agesexid_tmp <- paste0(ageclass_tmp, dat$Gender)
 agesexid_tmp[agesexid_tmp == "AF" & lactating_tmp == "L"] <- "LF"
 agesexid_tmp[agesexid_tmp == "AF"] <- "NF"
 
