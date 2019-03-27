@@ -104,7 +104,16 @@ Phil Hamilton retrieved the data for this request on 11/6/2017 which consisted o
 - manually added "W/CALF" to the behavior columns for all sightings of egno 1012 in 1983 (there should be 3 sightings and only 1 of them had the behavior code).  The reasoning behind this is that if 1012 had a calf on September 30th and was therefore lactating, then she must also have had a calf the day before on September 29th even if the researcher in the field didn't notice it.  I had inquired with Philip Hamilton at NEAQ about this and he agreed.
 - insert a RID column for row names
 - save
-- save as a .txt file
+- save as a .csv file
+
+## Remove duplicate rows
+
+For some reason there were some duplicated rows in the original data file. Make sure to remove these either in a spreadsheet app or in R. This can be done simply:
+
+```{r remove-dups, eval = FALSE}
+# dat <- dat[!duplicated(dat[, -1]), ]
+```
+
 
 ## Age and Sex Assignment {#rules}
 
@@ -719,9 +728,9 @@ sessionInfo()
 
     - change 35 sample size restriction to be just at individual egno level (not at age-sex level)
     - change the overlap criteria to just if they are both available for at least one day (rather than 365) and think more on that
-    - put in a filter to explicitly kick out any sightings of dead whales (both a behavior code of 'DEAD' OR an assumption of death if not seen for 6 consecutive years)
-    - put in a filter to kick out missing latitude/longitude values
-    - move over the R code to remove duplicate rows (between sections 6.1 and 6.2)
+    - ~~put in a filter to explicitly kick out any sightings of dead whales (both a behavior code of 'DEAD' OR an assumption of death if not seen for 6 consecutive years)~~
+    - ~~put in a filter to kick out missing latitude/longitude values~~
+    - ~~move over the R code to remove duplicate rows (between sections 6.1 and 6.2)~~
     - move over the R code to run social differentiation test (but maybe not... see email from Christin 3/20/2019)
 
 
