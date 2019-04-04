@@ -718,15 +718,22 @@ sessionInfo()
 
 [**editing instructions**](#how)
 
-1. Christin: 
 
-    - double check that the age-sex classes have all been assigned correctly and ready to go 
-    - think more on the overlap criteria for being alive in the same age-sex class and if 1 day (instead of 365 days) is most appropriate metric, especially for juveniles and lactating females
+Things for us to discuss today:
 
-2. Will:
+1. What about switching our default day to work on this to Thursdays?
+2. Discuss overlap criteria
+3. Discuss social differentiation R code
+4. Discuss use of Simple ratio and write up about it's justification
+5. Get updated numbers (# unique individuals egno, # unique code with age sex class #in each class)
 
-    - ~~change the overlap criteria to just if they are both available for at least one day (rather than 365) and think more on that~~
-    - move over the R code to run social differentiation test (but maybe not... see email from Christin 3/20/2019)
+
+Christin To Do: 
+
+
+Will To Do:
+
+ 
 
 
 ----
