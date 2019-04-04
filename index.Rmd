@@ -719,19 +719,27 @@ sessionInfo()
 [**editing instructions**](#how)
 
 
-Things for us to discuss today:
 
-1. What about switching our default day to work on this to Thursdays?
-2. Discuss overlap criteria
-3. Discuss social differentiation R code
-4. Discuss use of Simple ratio and write up about it's justification
-5. Get updated numbers (# unique individuals egno, # unique code with age sex class #in each class)
+**Christin To Do:** 
+
+1. Get updated numbers (# unique individuals egno, # unique code with age sex class #in each class)-- Christin can pull from table or do it in R
+
+2. Install newer version of SOCPROG
+
+3. Make tables needed (primary and supple)
+
+4. Run social differentiation SOCPROG
 
 
-Christin To Do: 
 
 
-Will To Do:
+**Will To Do:**
+
+1. Make plots of different overlap day thresholds for juveniles and lactating females to help us decide but leaning towards just using one day as overlap criteria
+
+2. Play with the R code for measuring the complexity of social associations using mixture models (Weiss paper) and think about that
+
+3. Once overlap criteria is sorted out, export the matrix for the permutation tests in SOCPROG
 
  
 
