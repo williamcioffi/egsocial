@@ -353,7 +353,7 @@ sr[!enoughsamps, !enoughsamps] <- NA
 notenoughoverlap <- overlap <= overlapdaycutoff
 sr[notenoughoverlap] <- NA
 
-# remove individauls completely if they never even had the opportunity to associate with anyone
+# remove individuals completely if they never even had the opportunity to associate with anyone
 isallna <- apply(sr, 2, function(r) all(is.na(r)))
 sr <- sr[!isallna, !isallna]
 ```
