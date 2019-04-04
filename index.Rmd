@@ -729,7 +729,6 @@ sessionInfo()
     - ~~change 35 sample size restriction to be just at individual egno level (not at age-sex level)~~
     - ~~change the overlap criteria to just if they are both available for at least one day (rather than 365) and think more on that~~
     - ~~put in a filter to kick out missing latitude/longitude values~~
-    - ~~move over the R code to remove duplicate rows (between sections 6.1 and 6.2)~~
     - move over the R code to run social differentiation test (but maybe not... see email from Christin 3/20/2019)
 
 
