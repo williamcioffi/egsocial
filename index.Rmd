@@ -700,7 +700,7 @@ save(nax_avail, file = "data/nax_avail.RData")
 
 # Calculate simple ratio
 
-I put this in a separate file because it is quite a slow process. See calculate_sr RMarkdown file [here](calculate_sr.html). 
+I put this in a separate file because it is quite a slow process. See calculate_sr R Markdown file [here](calculate_sr.html). 
 
 Some background literature on the justification of which method to use can be found in the following papers: @weko2018isolating, @hoppitt2018, @cairns1987
 
