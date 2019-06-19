@@ -358,7 +358,7 @@ isallna <- apply(sr, 2, function(r) all(is.na(r)))
 sr <- sr[!isallna, !isallna]
 ```
 
-## calculate sample sizes
+## Calculate Sample Sizes
 
 ```{r calc-sample-sizes}
 fids <- rownames(sr)
@@ -375,6 +375,13 @@ table(substring(fids, 5, 6))
 # sex
 table(substring(fids, 6, 6))
 ```
+
+
+## Export the Matrix
+```{r export-matrix}
+write.table(sr, 'matrix.csv', sep=',')
+```
+
 
 ## LEMMA: take a look at different overlap days thresholds. 
 
