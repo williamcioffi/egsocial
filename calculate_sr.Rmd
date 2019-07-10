@@ -349,6 +349,9 @@ diag(sr) <- NA
 enoughsamps <- nsightings_df$nsight_total >= numsampcutoff
 sr[!enoughsamps, !enoughsamps] <- NA
 
+# save this for later calculations
+sr.nodayfilt <- sr
+
 # not enough overlap
 notenoughoverlap <- overlap <= overlapdaycutoff
 sr[notenoughoverlap] <- NA
@@ -402,6 +405,29 @@ plot(cutoff, filtered_perc,
 )
 legend("topleft", legend = "n = 1498176 dyads", bty = 'n')
 
+agesexcount <- list()
+# check different overlaps
+for(i in 1:length(cutoff)) {
+  # not enough overlap
+  sr.tmp <- sr.nodayfilt
+  notenoughoverlap <- overlap <= cutoff[i]
+  sr.tmp[notenoughoverlap] <- NA
+
+  # remove individuals completely if they never even had the opportunity to associate with anyone
+  isallna <- apply(sr.tmp, 2, function(r) all(is.na(r)))
+  sr.tmp <- sr.tmp[!isallna, !isallna]
+  
+  fids <- rownames(sr.tmp)
+  agesexcount[[i]] <- table(substring(fids, 5, 6))
+}
+
+agesexcount <- do.call('rbind', agesexcount)
+
+plot(cutoff, c(range(agesexcount), rep(min(agesexcount), length(cutoff)-2)), type = 'n', las = 1, xlab = "min number of days overlapping", ylab = 'count included')
+for(i in 1:ncol(agesexcount)) {
+  lines(cutoff, agesexcount[, i], col = i)
+}
+legend("bottomleft", legend = colnames(agesexcount), col = 1:ncol(agesexcount), lty = 1, bty = 'n')
 ```
 
 # References
