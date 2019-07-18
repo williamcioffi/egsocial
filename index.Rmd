@@ -716,7 +716,7 @@ Some background literature on the justification of which method to use can be fo
 
 1. Install [SOCPROG version 2.9 uncompiled](http://whitelab.biology.dal.ca/SOCPROG/social.htm)
 2. Install [Matlab](https://www.mathworks.com/products/matlab.html)
-3. Export the [matrix.xlsx](https://williamcioffi.github.io/egsocial/calculate_sr.html#17_export_the_matrix)
+3. Export the [matrix.xlsx](https://williamcioffi.github.io/egsocial/calculate_sr.html#17_export_the_matrix) and copy/paste to fix the column headers that are too far to the left
 4. Launch [Matlab](https://www.mathworks.com/products/matlab.html)
 5. Change the default userpath to /Users/ChristinKhan/Documents/MATLAB/SOCPROG2.9_uncompiled
 
@@ -738,6 +738,17 @@ This brings up the main SOCPROG window:
 ![](C:\Users\christin.khan\Documents\Software\R\R-Projects\egsocial\images\socprog-main-window.png)
 
 7. Click on 'Input data' which will open another window:
+
+![](C:\Users\christin.khan\Documents\Software\R\R-Projects\egsocial\images\socprog-input-data-window.png)
+
+8. From the dropdown menu, select 'Excel association matrix', check to 'View Summary?', and click 'Go':
+
+![](C:\Users\christin.khan\Documents\Software\R\R-Projects\egsocial\images\socprog-input-data-dropdown.png)
+
+9. This will open a navigation window for you to browse to your file 'matrix.xlsx' and choose 'Open'
+
+10.Enter a short name for your data in the dialogue box that opens
+
 
 
 
