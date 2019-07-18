@@ -385,7 +385,7 @@ save(dat, cdat, birthdeath, date, file = "data/agesex_assigned.RData")
 ```
 
 
-## Calculate Day by Day Availability
+## Day by Day Availability
 
 The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were "alive" on that day and therefore available to associate with others. We call that `nax_avail` by analogy with `nax` in [socprog](http://whitelab.biology.dal.ca/SOCPROG/social.htm). Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by @ramp2010.
 
@@ -700,7 +700,7 @@ save(nax_avail, file = "data/nax_avail.RData")
 
 # Calculate simple ratio
 
-I put this in a separate file because it is quite a slow process. See calculate_sr R Markdown file [here](calculate_sr.html). 
+I put this in a separate file because it is quite a slow process. See calculate_sr R Markdown file [here](calculate_sr.html). The association matrix can also be exported from there.
 
 Some background literature on the justification of which method to use can be found in the following papers: @weko2018isolating, @hoppitt2018, @cairns1987
 

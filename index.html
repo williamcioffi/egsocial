@@ -1607,7 +1607,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Redefining association: North Atlantic right whales within communication range</h1>
 <h4 class="author">William Cioffi and Christin Khan</h4>
-<h4 class="date">2019-07-18 12:51:09 EDT</h4>
+<h4 class="date">2019-07-18 13:08:20 EDT</h4>
 
 </div>
 
@@ -1940,8 +1940,8 @@ div.tocify {
 <p>We’ll save all three intermediate tables (‘dat’, ‘cdat’, and ‘birthdeath’).</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">save</span>(dat, cdat, birthdeath, date, <span class="dt">file =</span> <span class="st">&quot;data/agesex_assigned.RData&quot;</span>)</a></code></pre></div>
 </div>
-<div id="calculate-day-by-day-availability" class="section level2">
-<h2><span class="header-section-number">6.4</span> Calculate Day by Day Availability</h2>
+<div id="day-by-day-availability" class="section level2">
+<h2><span class="header-section-number">6.4</span> Day by Day Availability</h2>
 <p>The goal here is to create an ID x day matrix indicating availability for each ID, that is whether animals were “alive” on that day and therefore available to associate with others. We call that <code>nax_avail</code> by analogy with <code>nax</code> in <a href="http://whitelab.biology.dal.ca/SOCPROG/social.htm">socprog</a>. Note that there are more rows than individuals in this matrix because we are treating separately the same animal when lactating versus not for instance (the same female could be coded as JF, LF, and NF). This is a similar solution to that used by <span class="citation">Ramp et al. (<a href="#ref-ramp2010">2010</a>)</span>.</p>
 <p>UU, AU, and JU should have already been removed at this stage. What we’ve done here ignores any unknown age ids: UM, UF.</p>
 <p>The rules for assigning age and sex classes are the same as above with the following adjustment made necessary by the day by day analysis:</p>
@@ -2197,7 +2197,7 @@ div.tocify {
 </div>
 <div id="calculate-simple-ratio" class="section level1">
 <h1><span class="header-section-number">7</span> Calculate simple ratio</h1>
-<p>I put this in a separate file because it is quite a slow process. See calculate_sr R Markdown file <a href="calculate_sr.html">here</a>.</p>
+<p>I put this in a separate file because it is quite a slow process. See calculate_sr R Markdown file <a href="calculate_sr.html">here</a>. The association matrix can also be exported from there.</p>
 <p>Some background literature on the justification of which method to use can be found in the following papers: <span class="citation">Weko (<a href="#ref-weko2018isolating">2018</a>)</span>, <span class="citation">Hoppitt and Farine (<a href="#ref-hoppitt2018">2018</a>)</span>, <span class="citation">Cairns and Schwager (<a href="#ref-cairns1987">1987</a>)</span></p>
 <hr />
 </div>
