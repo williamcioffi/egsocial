@@ -720,13 +720,15 @@ sessionInfo()
 
 
 
+
 **Christin To Do:** 
 
 1. Run social differentiation using Weiss methods in SOCPROG 
 
 2. Update graph of distribution of number of records per individual
 
-3. Run permutation tests (just need those data inputs first - master and supplemental
+3. Run permutation tests (just need those data inputs first - master and supplemental)
+
 
 
 
