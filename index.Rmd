@@ -706,6 +706,43 @@ Some background literature on the justification of which method to use can be fo
 
 ----
 
+# Social Differentiation
+
+
+**inputs**: [matrix.xlsx](https://williamcioffi.github.io/egsocial/calculate_sr.html#17_export_the_matrix)
+
+**outputs**: ?
+
+
+1. Install [SOCPROG version 2.9 uncompiled](http://whitelab.biology.dal.ca/SOCPROG/social.htm)
+2. Install [Matlab](https://www.mathworks.com/products/matlab.html)
+3. Export the [matrix.xlsx](https://williamcioffi.github.io/egsocial/calculate_sr.html#17_export_the_matrix)
+4. Launch [Matlab](https://www.mathworks.com/products/matlab.html)
+5. Change the default userpath to /Users/ChristinKhan/Documents/MATLAB/SOCPROG2.9_uncompiled
+
+```{Matlab}
+newpath = '/Users/ChristinKhan/Documents/MATLAB/SOCPROG2.9_uncompiled';
+userpath(newpath)
+
+```
+
+6. Launch [SOCPROG](http://whitelab.biology.dal.ca/SOCPROG/social.htm)
+
+```{Matlab}
+socprog
+
+```
+
+This brings up the main SOCPROG window:
+
+![](C:\Users\christin.khan\Documents\Software\R\R-Projects\egsocial\images\socprog-main-window.png)
+
+7. Click on 'Input data' which will open another window:
+
+
+
+----
+
 # Session Info
 
 ```{r}
